@@ -22,21 +22,21 @@ class ComponentCheckViewController: UIViewController {
     let scdLabel01: UILabel = {
         let label = UILabel()
         label.text = "S-CoreDream-2ExtraLight 11"
-        label.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 11)
+        label.font = UIFont(name: K.Font.s_core_extraLight, size: 11)
         return label
     }()
     
     let scdLabel02: UILabel = {
         let label = UILabel()
         label.text = "S-CoreDream-3Light 11"
-        label.font = UIFont(name: "S-CoreDream-3Light", size: 10)
+        label.font = UIFont(name: K.Font.s_core_light, size: 10)
         return label
     }()
     
     let scdLabel03: UILabel = {
         let label = UILabel()
         label.text = "S-CoreDream-2ExtraLight 11"
-        label.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+        label.font = UIFont(name: K.Font.s_core_light, size: 12)
         return label
     }()
     
@@ -44,7 +44,7 @@ class ComponentCheckViewController: UIViewController {
         let label = UILabel()
         label.text = "GangwonEduHyeonokT_OTFMedium 24"
         
-        label.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 24)
+        label.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 24)
         return label
     }()
     
