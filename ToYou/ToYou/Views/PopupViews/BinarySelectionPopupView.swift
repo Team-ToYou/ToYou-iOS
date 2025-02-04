@@ -1,15 +1,13 @@
 //
-//  ConfirmPopupView.swift
+//  PopupView.swift
 //  ToYou
 //
 //  Created by 이승준 on 2/1/25.
 //
 
 import UIKit
-import SnapKit
-import Then
 
-class ConfirmPopupView: UIView {
+class BinarySelectionPopupView: UIView {
     
     private lazy var mainFrame = UIView().then {
         $0.backgroundColor = .white
@@ -19,15 +17,23 @@ class ConfirmPopupView: UIView {
     
     public lazy var mainTitleLabel = UILabel().then {
         $0.numberOfLines = 2
-        $0.text = "존재하지 않는\n사용자입니다."
+        $0.text = "선택한 친구를\n삭제하시겠습니까?"
         $0.textAlignment = .center
         $0.font = UIFont(name: K.Font.s_core_medium, size: 17)
         $0.textColor = .black04
     }
     
-    public lazy var confirmButton = UIButton().then {
-        $0.setTitle("확인", for: .normal)
+    public lazy var buttonStackFrame = UIView()
+    
+    public lazy var leftConfirmButton = UIButton().then {
+        $0.setTitle("취소", for: .normal)
         $0.setTitleColor(.black04, for: .normal)
+        $0.titleLabel?.font = UIFont(name: K.Font.s_core_medium, size: 12.5)
+    }
+    
+    public lazy var rightConfirmButton = UIButton().then {
+        $0.setTitle("삭제", for: .normal)
+        $0.setTitleColor(.red01, for: .normal)
         $0.titleLabel?.font = UIFont(name: K.Font.s_core_medium, size: 12.5)
     }
     
@@ -50,28 +56,43 @@ class ConfirmPopupView: UIView {
         }
         
         mainFrame.addSubview(mainTitleLabel)
-        mainFrame.addSubview(confirmButton)
+        mainFrame.addSubview(buttonStackFrame)
         
         mainTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(22)
         }
         
-        confirmButton.snp.makeConstraints { make in
+        buttonStackFrame.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.width.equalTo(73)
+            make.width.equalTo(150)
             make.height.equalTo(29)
             make.bottom.equalToSuperview().inset(12)
+        }
+        
+        buttonStackFrame.addSubview(leftConfirmButton)
+        buttonStackFrame.addSubview(rightConfirmButton)
+        
+        leftConfirmButton.snp.makeConstraints { make in
+            make.leading.top.bottom.equalToSuperview()
+            make.width.equalTo(73)
+            make.height.equalTo(29)
+        }
+        
+        rightConfirmButton.snp.makeConstraints { make in
+            make.trailing.top.bottom.equalToSuperview()
+            make.width.equalTo(73)
+            make.height.equalTo(29)
         }
     }
     
     public func configure(title: String, confirmText: String) {
         mainTitleLabel.text = title
-        confirmButton.setTitle(confirmText, for: .normal)
+        leftConfirmButton.setTitle(confirmText, for: .normal)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
+
