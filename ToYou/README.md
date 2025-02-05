@@ -1,4 +1,4 @@
-## 🐶 강아지모드 iOS 🍎
+## 💌 ToYou iOS 🍎
 | 마티 / 김미주 | 루디 / 이승준 |
 | --- | --- |
 | <center> <img width="150px" src="https://avatars.githubusercontent.com/u/133081015?v=4" /></center> | <center> <img width="150px" src="https://avatars.githubusercontent.com/u/54970536?v=4" /></center> |
