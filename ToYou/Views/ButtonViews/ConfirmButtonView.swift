@@ -26,6 +26,11 @@ class ConfirmButtonView: UIButton {
     }
     
     private func addComponents() {
+        
+        self.snp.makeConstraints { make in
+            make.height.equalTo(43)
+        }
+        
         self.addSubview(mainLabel)
         
         mainLabel.snp.makeConstraints { make in

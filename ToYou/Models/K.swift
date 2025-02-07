@@ -15,4 +15,9 @@ struct K {
         static let s_core_medium = "S-CoreDream-5Medium"
         static let gangwonEduHyeonokT_OTFMedium = "GangwonEduHyeonokT_OTFMedium"
     }
+    
+    struct BottomButtonConstraint {
+        static let leadingTrailing: CGFloat = 32
+        static let bottomPadding: CGFloat = 40
+    }
 }

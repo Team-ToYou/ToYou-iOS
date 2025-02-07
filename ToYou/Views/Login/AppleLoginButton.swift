@@ -32,18 +32,16 @@ class AppleLoginButton: UIButton {
         addComponents()
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     private func addComponents() {
-        self.addSubview(nameLabel)
-        self.addSubview(logoImageView)
+        
         self.snp.makeConstraints { make in
-            make.height.equalTo(50)
+            make.height.equalTo(43)
         }
         
-        nameLabel.snp.makeConstraints{ make in
+        self.addSubview(nameLabel)
+        self.addSubview(logoImageView)
+        
+        nameLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(140)
         }
@@ -60,5 +58,9 @@ class AppleLoginButton: UIButton {
         self.logoImageView.image = logo
         self.backgroundColor = backgroundColor
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }

@@ -16,7 +16,7 @@ class LoginView: UIView {
         $0.contentMode = .scaleAspectFill
     }
     
-    private lazy var appleLoginView = AppleLoginButton()
+    public lazy var appleLoginView = AppleLoginButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,9 +32,8 @@ class LoginView: UIView {
         }
         
         appleLoginView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(32)
-            make.bottom.equalToSuperview().inset(40)
-            make.height.equalTo(43)
+            make.leading.trailing.equalToSuperview().inset(K.BottomButtonConstraint.leadingTrailing)
+            make.bottom.equalToSuperview().inset(K.BottomButtonConstraint.bottomPadding)
         }
     }
     
