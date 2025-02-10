@@ -20,6 +20,13 @@ class PolicyAgreementViewController: UIViewController {
     
     func setButtonActions() {
         policyAgreementView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        policyAgreementView.nextButton.addTarget(self, action: #selector(goToNext), for: .touchUpInside)
+    }
+    
+    @objc
+    private func goToNext() {
+        let nickNameVC = NicknameViewController()
+        navigationController?.pushViewController(nickNameVC, animated: true)
     }
     
     @objc
