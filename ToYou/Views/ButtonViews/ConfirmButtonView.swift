@@ -14,14 +14,15 @@ class ConfirmButtonView: UIButton {
     private lazy var mainLabel = UILabel().then {
         $0.text = "다음"
         $0.font = UIFont(name: K.Font.s_core_medium, size: 15)
-        $0.textColor = .black04
+        $0.textColor = .black01
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .black01
         self.clipsToBounds = true
         self.layer.cornerRadius = 7
+        self.backgroundColor = .gray00
+        self.isEnabled = false
         addComponents()
     }
     

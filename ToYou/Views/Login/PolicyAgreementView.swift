@@ -24,9 +24,9 @@ class PolicyAgreementView: UIView {
         $0.textAlignment = .left
     }
     
-    public lazy var toggleAllButton = CheckBoxButton()
+    public lazy var agreeAllButton = CheckBoxButton()
     
-    public lazy var selectAllLabel = UILabel().then {
+    private lazy var selectAllLabel = UILabel().then {
         $0.text = "전체선택"
         $0.font = UIFont(name: K.Font.s_core_medium, size: 17)
         $0.textColor = .black04
@@ -36,9 +36,9 @@ class PolicyAgreementView: UIView {
         $0.backgroundColor = .gray00
     }
     
-    private lazy var over14Button = CheckBoxButton()
-    private lazy var policyAgreeButton = CheckBoxButton()
-    private lazy var privacyAgreeButton = CheckBoxButton()
+    public lazy var over14Button = CheckBoxButton()
+    public lazy var policyAgreeButton = CheckBoxButton()
+    public lazy var privacyAgreeButton = CheckBoxButton()
     
     private lazy var over14Label = UILabel().then {
         $0.text = "만 14세 이상입니다"
@@ -109,25 +109,25 @@ class PolicyAgreementView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(15)
         }
         
-        self.addSubview(toggleAllButton)
+        self.addSubview(agreeAllButton)
         self.addSubview(selectAllLabel)
         self.addSubview(selectUnderline)
         
-        toggleAllButton.snp.makeConstraints { make in
+        agreeAllButton.snp.makeConstraints { make in
             make.height.width.equalTo(30)
             make.leading.equalToSuperview().offset(10)
             make.top.equalTo(subTitleLabel.snp.bottom).offset(38.75)
         }
         
         selectAllLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(toggleAllButton.snp.centerY)
-            make.leading.equalTo(toggleAllButton.snp.trailing).offset(5.75)
+            make.centerY.equalTo(agreeAllButton.snp.centerY)
+            make.leading.equalTo(agreeAllButton.snp.trailing).offset(5.75)
         }
         
         selectUnderline.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
-            make.top.equalTo(toggleAllButton.snp.bottom).offset(12.75)
+            make.top.equalTo(agreeAllButton.snp.bottom).offset(12.75)
         }
         
         self.addSubview(over14Button)

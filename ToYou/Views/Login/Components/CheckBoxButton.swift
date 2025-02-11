@@ -40,6 +40,20 @@ class CheckBoxButton: UIButton {
         isChecked.toggle()
     }
     
+    public func checked() {
+        checboxImage.image = .checkBoxChecked
+        isChecked = true
+    }
+    
+    public func notChecked() {
+        checboxImage.image = .checkBox
+        isChecked = false
+    }
+    
+    public func isMarked() -> Bool {
+        return isChecked
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
