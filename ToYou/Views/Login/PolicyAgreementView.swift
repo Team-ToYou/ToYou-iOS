@@ -61,8 +61,8 @@ class PolicyAgreementView: UIView {
     private lazy var requiredLabel01 = createRequiredLabel()
     private lazy var requiredLabel02 = createRequiredLabel()
     private lazy var requiredLabel03 = createRequiredLabel()
-    private lazy var goPolicyDetail = goDetailButton()
-    private lazy var goPrivacyDetail = goDetailButton()
+    public lazy var goPolicyDetail = goDetailButton()
+    public lazy var goPrivacyDetail = goDetailButton()
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {

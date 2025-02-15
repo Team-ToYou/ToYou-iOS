@@ -18,13 +18,19 @@ class PolicyAgreementViewController: UIViewController {
         self.setButtonActions()
     }
     
+    
+}
+
+extension PolicyAgreementViewController {
     func setButtonActions() {
         policyAgreementView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         policyAgreementView.nextButton.addTarget(self, action: #selector(goToNext), for: .touchUpInside)
         policyAgreementView.agreeAllButton.addTarget(self, action: #selector(agreeAllPressed), for: .touchUpInside)
-        policyAgreementView.over14Button.addTarget(self, action: #selector(over14Pressed(_ :)), for: .touchUpInside)
-        policyAgreementView.policyAgreeButton.addTarget(self, action: #selector(policyAgreePressed(_ :)), for: .touchUpInside)
-        policyAgreementView.privacyAgreeButton.addTarget(self, action: #selector(privacyAgreePressed(_ :)), for: .touchUpInside)
+        policyAgreementView.over14Button.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
+        policyAgreementView.policyAgreeButton.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
+        policyAgreementView.privacyAgreeButton.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
+        policyAgreementView.goPolicyDetail.addTarget(self, action: #selector(goPolicyDetailPressed(_ :)), for: .touchUpInside)
+        policyAgreementView.goPrivacyDetail.addTarget(self, action: #selector(goPrivacyDetailPressed(_ :)), for: .touchUpInside)
     }
     
     @objc
@@ -43,13 +49,12 @@ class PolicyAgreementViewController: UIViewController {
     }
     
     @objc
-    private func over14Pressed(_ sender: CheckBoxButton) {
+    private func checkBoxPressed(_ sender: CheckBoxButton) {
         if sender.isMarked() {
             sender.notChecked()
         } else {
             sender.checked()
         }
-        
         if isAllchecked() {
             policyAgreementView.agreeAllButton.checked()
             goToNextIsEnable()
@@ -60,42 +65,18 @@ class PolicyAgreementViewController: UIViewController {
     }
     
     @objc
-    private func policyAgreePressed(_ sender: CheckBoxButton) {
-        if sender.isMarked() {
-            sender.notChecked()
-        } else {
-            sender.checked()
-        }
+    private func goPolicyDetailPressed(_ sender: UIButton) {
         
-        if isAllchecked() {
-            policyAgreementView.agreeAllButton.checked()
-            goToNextIsEnable()
-        } else {
-            policyAgreementView.agreeAllButton.notChecked()
-            goToNextIsBlocked()
-        }
     }
     
     @objc
-    private func privacyAgreePressed(_ sender: CheckBoxButton) {
-        if sender.isMarked() {
-            sender.notChecked()
-        } else {
-            sender.checked()
-        }
+    private func goPrivacyDetailPressed(_ sender: UIButton) {
         
-        if isAllchecked() {
-            policyAgreementView.agreeAllButton.checked()
-            goToNextIsEnable()
-        } else {
-            policyAgreementView.agreeAllButton.notChecked()
-            goToNextIsBlocked()
-        }
     }
     
     private func isAllchecked() -> Bool {
-        return policyAgreementView.over14Button.isMarked()   &&
-        policyAgreementView.policyAgreeButton.isMarked()     &&
+        return policyAgreementView.over14Button.isMarked() &&
+        policyAgreementView.policyAgreeButton.isMarked() &&
         policyAgreementView.privacyAgreeButton.isMarked()
     }
     
@@ -117,5 +98,4 @@ class PolicyAgreementViewController: UIViewController {
     private func popStack() {
         self.navigationController?.popViewController(animated: true)
     }
-    
 }
