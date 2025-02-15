@@ -66,12 +66,12 @@ extension PolicyAgreementViewController {
     
     @objc
     private func goPolicyDetailPressed(_ sender: UIButton) {
-        
+        print("goPolicyDetailPressed")
     }
     
     @objc
     private func goPrivacyDetailPressed(_ sender: UIButton) {
-        
+        print("goPrivacyDetailPressed")
     }
     
     private func isAllchecked() -> Bool {
