@@ -19,10 +19,43 @@ class UserTypePickerViewController: UIViewController {
     
     func setButtonActions() {
         userTypePiverView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        let buttons = [
+            userTypePiverView.studentButton,
+            userTypePiverView.collegeButton,
+            userTypePiverView.workerButton,
+            userTypePiverView.ectButton
+        ]
+        for btn in buttons {
+            btn.addTarget(self, action: #selector(selectUserType(_ :)), for: .touchUpInside)
+        }
+    }
+    
+    @objc
+    private func selectUserType(_ sender: UserTypeButton) {
+        let buttons = [
+            userTypePiverView.studentButton,
+            userTypePiverView.collegeButton,
+            userTypePiverView.workerButton,
+            userTypePiverView.ectButton
+        ]
+        
+        for btn in buttons {
+            if btn == sender {
+                btn.selectedView()
+                userTypePiverView.nextButton.isEnable(true)
+            } else {
+                btn.notSelectedView()
+            }
+        }
     }
     
     @objc
     private func popStack() {
         self.navigationController?.popViewController(animated: true)
     }
+}
+
+import SwiftUI
+#Preview {
+    UserTypePickerViewController()
 }

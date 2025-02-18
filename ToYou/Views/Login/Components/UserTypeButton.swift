@@ -13,7 +13,7 @@ class UserTypeButton: UIButton {
     private var userType: UserType?
     
     private lazy var mainLabel = UILabel().then {
-        $0.font = UIFont(name: K.Font.s_core_regular , size: 12)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
         $0.textColor = .black01
     }
     

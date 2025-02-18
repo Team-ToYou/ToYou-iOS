@@ -24,13 +24,13 @@ class UserTypePickerView: UIView {
         $0.textColor = .black02
     }
     
-    private lazy var studentButton = UserTypeButton()
+    public lazy var studentButton = UserTypeButton()
     
-    private lazy var collegeButton = UserTypeButton()
+    public lazy var collegeButton = UserTypeButton()
     
-    private lazy var workerButton = UserTypeButton()
+    public lazy var workerButton = UserTypeButton()
     
-    private lazy var ectButton = UserTypeButton()
+    public lazy var ectButton = UserTypeButton()
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
