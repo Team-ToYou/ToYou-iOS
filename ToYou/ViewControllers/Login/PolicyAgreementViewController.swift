@@ -46,6 +46,7 @@ extension PolicyAgreementViewController {
             policyAgreementView.policyAgreeButton.checked()
             policyAgreementView.privacyAgreeButton.checked()
         }
+        isAllchecked()
     }
     
     @objc
@@ -55,13 +56,7 @@ extension PolicyAgreementViewController {
         } else {
             sender.checked()
         }
-        if isAllchecked() {
-            policyAgreementView.agreeAllButton.checked()
-            goToNextIsEnable()
-        } else {
-            policyAgreementView.agreeAllButton.notChecked()
-            goToNextIsBlocked()
-        }
+        isAllchecked()
     }
     
     @objc
@@ -74,18 +69,17 @@ extension PolicyAgreementViewController {
         print("goPrivacyDetailPressed")
     }
     
-    private func isAllchecked() -> Bool {
-        return policyAgreementView.over14Button.isMarked() &&
+    private func isAllchecked()  {
+        if policyAgreementView.over14Button.isMarked() &&
         policyAgreementView.policyAgreeButton.isMarked() &&
-        policyAgreementView.privacyAgreeButton.isMarked()
-    }
-    
-    private func goToNextIsEnable() {
-        policyAgreementView.nextButton.isEnable(true)
-    }
-    
-    private func goToNextIsBlocked() {
-        policyAgreementView.nextButton.isEnable(false)
+            policyAgreementView.privacyAgreeButton.isMarked()
+        {
+            policyAgreementView.nextButton.isEnable(true)
+            policyAgreementView.agreeAllButton.checked()
+        } else {
+            policyAgreementView.nextButton.isEnable(false)
+            policyAgreementView.agreeAllButton.notChecked()
+        }
     }
     
     @objc
