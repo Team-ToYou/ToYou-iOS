@@ -61,7 +61,7 @@ class PolicyAgreementView: UIView {
     private lazy var requiredLabel01 = createRequiredLabel()
     private lazy var requiredLabel02 = createRequiredLabel()
     private lazy var requiredLabel03 = createRequiredLabel()
-    public lazy var goPolicyDetail = goDetailButton()
+    public lazy var goTermsOfUse = goDetailButton()
     public lazy var goPrivacyDetail = goDetailButton()
     
     // MARK: Background & NavigationTop
@@ -136,7 +136,7 @@ class PolicyAgreementView: UIView {
         self.addSubview(policyAgreeButton)
         self.addSubview(policyAgreeLabel)
         self.addSubview(requiredLabel02)
-        self.addSubview(goPolicyDetail)
+        self.addSubview(goTermsOfUse)
         self.addSubview(privacyAgreeButton)
         self.addSubview(privacyAgreeLabel)
         self.addSubview(requiredLabel03)
@@ -178,7 +178,7 @@ class PolicyAgreementView: UIView {
             make.width.equalTo(40.55)
         }
         
-        goPolicyDetail.snp.makeConstraints { make in
+        goTermsOfUse.snp.makeConstraints { make in
             make.width.height.equalTo(24)
             make.centerY.equalTo(policyAgreeButton.snp.centerY)
             make.leading.equalTo(requiredLabel02.snp.trailing).offset(6.42)

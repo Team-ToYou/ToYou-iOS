@@ -6,24 +6,22 @@
 //
 
 import UIKit
+import WebKit
 
-class privacyPolicyWebVC: UIViewController {
+class PrivacyPolicyWebVC: UIViewController {
 
+    var webView: WKWebView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        webView = WKWebView(frame: view.bounds)
+        webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(webView)
+        
+        if let termsURL = URL(string: K.URLString.privacyPolicyLink) {
+           let request = URLRequest(url: termsURL)
+           webView.load(request)
+       }
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

@@ -9,8 +9,6 @@ import UIKit
 
 class CheckButton: UIButton {
     
-    private var toggle: Bool = false
-    
     private lazy var mainLabel = UILabel().then {
         $0.text = "중복확인"
         $0.font = UIFont(name: K.Font.s_core_regular , size: 12)
@@ -41,25 +39,17 @@ class CheckButton: UIButton {
     public func available() {
         mainLabel.textColor = .black04
         self.backgroundColor = .red02
-        self.toggle = true
+        self.isEnabled = true
     }
     
     public func unavailable() {
         mainLabel.textColor = .black01
         self.backgroundColor = .background
-        self.toggle = false
-    }
-    
-    public func toggleState() {
-        if self.toggle {
-            self.unavailable()
-        } else {
-            self.available()
-        }
+        self.isEnabled = false
     }
     
     public func isAvailable() -> Bool {
-        return toggle
+        return self.isEnabled
     }
     
     required init?(coder: NSCoder) {

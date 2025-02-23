@@ -71,6 +71,7 @@ class NicknameView: UIView {
         self.signUpTopTitleComponents()
         self.addComponents()
         self.setUpNextButton()
+        overlappedCheck.unavailable()
     }
     
     required init?(coder: NSCoder) {
