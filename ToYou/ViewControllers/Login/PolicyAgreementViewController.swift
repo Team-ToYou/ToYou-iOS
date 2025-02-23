@@ -11,13 +11,16 @@ class PolicyAgreementViewController: UIViewController {
     
     let policyAgreementView = PolicyAgreementView()
     
+    let policyLinkWebVC = PrivacyPolicyWebVC()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = policyAgreementView
         self.navigationController?.isNavigationBarHidden = true
         self.setButtonActions()
+        
+        policyLinkWebVC.modalPresentationStyle = .popover
     }
-    
     
 }
 
@@ -29,8 +32,8 @@ extension PolicyAgreementViewController {
         policyAgreementView.over14Button.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
         policyAgreementView.policyAgreeButton.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
         policyAgreementView.privacyAgreeButton.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
-        policyAgreementView.goPolicyDetail.addTarget(self, action: #selector(goPolicyDetailPressed(_ :)), for: .touchUpInside)
-        policyAgreementView.goPrivacyDetail.addTarget(self, action: #selector(goPrivacyDetailPressed(_ :)), for: .touchUpInside)
+        policyAgreementView.goTermsOfUse.addTarget(self, action: #selector(goToPolicyWebView(_ :)), for: .touchUpInside)
+        policyAgreementView.goPrivacyDetail.addTarget(self, action: #selector(goToPolicyWebView(_ :)), for: .touchUpInside)
     }
     
     @objc
@@ -60,13 +63,8 @@ extension PolicyAgreementViewController {
     }
     
     @objc
-    private func goPolicyDetailPressed(_ sender: UIButton) {
-        print("goPolicyDetailPressed")
-    }
-    
-    @objc
-    private func goPrivacyDetailPressed(_ sender: UIButton) {
-        print("goPrivacyDetailPressed")
+    private func goToPolicyWebView(_ sender: UIButton) {
+        present(policyLinkWebVC, animated: true)
     }
     
     private func isAllchecked()  {

@@ -38,9 +38,10 @@ extension NicknameViewController {
                 nicknameView.defaultState()
             } else if textCount < 16 {
                 nicknameView.properTextLength()
-            }else {
+            } else {
                 nicknameView.textLengthWarning()
             }
+            nicknameView.nextButton.unavailable()
             nicknameView.maxTextLength.text = "(\(textCount)/15)"
         } else {
             nicknameView.defaultState()
