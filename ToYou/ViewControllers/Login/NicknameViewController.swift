@@ -15,6 +15,8 @@ class NicknameViewController: UIViewController {
         super.viewDidLoad()
         self.view = nicknameView
         self.setButtonActions()
+        self.nicknameView.nicknameTextField.delegate = self
+        hideKeyboardWhenTappedAround()
     }
     
 }
@@ -26,6 +28,7 @@ extension NicknameViewController {
         nicknameView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         nicknameView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChanacge(_ :)), for: .editingChanged)
         nicknameView.overlappedCheck.addTarget(self, action: #selector(checkOverlapped), for: .touchUpInside)
+        nicknameView.nextButton.addTarget(self, action: #selector(stackView), for: .touchUpInside)
     }
     
     @objc
@@ -57,7 +60,37 @@ extension NicknameViewController {
             nicknameView.unsatisfiedNickname()
         }
     }
+    
+    @objc
+    private func stackView() {
+        let stackView = UserTypePickerViewController()
+        navigationController?.pushViewController(stackView, animated: true)
+    }
+    
+}
 
+extension NicknameViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // 중복확인 API 연결
+        nicknameView.nicknameTextField.resignFirstResponder()
+        return true
+    }
+    
+}
+
+extension UIViewController {
+    
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+    
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
 }
 
 import SwiftUI
