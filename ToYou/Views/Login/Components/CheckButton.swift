@@ -34,7 +34,7 @@ class CheckButton: UIButton {
         }
         
         mainLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(10)
+            make.center.equalToSuperview()
         }
     }
     
@@ -44,7 +44,7 @@ class CheckButton: UIButton {
         self.toggle = true
     }
     
-    public func notAvailable() {
+    public func unavailable() {
         mainLabel.textColor = .black01
         self.backgroundColor = .background
         self.toggle = false
@@ -52,7 +52,7 @@ class CheckButton: UIButton {
     
     public func toggleState() {
         if self.toggle {
-            self.notAvailable()
+            self.unavailable()
         } else {
             self.available()
         }

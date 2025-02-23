@@ -7,14 +7,20 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController {
+class MyPageViewController: UIViewController {
     
-    let profileView = ProfileView()
+    let myPageView = MyPageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view = profileView
+        self.view = myPageView
     }
+    
+    
     
 }
 
+import SwiftUI
+#Preview {
+    MyPageViewController()
+}

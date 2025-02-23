@@ -43,18 +43,18 @@ class ConfirmButtonView: UIButton {
         mainLabel.text = labelText
     }
     
-    public func isEnable(_ state: Bool) {
-        switch state {
-        case true:
-            mainLabel.textColor = .black04
-            self.backgroundColor = .black01
-        case false:
-            mainLabel.textColor = .black01
-            self.backgroundColor = .gray00
-        }
-        self.isEnabled = state
+    public func available() {
+        mainLabel.textColor = .black04
+        self.backgroundColor = .black01
+        self.isEnabled = true
     }
     
+    public func unavailable() {
+        mainLabel.textColor = .black01
+        self.backgroundColor = .gray00
+        self.isEnabled = false
+    }
+        
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

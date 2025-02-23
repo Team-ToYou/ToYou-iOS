@@ -16,24 +16,31 @@ class NicknameView: UIView {
         $0.textColor = .black04
     }
     
-    private lazy var nicknameTextField = UITextField().then {
+    public lazy var nicknameTextField = UITextField().then {
         $0.placeholder = "닉네임을 입력해주세요"
-        $0.attributedPlaceholder = NSAttributedString(string: "",
-                                                      attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
+        $0.attributedPlaceholder = NSAttributedString(string: "", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
         $0.textColor = .black04
         $0.tintColor = .black01
         $0.font = UIFont(name: K.Font.s_core_light, size: 15)
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 7
+        
+        $0.leftView?.backgroundColor = .red01
     }
     
     private lazy var warningLabel = UILabel().then {
-        $0.text = "15자 이내로 입력해주세요."
+        $0.text = "중복된 닉네임인지 확인해주세요."
         $0.font = UIFont(name: K.Font.s_core_light, size: 12)
         $0.textColor = .black04
     }
     
-    private lazy var overlappedCheck = CheckButton()
+    public lazy var maxTextLength = UILabel().then {
+        $0.text = "(0/15)"
+        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
+        $0.textColor = .gray00
+    }
+    
+    public lazy var overlappedCheck = CheckButton()
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
@@ -66,9 +73,52 @@ class NicknameView: UIView {
         self.setUpNextButton()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+}
+
+extension NicknameView {
+    public func defaultState() {
+        warningLabel.text = "중복된 닉네임인지 확인해주세요."
+        warningLabel.textColor = .black04
+        nextButton.unavailable()
+        overlappedCheck.unavailable()
+    }
+    
+    public func properTextLength() {
+        warningLabel.text = "중복된 닉네임인지 확인해주세요."
+        warningLabel.textColor = .black04
+        overlappedCheck.available()
+    }
+    
+    public func satisfiedNickname() {
+        warningLabel.text = "사용 가능한 닉네임입니다."
+        warningLabel.textColor = .red02
+        nextButton.available()
+    }
+    
+    public func unsatisfiedNickname() {
+        warningLabel.text = "이미 사용 중인 닉네임입니다."
+        warningLabel.textColor = .red02
+        nextButton.unavailable()
+    }
+    
+    public func textLengthWarning() {
+        warningLabel.text = "15자 이내로 입력해주세요."
+        warningLabel.textColor = .black04
+        overlappedCheck.unavailable()
+        nextButton.unavailable()
+    }
+}
+
+extension NicknameView {
+    
     private func addComponents() {
         self.addSubview(mainLabel)
         self.addSubview(nicknameTextField)
+        nicknameTextField.addSubview(maxTextLength)
         self.addSubview(overlappedCheck)
         self.addSubview(warningLabel)
         
@@ -87,6 +137,11 @@ class NicknameView: UIView {
             make.trailing.equalTo(overlappedCheck.snp.leading).offset(-11)
             make.leading.equalToSuperview().offset(20)
             make.height.equalTo(40)
+        }
+        
+        maxTextLength.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-5)
         }
         
         warningLabel.snp.makeConstraints { make in
@@ -135,11 +190,7 @@ class NicknameView: UIView {
             make.bottom.equalToSuperview().inset(K.BottomButtonConstraint.bottomPadding)
         }
     }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+
 }
 
 import SwiftUI

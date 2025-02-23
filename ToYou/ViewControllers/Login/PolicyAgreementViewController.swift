@@ -74,10 +74,10 @@ extension PolicyAgreementViewController {
         policyAgreementView.policyAgreeButton.isMarked() &&
             policyAgreementView.privacyAgreeButton.isMarked()
         {
-            policyAgreementView.nextButton.isEnable(true)
+            policyAgreementView.nextButton.available()
             policyAgreementView.agreeAllButton.checked()
         } else {
-            policyAgreementView.nextButton.isEnable(false)
+            policyAgreementView.nextButton.unavailable()
             policyAgreementView.agreeAllButton.notChecked()
         }
     }

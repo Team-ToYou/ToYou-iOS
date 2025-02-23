@@ -42,7 +42,7 @@ class UserTypePickerViewController: UIViewController {
         for btn in buttons {
             if btn == sender {
                 btn.selectedView()
-                userTypePiverView.nextButton.isEnable(true)
+                userTypePiverView.nextButton.available()
             } else {
                 btn.notSelectedView()
             }
