@@ -19,7 +19,7 @@ class BaseViewController: UITabBarController {
     private lazy var homeVC = HomeViewController()
     private lazy var letterComposeVC = LetterComposeViewController()
     private lazy var calendarVC = CalendarViewController()
-    private lazy var profileVC = ProfileViewController()
+    private lazy var profileVC = MyPageViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()

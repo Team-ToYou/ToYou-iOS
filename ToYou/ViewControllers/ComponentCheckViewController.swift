@@ -91,7 +91,7 @@ class ComponentCheckViewController: UIViewController {
             make.top.equalTo(kangLabel01.snp.bottom).offset(10)
         }
         
-        disabledConfirmButtonView.isEnable(false)
+        disabledConfirmButtonView.unavailable()
         
         disabledConfirmButtonView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
