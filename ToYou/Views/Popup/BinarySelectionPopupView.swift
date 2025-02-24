@@ -9,7 +9,7 @@ import UIKit
 
 class BinarySelectionPopupView: UIView {
     
-    private lazy var mainFrame = UIView().then {
+    public lazy var mainFrame = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 26
         $0.clipsToBounds = true
@@ -39,20 +39,18 @@ class BinarySelectionPopupView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .clear
+        self.backgroundColor = UIColor.black.withAlphaComponent(0.1)
         self.addComponents()
     }
     
     private func addComponents() {
-        self.snp.makeConstraints { make in
-            make.height.equalTo(129.52)
-            make.width.equalTo(244.48)
-        }
         
         self.addSubview(mainFrame)
         
         mainFrame.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.height.equalTo(129.52)
+            make.width.equalTo(244.48)
+            make.center.equalToSuperview()
         }
         
         mainFrame.addSubview(mainTitleLabel)
@@ -86,9 +84,12 @@ class BinarySelectionPopupView: UIView {
         }
     }
     
-    public func configure(title: String, confirmText: String) {
+    public func configure(title: String, leftConfirmText: String, leftTextColor: UIColor,rightConfirmText: String, rightTextColor: UIColor) {
         mainTitleLabel.text = title
-        leftConfirmButton.setTitle(confirmText, for: .normal)
+        leftConfirmButton.setTitle(leftConfirmText, for: .normal)
+        leftConfirmButton.setTitleColor(leftTextColor, for: .normal)
+        rightConfirmButton.setTitle(rightConfirmText, for: .normal)
+        rightConfirmButton.setTitleColor(rightTextColor, for: .normal)
     }
     
     required init?(coder: NSCoder) {
