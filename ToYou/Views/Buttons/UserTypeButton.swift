@@ -14,7 +14,7 @@ class UserTypeButton: UIButton {
     
     private lazy var mainLabel = UILabel().then {
         $0.font = UIFont(name: K.Font.s_core_light, size: 12)
-        $0.textColor = .black01
+        $0.textColor = .black04
     }
     
     override init(frame: CGRect) {
