@@ -38,6 +38,7 @@ class SetNotificationView: UIView {
     private lazy var mainLabel = UILabel().then {
         $0.text = "일기카드 작성 알림 받기"
         $0.font = UIFont(name: K.Font.s_core_regular, size: 16)
+        $0.textColor = .black04
     }
     
     private lazy var subLabel = UILabel().then {
@@ -48,6 +49,7 @@ class SetNotificationView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .background
         self.setupBackground()
         self.signUpTopTitleComponents()
         self.addComponents()

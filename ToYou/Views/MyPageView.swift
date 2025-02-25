@@ -31,18 +31,19 @@ class MyPageView: UIView {
     }
     
     private lazy var nicknameLabel = UILabel().then {
-        $0.text = "테디"
+        $0.text = " "
         $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 24)
         $0.textColor = .black04
     }
     
     private lazy var friendsLabel = UILabel().then {
-        $0.text = "친구 4명"
+        $0.text = "친구 명"
         $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 18)
         $0.textAlignment = .center
+        $0.textColor = .black04
     }
     
-    public lazy var profileDetailButon = UIButton().then {
+    public lazy var editProfileDetailButton = UIButton().then {
         $0.setImage(.goDetail, for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
     }
@@ -80,7 +81,7 @@ class MyPageView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .background
         self.addBasicComponents()
         self.addProfileComponents()
         self.addButtonStack()
@@ -90,6 +91,15 @@ class MyPageView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+extension MyPageView {
+    
+    public func configure(nickname: String, friends: Int) {
+        nicknameLabel.text = nickname
+        friendsLabel.text = "친구 \(friends)먕"
+    }
+    
 }
 
 extension MyPageView {
@@ -150,7 +160,7 @@ extension MyPageView {
         
         mainLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
+            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(10)
         }
     }
     
@@ -159,7 +169,7 @@ extension MyPageView {
         profileFrame.addSubview(profileImage)
         profileFrame.addSubview(nicknameLabel)
         profileFrame.addSubview(friendsLabel)
-        profileFrame.addSubview(profileDetailButon)
+        profileFrame.addSubview(editProfileDetailButton)
         
         profileFrame.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(37)
@@ -182,7 +192,7 @@ extension MyPageView {
             make.leading.equalTo(profileImage.snp.trailing).offset(10)
         }
         
-        profileDetailButon.snp.makeConstraints { make in
+        editProfileDetailButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(16)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(34)

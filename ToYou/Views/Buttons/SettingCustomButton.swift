@@ -13,6 +13,7 @@ class SettingCustomButton: UIButton {
     
     private lazy var mainTitle = UILabel().then {
         $0.font = UIFont(name: K.Font.s_core_regular, size: 11)
+        $0.textColor = .black04
     }
     
     private lazy var arrowImage = UIImageView().then {
@@ -23,6 +24,7 @@ class SettingCustomButton: UIButton {
     private lazy var versionLabel = UILabel().then {
         $0.text = "1.0"
         $0.font = UIFont(name: K.Font.s_core_regular, size: 11)
+        $0.textColor = .black04
     }
     
     override init(frame: CGRect) {

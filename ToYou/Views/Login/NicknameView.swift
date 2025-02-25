@@ -18,14 +18,16 @@ class NicknameView: UIView {
     
     public lazy var nicknameTextField = UITextField().then {
         $0.placeholder = "닉네임을 입력해주세요"
-        $0.attributedPlaceholder = NSAttributedString(string: "", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
         $0.textColor = .black04
         $0.tintColor = .black01
         $0.font = UIFont(name: K.Font.s_core_light, size: 15)
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 7
         
-        $0.leftView?.backgroundColor = .red01
+        $0.enablesReturnKeyAutomatically = false
+        $0.autocapitalizationType = .none
+        $0.autocorrectionType = .no
+        $0.spellCheckingType = .no
     }
     
     private lazy var warningLabel = UILabel().then {
@@ -92,6 +94,7 @@ extension NicknameView {
         warningLabel.text = "중복된 닉네임인지 확인해주세요."
         warningLabel.textColor = .black04
         overlappedCheck.available()
+        nextButton.unavailable()
     }
     
     public func satisfiedNickname() {
@@ -104,6 +107,7 @@ extension NicknameView {
         warningLabel.text = "이미 사용 중인 닉네임입니다."
         warningLabel.textColor = .red02
         nextButton.unavailable()
+        overlappedCheck.unavailable()
     }
     
     public func textLengthWarning() {

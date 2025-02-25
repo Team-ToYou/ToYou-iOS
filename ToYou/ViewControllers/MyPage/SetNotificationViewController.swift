@@ -15,6 +15,7 @@ class SetNotificationViewController: UIViewController {
         super.viewDidLoad()
         self.view = setNotificationView
         self.setupButtonActions()
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     private func setupButtonActions() {
@@ -23,7 +24,7 @@ class SetNotificationViewController: UIViewController {
     
     @objc
     private func popStack() {
-        self.navigationController?.popViewController(animated: true)
+        dismiss(animated: false, completion: nil)
     }
 
 }

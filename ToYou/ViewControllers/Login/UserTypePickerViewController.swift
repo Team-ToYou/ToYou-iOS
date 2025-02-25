@@ -14,6 +14,7 @@ class UserTypePickerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = userTypePiverView
+        self.navigationController?.isNavigationBarHidden = true
         self.setButtonActions()
     }
     
