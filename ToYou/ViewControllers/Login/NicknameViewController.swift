@@ -26,13 +26,18 @@ extension NicknameViewController {
     
     private func setButtonActions() {
         nicknameView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
-        nicknameView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChanacge(_ :)), for: .editingChanged)
+        nicknameView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChanged(_ :)), for: .editingChanged)
         nicknameView.overlappedCheck.addTarget(self, action: #selector(checkOverlapped), for: .touchUpInside)
         nicknameView.nextButton.addTarget(self, action: #selector(stackView), for: .touchUpInside)
     }
     
     @objc
-    private func textFieldDidChanacge(_ sender: UITextField) {
+    private func popStack() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc
+    private func textFieldDidChanged(_ sender: UITextField) {
         if let textCount = sender.text?.count {
             if textCount == 0 {
                 nicknameView.defaultState()
@@ -41,16 +46,10 @@ extension NicknameViewController {
             } else {
                 nicknameView.textLengthWarning()
             }
-            nicknameView.nextButton.unavailable()
             nicknameView.maxTextLength.text = "(\(textCount)/15)"
         } else {
             nicknameView.defaultState()
         }
-    }
-    
-    @objc
-    private func popStack() {
-        self.navigationController?.popViewController(animated: true)
     }
     
     @objc
@@ -76,20 +75,6 @@ extension NicknameViewController: UITextFieldDelegate {
         // 중복확인 API 연결
         nicknameView.nicknameTextField.resignFirstResponder()
         return true
-    }
-    
-}
-
-extension UIViewController {
-    
-    func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
     }
     
 }

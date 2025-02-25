@@ -41,14 +41,16 @@ extension MyPageViewController {
     
     @objc
     private func goToEditProfile() {
-        let editProfileVC = EditProfileViewController()
-        navigationController?.pushViewController(editProfileVC, animated: false)
+        let editProfileViewController = EditProfileViewController()
+        editProfileViewController.modalPresentationStyle = .overFullScreen
+        present(editProfileViewController, animated: false)
     }
     
     @objc
     private func goToNotification() {
-        let setNotification = SetNotificationViewController()
-        navigationController?.pushViewController(setNotification, animated: false)
+        let setNotificationViewController = SetNotificationViewController()
+        setNotificationViewController.modalPresentationStyle = .overFullScreen
+        present(setNotificationViewController, animated: false)
     }
     
     @objc
