@@ -7,13 +7,13 @@
 
 import UIKit
 
-class LetterComposeViewController: UIViewController {
+class FriendsViewController: UIViewController {
     
-    let letterCompose = LetterComposeView()
+    let friendsView = FriendsView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view = letterCompose
+        self.view = friendsView
     }
     
 }

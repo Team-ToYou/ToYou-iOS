@@ -23,8 +23,8 @@ class BaseViewController: UITabBarController {
     }()
     
     private lazy var letterComposeVC: UINavigationController = {
-        let letterComposeVC = LetterComposeViewController()
-        return UINavigationController(rootViewController: letterComposeVC)
+        let friendsVC = FriendsViewController()
+        return UINavigationController(rootViewController: friendsVC)
     }()
     
     private lazy var calendarVC: UINavigationController = {
