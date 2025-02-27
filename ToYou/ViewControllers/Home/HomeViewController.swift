@@ -17,8 +17,10 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
         
         setView(emotion: emotion)
+        setAction()
     }
     
+    // MARK: - function
     private func setView(emotion: String) {
         let item = Home.dummy().first { $0.emotion == emotion }
         
@@ -28,6 +30,21 @@ class HomeViewController: UIViewController {
             homeVeiw.emotionImage.image = item.bubble
             homeVeiw.backgroundColor = item.color
         }
+    }
+    
+    // MARK: - action
+    private func setAction() {
+        homeVeiw.emotionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(emotionSelect)))
+        homeVeiw.emotionImage.isUserInteractionEnabled = true
+    }
+    
+    @objc
+    private func emotionSelect(sender: UITapGestureRecognizer) {
+        print("click")
+        let emotionVC = EmotionViewController()
+        emotionVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.pushViewController(emotionVC, animated: true)
     }
     
 }
