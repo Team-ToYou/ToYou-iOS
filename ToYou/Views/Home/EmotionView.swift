@@ -21,9 +21,28 @@ class EmotionView: UIView {
     }
     
     // 질문
+    private let questionLabel = UILabel().then {
+        $0.text = "오늘 하루는 어땠나요?"
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 30)
+    }
+    
+    private let subQuestionLabel = UILabel().then {
+        $0.text = "감정우표를 선택해주세요"
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
+    }
+    
+    private let subLabel = UILabel().then {
+        $0.text = "선택한 감정우표를 기반으로 맞춤형 질문이 배달됩니다"
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+    }
     
     // 감정우표
-
+    public let emotionTableView = UITableView().then {
+        $0.register(EmotionTableViewCell.self, forCellReuseIdentifier: EmotionTableViewCell.identifier)
+        $0.separatorStyle = .none
+        $0.isScrollEnabled = false
+        $0.backgroundColor = .clear
+    }
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -41,6 +60,8 @@ class EmotionView: UIView {
     private func setView() {
         [
             paperBackgroundView, backButton,
+            questionLabel, subQuestionLabel, subLabel,
+            emotionTableView
         ].forEach {
             addSubview($0)
         }
@@ -54,6 +75,29 @@ class EmotionView: UIView {
             $0.left.equalToSuperview().offset(17)
             $0.width.height.equalTo(19.25)
         }
+        
+        questionLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(safeAreaLayoutGuide).offset(80)
+        }
+        
+        subQuestionLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(questionLabel.snp.bottom)
+        }
+        
+        subLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(subQuestionLabel.snp.bottom).offset(19.5)
+        }
+        
+        emotionTableView.snp.makeConstraints {
+            $0.top.equalTo(subLabel.snp.bottom).offset(36.8)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(150)
+            $0.height.equalTo(480)
+        }
+        
     }
     
 }
