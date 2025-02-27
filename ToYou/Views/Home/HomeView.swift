@@ -24,15 +24,15 @@ class HomeView: UIView {
         $0.setImage(.alertIcon, for: .normal)
     }
     
-    private let dateLabel = UILabel().then {
+    public let dateBackView = UIView().then {
+        $0.backgroundColor = .gray00
+    }
+    
+    public let dateLabel = UILabel().then {
         $0.text = "20250223"
         $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
         $0.textColor = .black04
         $0.textAlignment = .center
-    }
-    
-    public let dateBackView = UIView().then {
-        $0.backgroundColor = .gray00
     }
     
     public let commentLabel = UILabel().then {
@@ -92,13 +92,13 @@ class HomeView: UIView {
         
         dateBackView.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.centerY.equalTo(dateLabel).offset(2)
+            $0.top.equalToSuperview().offset(160)
             $0.height.equalTo(21)
             $0.width.equalTo(161)
         }
         
         dateLabel.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(159)
+            $0.centerY.equalTo(dateBackView).offset(-2)
             $0.centerX.equalToSuperview()
         }
         

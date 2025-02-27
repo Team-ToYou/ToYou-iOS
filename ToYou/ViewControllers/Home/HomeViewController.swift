@@ -9,14 +9,14 @@ import UIKit
 
 class HomeViewController: UIViewController {
     let homeVeiw = HomeView()
-    let emotion = ""
+//    let emotion = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeVeiw
         navigationController?.navigationBar.isHidden = true
         
-        setView(emotion: emotion)
+//        setView(emotion: emotion)
         setAction()
     }
     
@@ -40,16 +40,9 @@ class HomeViewController: UIViewController {
     
     @objc
     private func emotionSelect(sender: UITapGestureRecognizer) {
-        print("click")
         let emotionVC = EmotionViewController()
         emotionVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.pushViewController(emotionVC, animated: true)
     }
     
 }
-
-import SwiftUI
-#Preview(body: {
-    HomeViewController()
-})
