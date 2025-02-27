@@ -74,6 +74,10 @@ class UserTypeButton: UIButton {
         return toggle
     }
     
+    public func returnUserType() -> UserType? {
+        return userType
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
