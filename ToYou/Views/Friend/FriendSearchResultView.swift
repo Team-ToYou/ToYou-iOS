@@ -130,7 +130,7 @@ extension FriendSearchResultView {
 
 extension FriendSearchResultView {
     
-    public func configure(nickname: String, state: FriendSearchResultEnum) {
+    public func configure( emotion: Emotion?, nickname: String, state: FriendSearchResultEnum) {
         friendResultFrame.isHidden = false
         warningFrame.isHidden = false
         nicknameLabel.text = nickname
@@ -154,6 +154,22 @@ extension FriendSearchResultView {
             mainFrame.bringSubviewToFront(warningFrame)
             warningLabel.text = "스스로에게 요청할 수 없습니다. 다시 입력해주세요"
         }
+        
+        switch emotion {
+        case .angry:
+            profileImage.image = .angryStamp
+        case .worried:
+            profileImage.image = .worriedStamp
+        case .excited:
+            profileImage.image = .excitedStamp
+        case .happy:
+            profileImage.image = .happyStamp
+        case .normal:
+            profileImage.image = .normalStamp
+        case .none:
+            break
+        }
+        
         currentState = state
     }
 }
