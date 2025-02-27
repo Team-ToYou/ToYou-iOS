@@ -10,38 +10,26 @@ import UIKit
 class CustomTabBar: UITabBar {
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         var size = super.sizeThatFits(size)
-        size.height = 94
+        size.height = 68
         return size
     }
 }
 
 class BaseViewController: UITabBarController {
     
-    private lazy var homeVC: UINavigationController = {
-        let homeVC = HomeViewController()
-        return UINavigationController(rootViewController: homeVC)
-    }()
+    let homeVC = HomeViewController()
     
-    private lazy var letterComposeVC: UINavigationController = {
-        let friendsVC = FriendsViewController()
-        return UINavigationController(rootViewController: friendsVC)
-    }()
+    let friendsVC = FriendsViewController()
     
-    private lazy var calendarVC: UINavigationController = {
-        let calendarVC = CalendarViewController()
-        return UINavigationController(rootViewController: calendarVC)
-    }()
-    
-    private lazy var myPageVC: UINavigationController = {
-        let myPageVC = MyPageViewController()
-        return UINavigationController(rootViewController: myPageVC)
-    }()
+    let calendarVC = CalendarViewController()
+
+    let myPageVC = MyPageViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBarItems()
         setupTabBar()
-        self.viewControllers = [homeVC, letterComposeVC, calendarVC, myPageVC]
+        self.viewControllers = [homeVC, friendsVC, calendarVC, myPageVC]
     }
     
     override func loadView() {
@@ -54,7 +42,7 @@ class BaseViewController: UITabBarController {
         let insets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
         homeVC.tabBarItem = createTabBarItem(title: "", image: .homeIcon, tag: 0, size: iconSize, insets: insets)
-        letterComposeVC.tabBarItem = createTabBarItem(title: "", image: .pencilLineIcon, tag: 1, size: iconSize, insets: insets)
+        friendsVC.tabBarItem = createTabBarItem(title: "", image: .pencilLineIcon, tag: 1, size: iconSize, insets: insets)
         calendarVC.tabBarItem = createTabBarItem(title: "", image: .calendarIcon, tag: 2, size: iconSize, insets: insets)
         myPageVC.tabBarItem = createTabBarItem(title: "", image: .profileIcon, tag: 3, size: iconSize, insets: insets)
     }
