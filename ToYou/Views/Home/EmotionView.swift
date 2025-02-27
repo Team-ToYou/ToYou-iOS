@@ -44,6 +44,23 @@ class EmotionView: UIView {
         $0.backgroundColor = .clear
     }
     
+    public let emotionView = UIView().then {
+        $0.isHidden = true
+    }
+    
+    public let emotionPaperView = UIImageView().then {
+        $0.image = .paperTexture
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+    }
+    
+    public let emotionLabel = UILabel().then {
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 30)
+        $0.numberOfLines = 2
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -61,7 +78,8 @@ class EmotionView: UIView {
         [
             paperBackgroundView, backButton,
             questionLabel, subQuestionLabel, subLabel,
-            emotionTableView
+            emotionTableView,
+            emotionView, emotionPaperView, emotionLabel
         ].forEach {
             addSubview($0)
         }
@@ -96,6 +114,19 @@ class EmotionView: UIView {
             $0.centerX.equalToSuperview()
             $0.width.equalTo(150)
             $0.height.equalTo(480)
+        }
+        
+        emotionView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        emotionPaperView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        emotionLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalToSuperview()
         }
         
     }

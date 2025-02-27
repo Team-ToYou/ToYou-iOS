@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     let homeVeiw = HomeView()
-//    let emotion = ""
+//    var emotion = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()

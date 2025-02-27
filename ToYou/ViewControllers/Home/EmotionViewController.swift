@@ -9,6 +9,9 @@ import UIKit
 
 class EmotionViewController: UIViewController {
     let emotionView = EmotionView()
+    let homeVC = HomeViewController()
+    
+//    var selectedEmotion: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +26,16 @@ class EmotionViewController: UIViewController {
     // MARK: - action
     private func setAction() {
         emotionView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        emotionView.emotionPaperView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(backViewTapped)))
+        emotionView.emotionPaperView.isUserInteractionEnabled = true
     }
     
     @objc private func backButtonTapped() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func backViewTapped() {
+//        homeVC.emotion = selectedEmotion!
         self.navigationController?.popViewController(animated: true)
     }
 
@@ -51,5 +61,16 @@ extension EmotionViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 96
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        emotionView.emotionPaperView.isHidden = false
+        
+        let item = EmotionStamp.dummy()[indexPath.row]
+//        selectedEmotion = item.emotion
+        emotionView.emotionView.backgroundColor = item.color
+        emotionView.emotionView.isHidden = false
+        emotionView.emotionLabel.text = item.result
+        emotionView.emotionLabel.isHidden = false
     }
 }
