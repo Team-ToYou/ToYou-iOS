@@ -35,6 +35,8 @@ class FriendsView: UIView {
         $0.contentMode = .scaleAspectFill
     }
     
+    private lazy var friendSearchResultView = FriendSearchResultView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .background
@@ -54,6 +56,7 @@ extension FriendsView {
         searchTextField.setPlaceholder(text: "친구 아이디를 입력하세요.", color: .gray00)
         self.addSubview(addFriendLabel)
         self.addSubview(searchTextField)
+        self.addSubview(friendSearchResultView)
         
         addFriendLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(23)
@@ -66,7 +69,11 @@ extension FriendsView {
             make.height.equalTo(40)
         }
         
-        
+        friendSearchResultView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(30)
+            make.top.equalTo(searchTextField.snp.bottom).offset(15.8)
+            make.height.equalTo(64)
+        }
         
     }
     
@@ -100,7 +107,6 @@ extension FriendsView {
             make.leading.equalToSuperview().offset(10)
         }
 
-        
         searchTextField.leftView = leftView
         searchTextField.leftViewMode = .always
     }
