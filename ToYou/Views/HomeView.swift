@@ -31,11 +31,16 @@ class HomeView: UIView {
         $0.textAlignment = .center
     }
     
-    private let dateBackView = UIView().then {
+    public let dateBackView = UIView().then {
         $0.backgroundColor = .gray00
     }
     
-    private let emotionImage = UIImageView().then {
+    public let commentLabel = UILabel().then {
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
+        $0.textColor = .black04
+    }
+    
+    public let emotionImage = UIImageView().then {
         $0.image = .defaultBubble
     }
     
@@ -46,13 +51,9 @@ class HomeView: UIView {
     
     // MARK: - init
     override init(frame: CGRect) {
-        super.init(frame: frame)=
+        super.init(frame: frame)
         self.backgroundColor = .background
-        self.addComponents()
-    }
-    
-    private func addComponents() {
-        self.addSubview(label)
+        
         
         setView()
     }
@@ -67,6 +68,7 @@ class HomeView: UIView {
             paperBackgroundView,
             toyouLabel, alertButton,
             dateBackView, dateLabel,
+            commentLabel,
             emotionImage,
             mailBoxImage
         ].forEach {
@@ -97,6 +99,11 @@ class HomeView: UIView {
         
         dateLabel.snp.makeConstraints {
             $0.top.equalToSuperview().offset(159)
+            $0.centerX.equalToSuperview()
+        }
+        
+        commentLabel.snp.makeConstraints {
+            $0.top.equalTo(dateBackView.snp.bottom).offset(10)
             $0.centerX.equalToSuperview()
         }
         
