@@ -15,4 +15,15 @@ struct K {
         static let s_core_medium = "S-CoreDream-5Medium"
         static let gangwonEduHyeonokT_OTFMedium = "GangwonEduHyeonokT_OTFMedium"
     }
+    
+    struct BottomButtonConstraint {
+        static let leadingTrailing: CGFloat = 32
+        static let bottomPadding: CGFloat = 40
+    }
+    
+    struct URLString {
+        static let privacyPolicyLink = "https://sumptuous-metacarpal-d3a.notion.site/1437c09ca64e80fb88f6d8ab881ffee3?pvs=74"
+        static let sendFeedbackLink = "https://forms.gle/fJweAP16cT4Tc3cA6"
+        static let sendQueryLink = "http://pf.kakao.com/_xiuPIn/chat"
+    }
 }

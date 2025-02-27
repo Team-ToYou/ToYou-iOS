@@ -16,18 +16,32 @@ class CustomTabBar: UITabBar {
 }
 
 class BaseViewController: UITabBarController {
-    private lazy var homeVC = HomeViewController()
-    private lazy var letterComposeVC = LetterComposeViewController()
-    private lazy var calendarVC = CalendarViewController()
-    private lazy var profileVC = ProfileViewController()
+    
+    private lazy var homeVC: UINavigationController = {
+        let homeVC = HomeViewController()
+        return UINavigationController(rootViewController: homeVC)
+    }()
+    
+    private lazy var letterComposeVC: UINavigationController = {
+        let letterComposeVC = LetterComposeViewController()
+        return UINavigationController(rootViewController: letterComposeVC)
+    }()
+    
+    private lazy var calendarVC: UINavigationController = {
+        let calendarVC = CalendarViewController()
+        return UINavigationController(rootViewController: calendarVC)
+    }()
+    
+    private lazy var myPageVC: UINavigationController = {
+        let myPageVC = MyPageViewController()
+        return UINavigationController(rootViewController: myPageVC)
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupTabBarItems()
         setupTabBar()
-        
-        self.viewControllers = [homeVC, letterComposeVC, calendarVC, profileVC]
+        self.viewControllers = [homeVC, letterComposeVC, calendarVC, myPageVC]
     }
     
     override func loadView() {
@@ -42,7 +56,7 @@ class BaseViewController: UITabBarController {
         homeVC.tabBarItem = createTabBarItem(title: "", image: .homeIcon, tag: 0, size: iconSize, insets: insets)
         letterComposeVC.tabBarItem = createTabBarItem(title: "", image: .pencilLineIcon, tag: 1, size: iconSize, insets: insets)
         calendarVC.tabBarItem = createTabBarItem(title: "", image: .calendarIcon, tag: 2, size: iconSize, insets: insets)
-        profileVC.tabBarItem = createTabBarItem(title: "", image: .profileIcon, tag: 3, size: iconSize, insets: insets)
+        myPageVC.tabBarItem = createTabBarItem(title: "", image: .profileIcon, tag: 3, size: iconSize, insets: insets)
     }
     
     private func createTabBarItem(title: String, image: UIImage, tag: Int, size: CGSize, insets: UIEdgeInsets) -> UITabBarItem {

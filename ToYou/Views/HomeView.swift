@@ -46,8 +46,13 @@ class HomeView: UIView {
     
     // MARK: - init
     override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = .white
+        super.init(frame: frame)=
+        self.backgroundColor = .background
+        self.addComponents()
+    }
+    
+    private func addComponents() {
+        self.addSubview(label)
         
         setView()
     }
