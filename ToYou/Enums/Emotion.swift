@@ -8,6 +8,7 @@
 import UIKit
 
 enum Emotion: String {
+    
     case angry, worried, excited, happy, normal
     
     func stampImage() -> UIImage {

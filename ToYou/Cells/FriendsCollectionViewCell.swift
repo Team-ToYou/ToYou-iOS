@@ -7,9 +7,16 @@
 
 import UIKit
 
+protocol FriendCollectionViewCellDelegate: AnyObject {
+    func sendQuery(to friend: FriendInfo)
+    func disconnect(with friend: FriendInfo)
+}
+
 class FriendsCollectionViewCell: UICollectionViewCell {
     
+    private var friendInfo: FriendInfo?
     static let identifier = "FriendsCollectionViewCell"
+    private weak var delegate: FriendCollectionViewCellDelegate?
     
     private lazy var profileImage = UIImageView().then {
         $0.image = .defaultStamp
@@ -28,7 +35,7 @@ class FriendsCollectionViewCell: UICollectionViewCell {
         $0.textColor = .black04
     }
     
-    public lazy var sendMessageButton = UIButton().then {
+    public lazy var sendQueryButton = UIButton().then {
         $0.setImage(.paperplane, for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
     }
@@ -37,12 +44,7 @@ class FriendsCollectionViewCell: UICollectionViewCell {
         $0.setImage(.trashcan, for: .normal)
         $0.imageView?.contentMode = .scaleAspectFit
     }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-    }
-    
+        
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
@@ -55,19 +57,43 @@ class FriendsCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configure(nickname: String, emotion: Emotion?) {
-        nicknameLabel.text = nickname
-        if let _ = emotion {
-            profileImage.image = emotion!.stampImage()
-            emotionLabel.text = emotion!.emotionExplanation()
+    public func configure(friend: FriendInfo, delegate: FriendCollectionViewCellDelegate) {
+        self.delegate = delegate
+        self.friendInfo = friend
+        nicknameLabel.text = friend.nickname
+        profileImage.image = friend.emotion.stampImage()
+        emotionLabel.text = friend.emotion.emotionExplanation()
+        
+        sendQueryButton.addTarget(self, action: #selector(sendQuery), for: .touchUpInside)
+        deleteFriendButton.addTarget(self, action: #selector(disconnect), for: .touchUpInside)
+    }
+    
+}
+
+extension FriendsCollectionViewCell {
+    
+    @objc
+    private func sendQuery() {
+        if let friend = friendInfo {
+            delegate?.sendQuery(to: friend)
         }
     }
+    
+    @objc
+    private func disconnect() {
+        if let friend = friendInfo {
+            delegate?.disconnect(with: friend)
+        }
+    }
+}
+
+extension FriendsCollectionViewCell {
     
     private func addComponents() {
         self.addSubview(profileImage)
         self.addSubview(nicknameLabel)
         self.addSubview(emotionLabel)
-        self.addSubview(sendMessageButton)
+        self.addSubview(sendQueryButton)
         self.addSubview(deleteFriendButton)
         
         profileImage.snp.makeConstraints { make in
@@ -90,14 +116,16 @@ class FriendsCollectionViewCell: UICollectionViewCell {
         deleteFriendButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(15)
             make.centerY.equalToSuperview()
+            make.height.width.equalTo(35)
         }
         
-        sendMessageButton.snp.makeConstraints { make in
-            make.trailing.equalTo(deleteFriendButton.snp.leading).inset(-13)
+        sendQueryButton.snp.makeConstraints { make in
+            make.trailing.equalTo(deleteFriendButton.snp.leading).inset(0)
             make.centerY.equalToSuperview()
+            make.height.width.equalTo(35)
         }
     }
-
+    
 }
 
 import SwiftUI
