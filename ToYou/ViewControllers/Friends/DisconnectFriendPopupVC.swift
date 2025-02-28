@@ -40,6 +40,7 @@ class DisconnectFriendPopupVC: UIViewController {
         let location = gesture.location(in: view)
         // popover.frameView 영역을 터치했는지 확인
         if !deleteFriendPopupView.mainFrame.frame.contains(location) {
+            completionHandler?(false)
             dismiss(animated: false, completion: nil)
         }
     }
