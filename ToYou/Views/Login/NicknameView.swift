@@ -73,6 +73,7 @@ class NicknameView: UIView {
         self.signUpTopTitleComponents()
         self.addComponents()
         self.setUpNextButton()
+        self.addLeftViewInTextField()
         overlappedCheck.unavailable()
     }
     
@@ -137,6 +138,8 @@ extension NicknameView {
             make.top.equalTo(mainLabel.snp.bottom).offset(10)
         }
         
+        nicknameTextField.setPlaceholder(text: "닉네임을 입력해주세요", color: .gray00)
+        
         nicknameTextField.snp.makeConstraints { make in
             make.centerY.equalTo(overlappedCheck.snp.centerY)
             make.trailing.equalTo(overlappedCheck.snp.leading).offset(-11)
@@ -197,6 +200,17 @@ extension NicknameView {
     }
 
 }
+
+extension NicknameView {
+    
+    private func addLeftViewInTextField() {
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 7, height: 33))
+        nicknameTextField.leftView = paddingView
+        nicknameTextField.leftViewMode = .always
+    }
+    
+}
+
 
 import SwiftUI
 #Preview{

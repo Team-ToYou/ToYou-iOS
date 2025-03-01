@@ -10,6 +10,7 @@ import UIKit
 class EditProfileView: UIView {
     
     public var isNicknameChecked: Bool = true
+    public var originalUserType: UserType?
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
@@ -116,6 +117,7 @@ class EditProfileView: UIView {
 extension EditProfileView {
     public func configure( nickname: String, userType: UserType) {
         nicknameTextField.text = nickname
+        originalUserType = userType
         switch userType {
         case .student:
             studentButton.selectedView()
@@ -126,6 +128,10 @@ extension EditProfileView {
         case .ect:
             ectButton.selectedView()
         }
+    }
+    
+    public func returnUserType() -> UserType? {
+        return originalUserType
     }
 }
 

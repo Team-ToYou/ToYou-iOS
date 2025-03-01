@@ -21,7 +21,7 @@ class UserTypeButton: UIButton {
         super.init(frame: frame)
         self.addComponents()
     }
-        
+    
     private func addComponents() {
         self.addSubview(mainLabel)
         
@@ -74,12 +74,12 @@ class UserTypeButton: UIButton {
         return toggle
     }
     
+    public func returnUserType() -> UserType? {
+        return userType
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-}
-
-enum UserType {
-    case student, college, worker, ect
 }

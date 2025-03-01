@@ -116,6 +116,10 @@ extension EditProfileViewController {
             editProfileView.ectButton
         ]
         
+        if editProfileView.isNicknameChecked && editProfileView.returnUserType()! != sender.returnUserType()! {
+            editProfileView.completeButton.available()
+        }
+        
         for btn in buttons {
             if btn == sender {
                 btn.selectedView()
@@ -124,9 +128,6 @@ extension EditProfileViewController {
             }
         }
         
-        if editProfileView.isNicknameChecked {
-            editProfileView.completeButton.available()
-        }
     }
 
 }

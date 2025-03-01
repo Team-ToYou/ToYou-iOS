@@ -16,6 +16,7 @@ class NicknameViewController: UIViewController {
         self.view = nicknameView
         self.setButtonActions()
         self.nicknameView.nicknameTextField.delegate = self
+        self.nicknameView.nicknameTextField.becomeFirstResponder()
         hideKeyboardWhenTappedAround()
     }
     
