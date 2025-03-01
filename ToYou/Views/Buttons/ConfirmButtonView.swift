@@ -43,6 +43,12 @@ class ConfirmButtonView: UIButton {
         mainLabel.text = labelText
     }
     
+    public func availableForSendQuery() {
+        mainLabel.textColor = .black04
+        self.backgroundColor = .gray00
+        self.isEnabled = true
+    }
+    
     public func available() {
         mainLabel.textColor = .black04
         self.backgroundColor = .black01

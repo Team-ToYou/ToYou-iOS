@@ -19,6 +19,8 @@ class SelectQueryTypeView: UIView {
         $0.setImage(.popUpIcon , for: .normal)
     }
     
+    public lazy var confirmButton = ConfirmButtonView()
+    
     private lazy var mainTitleLabel = UILabel().then {
         $0.text = "질문하기"
         $0.font = UIFont(name: K.Font.s_core_regular, size: 17)
@@ -49,8 +51,6 @@ class SelectQueryTypeView: UIView {
     public lazy var shortQueryTypeButton = QueryTypeButton()
     public lazy var longQueryTypeButton = QueryTypeButton()
     
-    public lazy var confirmButton = ConfirmButtonView()
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .background
@@ -65,7 +65,7 @@ class SelectQueryTypeView: UIView {
         
         selectionFrame.snp.makeConstraints { make in
             make.top.equalTo(emotionStateBubble.snp.bottom).offset(24)
-            make.leading.trailing.equalToSuperview().inset(31)
+            make.leading.trailing.equalToSuperview().inset(30)
             make.height.equalTo(98)
         }
         
@@ -110,7 +110,7 @@ class SelectQueryTypeView: UIView {
         self.addSubview(emotionStateBubble)
         
         emotionStateBubble.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(31)
+            make.leading.trailing.equalToSuperview().inset(30)
             make.top.equalTo(divider.snp.bottom).offset(10)
             make.height.equalTo(31)
         }
@@ -173,5 +173,5 @@ class SelectQueryTypeView: UIView {
 
 import SwiftUI
 #Preview {
-    SendQueryViewController()
+    SelectQueryViewController()
 }
