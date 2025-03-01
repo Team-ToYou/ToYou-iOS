@@ -61,8 +61,13 @@ class FriendsCollectionViewCell: UICollectionViewCell {
         self.delegate = delegate
         self.friendInfo = friend
         nicknameLabel.text = friend.nickname
-        profileImage.image = friend.emotion.stampImage()
-        emotionLabel.text = friend.emotion.emotionExplanation()
+        if let emotion = friend.emotion {
+            profileImage.image = emotion.stampImage()
+            emotionLabel.text = emotion.emotionExplanation()
+        } else {
+            profileImage.image = .defaultStamp
+            emotionLabel.text = " "
+        }
         
         sendQueryButton.addTarget(self, action: #selector(sendQuery), for: .touchUpInside)
         deleteFriendButton.addTarget(self, action: #selector(disconnect), for: .touchUpInside)

@@ -11,12 +11,14 @@ class FriendsViewController: UIViewController {
     
     let friendsView = FriendsView()
     
+    let sendQueryVC = SendQueryViewController()
     let disconnectPopupVC = DisconnectFriendPopupVC()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = friendsView
         
+        sendQueryVC.modalPresentationStyle = .overFullScreen
         disconnectPopupVC.modalPresentationStyle = .overFullScreen
         
         friendsView.friendsCollectionView.delegate = self
@@ -43,6 +45,9 @@ extension FriendsViewController: FriendCollectionViewCellDelegate {
     
     func sendQuery(to friend: FriendInfo) {
         print("\(friend.nickname)에게 질문을 보냅니다.")
+        print("name: \(friend.nickname), emotion \(friend.emotion)")
+        sendQueryVC.configure(by: friend)
+        present(sendQueryVC, animated: true)
     }
     
     func disconnect(with friend: FriendInfo) {

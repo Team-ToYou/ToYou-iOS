@@ -9,7 +9,7 @@ import Foundation
 
 struct FriendInfo {
     let nickname: String
-    let emotion: Emotion
+    let emotion: Emotion?
 }
 
 class FriendsModel {
@@ -19,7 +19,7 @@ class FriendsModel {
         FriendInfo(nickname: "도윤", emotion: .normal),
         FriendInfo(nickname: "지민", emotion: .worried),
         FriendInfo(nickname: "예준", emotion: .angry),
-        FriendInfo(nickname: "하은", emotion: .happy),
+        FriendInfo(nickname: "하은", emotion: nil),
         FriendInfo(nickname: "주원", emotion: .normal),
         FriendInfo(nickname: "소율", emotion: .excited),
         FriendInfo(nickname: "지호", emotion: .worried),
@@ -28,7 +28,7 @@ class FriendsModel {
         FriendInfo(nickname: "지윤", emotion: .normal),
         FriendInfo(nickname: "준서", emotion: .excited),
         FriendInfo(nickname: "하린", emotion: .worried),
-        FriendInfo(nickname: "건우", emotion: .angry),
+        FriendInfo(nickname: "건우", emotion: nil),
         FriendInfo(nickname: "소민", emotion: .happy),
         FriendInfo(nickname: "태민", emotion: .normal),
         FriendInfo(nickname: "예린", emotion: .excited),

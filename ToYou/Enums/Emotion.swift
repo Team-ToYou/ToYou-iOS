@@ -41,6 +41,36 @@ enum Emotion: String {
         }
     }
     
+    func faceImage() -> UIImage {
+        switch self {
+        case .angry:
+            return .angryFace
+        case .worried:
+            return .worriedFace
+        case .excited:
+            return .excitedFace
+        case .happy:
+            return .happyFace
+        case .normal:
+            return .normalFace
+        }
+    }
+    
+    func messageBubble() -> UIImage {
+        switch self {
+        case .angry:
+            return .angryStateBubble
+        case .worried:
+            return .worriedStateBubble
+        case .excited:
+            return .excitedStateBubble
+        case .happy:
+            return .happyStateBubble
+        case .normal:
+            return .normalStateBubble
+        }
+    }
+    
 }
 
 
