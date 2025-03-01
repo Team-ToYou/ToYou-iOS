@@ -37,6 +37,7 @@ class MakeQueryView: UIView {
         $0.backgroundColor = .black02
     }
     
+    // 내용 작성 공간
     private lazy var emotionStateBubble = EmotionStateBubble()
     
     private lazy var bubbleFrame = UIView()
@@ -59,11 +60,30 @@ class MakeQueryView: UIView {
         $0.backgroundColor = .white
     }
     
-    // 선택형: 2개 ~3개만 필요
-    // 최소한 2개는 필요?
+    public lazy var choicesCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 10 // 셀 간 간격
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width - 68, height: 36)
+        
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .clear
+        cv.register(QueryChoiceCollectionViewCell.self, forCellWithReuseIdentifier: QueryChoiceCollectionViewCell.identifier)
+        cv.showsVerticalScrollIndicator = false
+        return cv
+    }()
     
-    // 1. CollectionView로 구현
-    // 2. 야매로 구현 => X
+    public lazy var addQueryChoiceButton = UIButton().then {
+        $0.backgroundColor = .white
+        $0.setImage(.plus, for: .normal)
+        $0.imageView?.contentMode = .scaleAspectFit
+        $0.clipsToBounds = true
+        $0.layer.cornerRadius = 5.31
+        
+        $0.imageView?.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.height.width.equalTo(25)
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -72,6 +92,26 @@ class MakeQueryView: UIView {
         self.setTitleComponents()
         self.setEmotionStateBubbleConstraints()
         self.setTextViewBubble()
+        self.setChoiceViewConstraints()
+    }
+    
+    private func setChoiceViewConstraints() {
+        self.addSubview(choicesCollection)
+        self.addSubview(addQueryChoiceButton)
+        
+        choicesCollection.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(30)
+            make.trailing.equalToSuperview().offset(-35)
+            make.top.equalTo(bubbleFrame.snp.bottom).offset(15)
+            make.height.equalTo(82)
+        }
+        
+        addQueryChoiceButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(30)
+            make.trailing.equalToSuperview().offset(-35)
+            make.top.equalTo(choicesCollection.snp.bottom).offset(15)
+            make.height.equalTo(36)
+        }
     }
     
     private func setTextViewBubble() {
@@ -120,7 +160,7 @@ class MakeQueryView: UIView {
         self.addSubview(divider)
         
         mainTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(popUpViewButton.snp.bottom).offset(75)
+            make.top.equalTo(popUpViewButton.snp.bottom).offset(25)
             make.leading.equalToSuperview().offset(40)
         }
         

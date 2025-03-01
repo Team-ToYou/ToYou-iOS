@@ -122,7 +122,7 @@ class SelectQueryTypeView: UIView {
         self.addSubview(divider)
         
         mainTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(popUpViewButton.snp.bottom).offset(75)
+            make.top.equalTo(popUpViewButton.snp.bottom).offset(25)
             make.leading.equalToSuperview().offset(40)
         }
         
