@@ -19,6 +19,8 @@ class FriendsViewController: UIViewController {
         
         friendsView.friendsCollectionView.delegate = self
         friendsView.friendsCollectionView.dataSource = self
+        
+        hideKeyboardWhenTappedAround()
     }
     
 }
@@ -40,9 +42,6 @@ extension FriendsViewController: UICollectionViewDataSource {
 extension FriendsViewController: FriendCollectionViewCellDelegate {
     
     func sendQuery(to friend: FriendInfo) {
-        print("\(friend.nickname)에게 질문을 보냅니다.")
-        print("name: \(friend.nickname), emotion \(friend.emotion)")
-        
         let selectQueryVC = SelectQueryViewController()
         selectQueryVC.modalPresentationStyle = .overFullScreen
         selectQueryVC.configure(by: friend)

@@ -101,7 +101,7 @@ extension FriendsView {
         
         addFriendLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(23)
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(0)
+            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(30)
         }
         
         searchTextField.snp.makeConstraints { make in
