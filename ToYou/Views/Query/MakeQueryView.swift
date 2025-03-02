@@ -19,7 +19,7 @@ class MakeQueryView: UIView {
         $0.setImage(.popUpIcon , for: .normal)
     }
     
-    public lazy var confirmButton = ConfirmButtonView()
+    public lazy var confirmButton = ConfirmButton()
     
     private lazy var mainTitleLabel = UILabel().then {
         $0.text = "질문하기"
