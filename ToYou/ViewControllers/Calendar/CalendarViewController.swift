@@ -16,9 +16,14 @@ class CalendarViewController: UIViewController {
         navigationController?.navigationBar.isHidden = true
         
         setAction()
+        setCollectionView()
     }
     
     // MARK: - function
+    private func setCollectionView() {
+        calendarView.myRecordCalendar.delegate = self
+        calendarView.myRecordCalendar.dataSource = self
+    }
     
     // MARK: - action
     private func setAction() {
@@ -31,3 +36,24 @@ class CalendarViewController: UIViewController {
     
 }
 
+extension CalendarViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 12
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCalendarCell.identifier, for: indexPath) as? CustomCalendarCell else {
+            return UICollectionViewCell()
+        }
+        
+        return cell
+    }
+    
+    
+}
+
+extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+    }
+}

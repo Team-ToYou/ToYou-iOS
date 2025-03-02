@@ -43,6 +43,33 @@ class CalendarView: UIView {
         $0.backgroundColor = .gray00
     }
     
+    private let calendarBackground = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 7.3
+        
+        $0.layer.shadowColor = UIColor.black04.withAlphaComponent(0.25).cgColor
+        $0.layer.shadowOpacity = 1
+        $0.layer.shadowRadius = 25
+        $0.layer.shadowOffset = CGSize(width: 0, height: 3.66)
+    }
+    
+    private let monthLabel = UILabel().then {
+        $0.text = "0월"
+        $0.textColor = .black04
+        $0.font = UIFont(name: "S-CoreDream-5Medium", size: 14.63)
+        $0.textAlignment = .center
+    }
+    
+    public let myRecordCalendar = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.scrollDirection = .horizontal
+        $0.minimumLineSpacing = 0
+    }).then {
+        $0.register(CustomCalendarCell.self, forCellWithReuseIdentifier: CustomCalendarCell.identifier)
+        $0.showsHorizontalScrollIndicator = false
+        $0.isPagingEnabled = true
+        $0.backgroundColor = .clear
+    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -79,7 +106,8 @@ class CalendarView: UIView {
     private func setView() {
         [
             paperBackgroundView,
-            segmentControl, underLineView, underLine, lineView
+            segmentControl, underLineView, underLine, lineView,
+            calendarBackground, monthLabel, myRecordCalendar
         ].forEach {
             addSubview($0)
         }
@@ -111,6 +139,23 @@ class CalendarView: UIView {
             $0.top.equalTo(segmentControl.snp.bottom).offset(5)
             $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(1)
+        }
+        
+        calendarBackground.snp.makeConstraints {
+            $0.top.equalTo(lineView.snp.bottom).offset(50)
+            $0.horizontalEdges.equalToSuperview().inset(27)
+            $0.height.equalTo(378)
+        }
+        
+        monthLabel.snp.makeConstraints {
+            $0.top.equalTo(calendarBackground.snp.top).offset(19)
+            $0.centerX.equalTo(calendarBackground)
+        }
+        
+        myRecordCalendar.snp.makeConstraints {
+            $0.top.equalTo(calendarBackground).inset(90)
+            $0.horizontalEdges.equalTo(calendarBackground).inset(20)
+            $0.bottom.equalTo(calendarBackground).inset(20)
         }
     }
 }
