@@ -20,6 +20,7 @@ class UserTypePickerViewController: UIViewController {
     
     func setButtonActions() {
         userTypePiverView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        userTypePiverView.nextButton.addTarget(self, action: #selector(changeRootToHomeVC), for: .touchUpInside)
         let buttons = [
             userTypePiverView.studentButton,
             userTypePiverView.collegeButton,
@@ -29,6 +30,11 @@ class UserTypePickerViewController: UIViewController {
         for btn in buttons {
             btn.addTarget(self, action: #selector(selectUserType(_ :)), for: .touchUpInside)
         }
+    }
+    
+    @objc
+    private func changeRootToHomeVC() {
+        RootViewControllerService.toBaseViewController()
     }
     
     @objc

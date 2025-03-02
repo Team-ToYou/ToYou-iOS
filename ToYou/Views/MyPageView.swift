@@ -25,7 +25,7 @@ class MyPageView: UIView {
     
     private lazy var profileImage = UIImageView().then {
         $0.contentMode = .scaleAspectFit
-        $0.image = .defaultStamp
+        $0.image = .defaultProfile
         $0.clipsToBounds = true
         $0.layer.cornerRadius = 26
     }

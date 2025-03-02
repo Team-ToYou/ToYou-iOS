@@ -1,0 +1,17 @@
+<svg width="44" height="48" viewBox="0 0 44 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="5.87055" y="7.10664" width="33.1778" height="33.1778" fill="white" stroke="#B3B3B3" stroke-width="1.05556"/>
+<line x1="17.6232" y1="33.4396" x2="28.5778" y2="32.5267" stroke="#B3B3B3" stroke-width="1.05556"/>
+<ellipse cx="16.4134" cy="17.1899" rx="1.25522" ry="1.93989" fill="#B3B3B3"/>
+<ellipse cx="27.3685" cy="17.1899" rx="1.25522" ry="1.93989" fill="#B3B3B3"/>
+<circle cx="21.889" cy="23.5787" r="3.00967" stroke="#B3B3B3" stroke-width="1.05556"/>
+<mask id="path-6-inside-1_5370_4164" fill="white">
+<path d="M0.779297 4.52539H43.0004V44.236H0.779297V4.52539Z"/>
+</mask>
+<path d="M41.9448 4.52539V44.236H44.056V4.52539H41.9448ZM1.83485 44.236V4.52539H-0.276259V44.236H1.83485Z" fill="#B3B3B3" mask="url(#path-6-inside-1_5370_4164)"/>
+<path d="M0.779297 44.0056L7.85419 46.8584L14.7009 44.0056" stroke="#B3B3B3" stroke-width="1.05556"/>
+<path d="M28.623 44.0056L36.0403 47.0866L43.001 44.0056" stroke="#B3B3B3" stroke-width="1.05556"/>
+<path d="M14.7002 44.0056L21.7751 47.0866L28.6217 44.0056" stroke="#B3B3B3" stroke-width="1.05556"/>
+<path d="M43 4.63672L35.9251 1.78394L29.0784 4.63672" stroke="#B3B3B3" stroke-width="1.05556"/>
+<path d="M15.1562 4.63672L7.73903 1.55572L0.778251 4.63672" stroke="#B3B3B3" stroke-width="1.05556"/>
+<path d="M29.0781 4.63672L22.0032 1.55572L15.1566 4.63672" stroke="#B3B3B3" stroke-width="1.05556"/>
+</svg>
