@@ -83,11 +83,12 @@ extension PolicyAgreementViewController {
     @objc
     private func goToNext() {
         let nickNameVC = NicknameViewController()
-        navigationController?.pushViewController(nickNameVC, animated: true)
+        nickNameVC.modalPresentationStyle = .overFullScreen
+        present(nickNameVC, animated: false)
     }
     
     @objc
     private func popStack() {
-        self.navigationController?.popViewController(animated: true)
+        dismiss(animated: true)
     }
 }
