@@ -19,13 +19,15 @@ class TutorialViewController: UIViewController {
     }
     
     private lazy var scrollView = UIScrollView(frame: view.bounds).then {
+        $0.delegate = self
         $0.isScrollEnabled = true
+        $0.isPagingEnabled = true
+        
         $0.bouncesHorizontally = false
         $0.bouncesVertically = false
-        $0.isPagingEnabled = true
+        
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = false
-        $0.showsLargeContentViewer = false
     }
     
     private lazy var skipButton = UIButton().then {
@@ -34,50 +36,35 @@ class TutorialViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        scrollView.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
         setupScrollView()
-        setupButtons()
     }
     
-    private func setupButtons() {
-        scrollView.addSubview(skipButton)
+    private func setSkipButton() {
+        self.view.addSubview(skipButton)
         
         skipButton.snp.makeConstraints { make in
-            make.width.equalTo(177)
-            make.height.equalTo(144)
+            make.height.equalTo(100)
+            make.width.equalTo(100)
         }
-        
-        skipButton.addTarget(self, action: #selector(skipTutorial), for: .touchUpInside)
-    }
-    
-    @objc
-    private func skipTutorial() {
-        print("skip")
-        // UserDefaults에 저장
-        
-        // Root 변환
-        
     }
     
     private func setupScrollView() {
-        self.view.addSubview(scrollView)
         let tutorialImages: [UIImage] = [
             .tutorial1, .tutorial2, .tutorial3, .tutorial4, .tutorial5
-            ]
+        ]
+        
         let screenWidth = view.window?.windowScene?.screen.bounds.width ?? 0
         let screenHeight = view.window?.windowScene?.screen.bounds.height ?? 0
         
         scrollView.contentSize = CGSize(
-            width: screenWidth * CGFloat(5),
-            height: scrollView.frame.height
+            width: screenWidth * CGFloat(tutorialImages.count),
+            height: screenHeight
         )
         
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        self.view.addSubview(scrollView)
         
         for (index, image) in tutorialImages.enumerated() {
             let imageView = UIImageView(frame: CGRect(
@@ -87,7 +74,8 @@ class TutorialViewController: UIViewController {
                 height: screenHeight
             ))
             imageView.image = image
-            imageView.contentMode = .scaleAspectFill
+            imageView.contentMode = .scaleAspectFit
+            imageView.clipsToBounds = true
             scrollView.addSubview(imageView)
         }
     }
