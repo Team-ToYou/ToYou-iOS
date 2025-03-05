@@ -23,6 +23,13 @@ class EditProfileViewController: UIViewController {
         editProfileView.configure(nickname: "Rudy", userType: .college)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        let screenWidth = view.window?.windowScene?.screen.bounds.width ?? 0
+        let screenHeight = view.window?.windowScene?.screen.bounds.height ?? 0
+        print("screenWidth \(screenWidth)")
+        print("screenHeight \(screenHeight)")
+    }
+    
     private func setbasicButtonActions() {
         editProfileView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         editProfileView.completeButton.addTarget(self, action: #selector(comfirmChange), for: .touchUpInside)

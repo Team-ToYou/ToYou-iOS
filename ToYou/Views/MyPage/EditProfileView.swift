@@ -9,6 +9,9 @@ import UIKit
 
 class EditProfileView: UIView {
     
+    private let navigationBarHeight = 55
+    private let tabBarHeight = 68
+    
     public var isNicknameChecked: Bool = true
     public var originalUserType: UserType?
     
@@ -30,6 +33,14 @@ class EditProfileView: UIView {
     
     private lazy var signUpTopLine = UIView().then {
         $0.backgroundColor = .gray00
+    }
+    
+    private lazy var scrollView = UIScrollView().then {
+        $0.bouncesHorizontally = false
+        $0.bouncesVertically = false
+        $0.showsHorizontalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = false
+        
     }
     
     private lazy var profileImage = UIImageView().then {
@@ -101,6 +112,7 @@ class EditProfileView: UIView {
         self.backgroundColor = .background
         self.setupBackground()
         self.signUpTopTitleComponents()
+        
         self.setProfileImageComponent()
         self.setNicknameEditComponent()
         self.setUserTypeEditComponent()
@@ -185,6 +197,14 @@ extension EditProfileView {
             make.centerX.equalToSuperview()
             make.height.width.equalTo(122)
             make.top.equalTo(signUpTopLine).offset(40)
+        }
+    }
+    
+    private func setScrollViewComponents() {
+        self.addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
         }
     }
     
