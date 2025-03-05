@@ -18,8 +18,6 @@ class PolicyAgreementViewController: UIViewController {
         self.view = policyAgreementView
         self.navigationController?.isNavigationBarHidden = true
         self.setButtonActions()
-        
-        policyLinkWebVC.modalPresentationStyle = .popover
     }
     
 }
@@ -64,6 +62,7 @@ extension PolicyAgreementViewController {
     
     @objc
     private func goToPolicyWebView(_ sender: UIButton) {
+        policyLinkWebVC.modalPresentationStyle = .popover
         present(policyLinkWebVC, animated: true)
     }
     
