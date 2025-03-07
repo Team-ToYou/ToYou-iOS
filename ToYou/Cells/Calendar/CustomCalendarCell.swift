@@ -9,6 +9,7 @@ import UIKit
 
 class CustomCalendarCell: UICollectionViewCell {
     static let identifier = "CustomCalendarCell"
+    private let weekDays: [UIImage] = [.mon, .tue, .wed, .thu, .fri, .sat, .sun]
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -25,6 +26,27 @@ class CustomCalendarCell: UICollectionViewCell {
     }
     
     // MARK: - layout
+    private let monthLabel = UILabel().then {
+        $0.text = "0월"
+        $0.textColor = .black04
+        $0.font = UIFont(name: "S-CoreDream-5Medium", size: 14.63)
+        $0.textAlignment = .center
+    }
+    
+    private lazy var weekDayImages: [UIImageView] = weekDays.map {
+        let image = UIImageView()
+        image.image = $0
+        image.contentMode = .scaleAspectFit
+        return image
+    }
+    
+    private lazy var weekDayStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: weekDayImages)
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        return stackView
+    }()
+    
     private let monthCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.minimumInteritemSpacing = 5
         $0.minimumLineSpacing = 15
@@ -37,10 +59,24 @@ class CustomCalendarCell: UICollectionViewCell {
     
     // MARK: - function
     private func setView() {
+        addSubview(monthLabel)
+        addSubview(weekDayStackView)
         addSubview(monthCollectionView)
         
+        monthLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.centerX.equalToSuperview()
+        }
+        
+        weekDayStackView.snp.makeConstraints {
+            $0.top.equalTo(monthLabel.snp.bottom).offset(35)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(8)
+        }
+        
         monthCollectionView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.top.equalTo(weekDayStackView.snp.bottom).offset(35)
+            $0.horizontalEdges.bottom.equalToSuperview()
         }
     }
 }

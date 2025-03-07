@@ -53,13 +53,6 @@ class CalendarView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 3.66)
     }
     
-    private let monthLabel = UILabel().then {
-        $0.text = "0월"
-        $0.textColor = .black04
-        $0.font = UIFont(name: "S-CoreDream-5Medium", size: 14.63)
-        $0.textAlignment = .center
-    }
-    
     public let myRecordCalendar = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .horizontal
         $0.minimumLineSpacing = 0
@@ -107,7 +100,7 @@ class CalendarView: UIView {
         [
             paperBackgroundView,
             segmentControl, underLineView, underLine, lineView,
-            calendarBackground, monthLabel, myRecordCalendar
+            calendarBackground, myRecordCalendar
         ].forEach {
             addSubview($0)
         }
@@ -141,21 +134,17 @@ class CalendarView: UIView {
             $0.height.equalTo(1)
         }
         
-        calendarBackground.snp.makeConstraints {
-            $0.top.equalTo(lineView.snp.bottom).offset(50)
-            $0.horizontalEdges.equalToSuperview().inset(27)
-            $0.height.equalTo(378)
-        }
-        
-        monthLabel.snp.makeConstraints {
-            $0.top.equalTo(calendarBackground.snp.top).offset(19)
-            $0.centerX.equalTo(calendarBackground)
-        }
-        
         myRecordCalendar.snp.makeConstraints {
-            $0.top.equalTo(calendarBackground).inset(90)
-            $0.horizontalEdges.equalTo(calendarBackground).inset(20)
-            $0.bottom.equalTo(calendarBackground).inset(20)
+            $0.top.equalTo(lineView.snp.bottom).offset(70)
+            $0.horizontalEdges.equalToSuperview().inset(50)
+            $0.height.equalTo(370)
         }
+        
+        calendarBackground.snp.makeConstraints {
+            $0.horizontalEdges.equalTo(myRecordCalendar).inset(-22)
+            $0.verticalEdges.equalTo(myRecordCalendar).inset(-20)
+        }
+        
+
     }
 }
