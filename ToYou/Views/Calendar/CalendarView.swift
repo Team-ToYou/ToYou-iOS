@@ -137,7 +137,7 @@ class CalendarView: UIView {
         myRecordCalendar.snp.makeConstraints {
             $0.top.equalTo(lineView.snp.bottom).offset(70)
             $0.horizontalEdges.equalToSuperview().inset(50)
-            $0.height.equalTo(370)
+            $0.height.equalTo(420)
         }
         
         calendarBackground.snp.makeConstraints {
