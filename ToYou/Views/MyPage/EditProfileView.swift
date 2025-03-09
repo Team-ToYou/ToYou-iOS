@@ -94,7 +94,7 @@ class EditProfileView: UIView {
     public lazy var ectButton = UserTypeButton()
     
     // MARK: Confirm Button
-    public lazy var completeButton = ConfirmButtonView()
+    public lazy var completeButton = ConfirmButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

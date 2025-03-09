@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import Then
 
-class ConfirmButtonView: UIButton {
+class ConfirmButton: UIButton {
     
     private lazy var mainLabel = UILabel().then {
         $0.text = "다음"
