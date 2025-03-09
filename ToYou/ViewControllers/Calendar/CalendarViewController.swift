@@ -46,6 +46,10 @@ extension CalendarViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
+        let year = Calendar.current.component(.year, from: Date())
+        let month = indexPath.item + 1
+        cell.configure(with: year, month: month)
+        
         return cell
     }
     

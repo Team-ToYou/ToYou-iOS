@@ -20,6 +20,12 @@ class MyRecordDayCell: UICollectionViewCell {
         fatalError()
     }
     
+    func configure(with calendarDate: CalendarDate) {
+        dayLabel.text = calendarDate.day == 0 ? "" : "\(calendarDate.day)"
+        dayLabel.textColor = calendarDate.isWithinCurrentMonth ? .black04 : .gray
+        emotionImage.image = calendarDate.day == 0 ? .none : .normalStamp
+    }
+    
     // MARK: - layout
     private let dayLabel = UILabel().then {
         $0.text = "0"

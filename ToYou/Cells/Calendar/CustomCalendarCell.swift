@@ -9,7 +9,9 @@ import UIKit
 
 class CustomCalendarCell: UICollectionViewCell {
     static let identifier = "CustomCalendarCell"
+    
     private let weekDays: [UIImage] = [.mon, .tue, .wed, .thu, .fri, .sat, .sun]
+    private var calendarDates: [CalendarDate] = []
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -23,6 +25,12 @@ class CustomCalendarCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError()
+    }
+    
+    func configure(with year: Int, month: Int) {
+        calendarDates = CalendarManager.shared.generateDates(for: year, month: month)
+        monthLabel.text = "\(month)월"
+        monthCollectionView.reloadData()
     }
     
     // MARK: - layout
@@ -84,7 +92,7 @@ class CustomCalendarCell: UICollectionViewCell {
 
 extension CustomCalendarCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 35
+        return calendarDates.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -92,6 +100,8 @@ extension CustomCalendarCell: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
+        let calendarDate = calendarDates[indexPath.item]
+        cell.configure(with: calendarDate)
         return cell
     }
 }
