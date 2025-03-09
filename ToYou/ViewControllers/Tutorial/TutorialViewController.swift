@@ -19,7 +19,8 @@ class TutorialViewController: UIViewController {
         $0.currentPage = 0
         $0.numberOfPages = 5
         $0.direction = .leftToRight
-        $0.backgroundColor = .clear
+        $0.pageIndicatorTintColor = .gray00
+        $0.isUserInteractionEnabled = true
     }
     
     private lazy var tutorialImageCollectionView: UICollectionView = {
@@ -58,6 +59,8 @@ class TutorialViewController: UIViewController {
         setCollectionConstraints()
         setSkipButton()
         setButtonAction()
+        setPageControlConstraints()
+        setPageControlAction()
     }
     
     private func setCollectionConstraints() {
@@ -65,16 +68,6 @@ class TutorialViewController: UIViewController {
         
         tutorialImageCollectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-    }
-    
-    private func setPageControlConstraints() {
-        self.view.addSubview(pageControl)
-        
-        pageControl.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
-            make.height.equalTo(30)
         }
     }
     
@@ -97,6 +90,31 @@ class TutorialViewController: UIViewController {
         }
     }
     
+}
+
+extension TutorialViewController {
+    private func setPageControlConstraints() {
+        self.view.addSubview(pageControl)
+        
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.height.equalTo(30)
+        }
+    }
+    
+    func setPageControlAction() {
+        pageControl.addTarget(self, action: #selector(pageControlTapped), for: .valueChanged)
+    }
+    
+    @objc private func pageControlTapped() {
+        let indexPath = IndexPath(item: pageControl.currentPage, section: 0)
+        tutorialImageCollectionView.scrollToItem(
+            at: indexPath,
+            at: .centeredHorizontally,
+            animated: true
+        )
+    }
 }
 
 extension TutorialViewController {
@@ -123,11 +141,13 @@ extension TutorialViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if indexPath.row == tutorialImages.count - 1 {
+        let index = indexPath.row
+        if index == tutorialImages.count - 1 {
             startButton.isEnabled = true
         } else {
             startButton.isEnabled = false
         }
+        pageControl.currentPage = index
     }
 }
 
