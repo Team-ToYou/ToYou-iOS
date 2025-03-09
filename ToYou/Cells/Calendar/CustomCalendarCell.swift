@@ -13,6 +13,8 @@ class CustomCalendarCell: UICollectionViewCell {
     private let weekDays: [UIImage] = [.mon, .tue, .wed, .thu, .fri, .sat, .sun]
     private var calendarDates: [CalendarDate] = []
     
+    private var isFriendRecord: Bool = false
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,7 +29,8 @@ class CustomCalendarCell: UICollectionViewCell {
         fatalError()
     }
     
-    func configure(with year: Int, month: Int) {
+    func configure(with year: Int, month: Int, isFriendRecord: Bool) {
+        self.isFriendRecord = isFriendRecord
         calendarDates = CalendarManager.shared.generateDates(for: year, month: month)
         monthLabel.text = "\(month)월"
         monthCollectionView.reloadData()
@@ -61,6 +64,7 @@ class CustomCalendarCell: UICollectionViewCell {
         $0.scrollDirection = .vertical
     }).then {
         $0.register(MyRecordDayCell.self, forCellWithReuseIdentifier: MyRecordDayCell.identifier)
+        $0.register(FriendRecordDayCell.self, forCellWithReuseIdentifier: FriendRecordDayCell.identifier)
         $0.isScrollEnabled = false
         $0.backgroundColor = .clear
     }
@@ -96,14 +100,23 @@ extension CustomCalendarCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyRecordDayCell.identifier, for: indexPath) as? MyRecordDayCell else {
-            return UICollectionViewCell()
-        }
-        
         let calendarDate = calendarDates[indexPath.item]
-        cell.configure(with: calendarDate)
-        return cell
+        
+        if isFriendRecord {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendRecordDayCell.identifier, for: indexPath) as? FriendRecordDayCell else {
+                return UICollectionViewCell()
+            }
+            cell.configure(with: calendarDate)
+            return cell
+        } else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyRecordDayCell.identifier, for: indexPath) as? MyRecordDayCell else {
+                return UICollectionViewCell()
+            }
+            cell.configure(with: calendarDate)
+            return cell
+        }
     }
+
 }
 
 extension CustomCalendarCell: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {

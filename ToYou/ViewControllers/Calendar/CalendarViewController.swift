@@ -10,6 +10,8 @@ import UIKit
 class CalendarViewController: UIViewController {
     let calendarView = CalendarView()
     
+    private var isFriendRecord: Bool = false
+    
     private var months: [(year: Int, month: Int)] = []
     private var currentYear = Calendar.current.component(.year, from: Date())
     private var currentMonth = Calendar.current.component(.month, from: Date())
@@ -56,6 +58,8 @@ class CalendarViewController: UIViewController {
     
     @objc private func segmentControlChanged(_ segment: UISegmentedControl) {
         calendarView.updateUnderLinePosition(index: segment.selectedSegmentIndex)
+        isFriendRecord = segment.selectedSegmentIndex == 1
+        calendarView.myRecordCalendar.reloadData()
     }
     
 }
@@ -71,8 +75,7 @@ extension CalendarViewController: UICollectionViewDataSource {
         }
         
         let (year, month) = months[indexPath.item]
-        cell.configure(with: year, month: month)
-        
+        cell.configure(with: year, month: month, isFriendRecord: isFriendRecord)
         return cell
     }
     
