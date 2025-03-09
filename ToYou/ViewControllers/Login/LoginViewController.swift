@@ -23,13 +23,13 @@ class LoginViewController: UIViewController {
     
     @objc
     private func signinApple() {
-        print("Sign in with Apple Pressed")
         stackView()
     }
     
     private func stackView() {
-        let stackView = PolicyAgreementViewController()
-        navigationController?.pushViewController(stackView, animated: true)
+        let stackVC = PolicyAgreementViewController()
+        stackVC.modalPresentationStyle = .overFullScreen
+        present(stackVC, animated: false)
     }
     
 }

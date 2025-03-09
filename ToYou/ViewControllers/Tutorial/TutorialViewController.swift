@@ -22,7 +22,7 @@ class TutorialViewController: UIViewController {
         $0.backgroundColor = .clear
     }
     
-    public lazy var tutorialImageCollectionView: UICollectionView = {
+    private lazy var tutorialImageCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.itemSize = CGSize(width: view.window?.windowScene?.screen.bounds.width ?? 0, height: view.window?.windowScene?.screen.bounds.height ?? 0)
@@ -42,11 +42,12 @@ class TutorialViewController: UIViewController {
     }()
     
     private lazy var skipButton = UIButton().then {
-        $0.backgroundColor = .red02
+        $0.backgroundColor = .clear
     }
     
     private lazy var startButton = UIButton().then {
-        $0.backgroundColor = .green02
+        $0.backgroundColor = .clear
+        $0.isEnabled = false
     }
     
     override func viewDidLoad() {
@@ -56,6 +57,7 @@ class TutorialViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         setCollectionConstraints()
         setSkipButton()
+        setButtonAction()
     }
     
     private func setCollectionConstraints() {
@@ -95,6 +97,41 @@ class TutorialViewController: UIViewController {
         }
     }
     
+}
+
+extension TutorialViewController {
+    func setButtonAction() {
+        skipButton.addTarget(self, action: #selector(skipOrStartPressed), for: .touchUpInside)
+        startButton.addTarget(self, action: #selector(skipOrStartPressed), for: .touchUpInside)
+    }
+    
+    @objc func skipOrStartPressed() {
+        RootViewControllerService.toLoginViewController()
+        UserDefaults.standard.set(true, forKey: K.Key.tutorial)
+    }
+}
+
+extension TutorialViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return tutorialImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TutorialCell.identifier, for: indexPath) as! TutorialCell
+        cell.configure(image: tutorialImages[indexPath.row])
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.row == tutorialImages.count - 1 {
+            startButton.isEnabled = true
+        } else {
+            startButton.isEnabled = false
+        }
+    }
+}
+
+extension TutorialViewController: UIScrollViewDelegate {
     private func setupScrollView() {
         let scrollView = UIScrollView(frame: view.bounds).then {
             $0.delegate = self
@@ -130,23 +167,6 @@ class TutorialViewController: UIViewController {
             imageView.clipsToBounds = true
             scrollView.addSubview(imageView)
         }
-    }
-    
-}
-
-extension TutorialViewController: UIScrollViewDelegate {
-    
-}
-
-extension TutorialViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tutorialImages.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TutorialCell.identifier, for: indexPath) as! TutorialCell
-        cell.configure(image: tutorialImages[indexPath.row])
-        return cell
     }
 }
 

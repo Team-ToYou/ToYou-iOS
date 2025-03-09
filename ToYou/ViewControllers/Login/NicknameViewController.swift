@@ -34,7 +34,7 @@ extension NicknameViewController {
     
     @objc
     private func popStack() {
-        self.navigationController?.popViewController(animated: true)
+        dismiss(animated: false)
     }
     
     @objc
@@ -64,8 +64,9 @@ extension NicknameViewController {
     
     @objc
     private func stackView() {
-        let stackView = UserTypePickerViewController()
-        navigationController?.pushViewController(stackView, animated: true)
+        let stackVC = UserTypePickerViewController()
+        stackVC.modalPresentationStyle = .overFullScreen
+        present(stackVC, animated: false)
     }
     
 }
