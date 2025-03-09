@@ -193,9 +193,13 @@ extension MyPageView {
         }
         
         editProfileDetailButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(6)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(34)
+            make.width.height.equalTo(54)
+        }
+        
+        editProfileDetailButton.imageView?.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(10)
         }
         
     }

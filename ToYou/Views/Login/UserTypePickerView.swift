@@ -52,7 +52,7 @@ class UserTypePickerView: UIView {
         $0.backgroundColor = .gray00
     }
     
-    public lazy var nextButton = ConfirmButtonView()
+    public lazy var nextButton = ConfirmButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

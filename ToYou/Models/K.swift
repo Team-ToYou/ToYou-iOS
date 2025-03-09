@@ -26,4 +26,8 @@ struct K {
         static let sendFeedbackLink = "https://forms.gle/fJweAP16cT4Tc3cA6"
         static let sendQueryLink = "http://pf.kakao.com/_xiuPIn/chat"
     }
+    
+    struct Key {
+        static let tutorial = "Tutorial"
+    }
 }

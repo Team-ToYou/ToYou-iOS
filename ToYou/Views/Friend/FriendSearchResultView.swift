@@ -41,7 +41,7 @@ class FriendSearchResultView: UIView {
     }
     
     private lazy var unhappyImage = UIImageView().then {
-        $0.image = .unhappyIcon
+        $0.image = .worriedGrayIcon
         $0.contentMode = .scaleAspectFit
     }
     

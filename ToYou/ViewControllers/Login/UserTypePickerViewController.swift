@@ -58,7 +58,7 @@ class UserTypePickerViewController: UIViewController {
     
     @objc
     private func popStack() {
-        self.navigationController?.popViewController(animated: true)
+        dismiss(animated: false)
     }
 }
 
