@@ -11,6 +11,10 @@ import Then
 
 class TutorialViewController: UIViewController {
     
+    private let tutorialImages: [UIImage] = [
+        .tutorial1, .tutorial2, .tutorial3, .tutorial4, .tutorial5
+    ]
+    
     private lazy var pageControl = UIPageControl().then {
         $0.currentPage = 0
         $0.numberOfPages = 5
@@ -18,20 +22,31 @@ class TutorialViewController: UIViewController {
         $0.backgroundColor = .clear
     }
     
-    private lazy var scrollView = UIScrollView(frame: view.bounds).then {
-        $0.delegate = self
-        $0.isScrollEnabled = true
-        $0.isPagingEnabled = true
+    public lazy var tutorialImageCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: view.window?.windowScene?.screen.bounds.width ?? 0, height: view.window?.windowScene?.screen.bounds.height ?? 0)
+        layout.minimumLineSpacing = 0
         
-        $0.bouncesHorizontally = false
-        $0.bouncesVertically = false
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .blue03
+        cv.isPagingEnabled = true
+        cv.showsHorizontalScrollIndicator = false
+        cv.showsVerticalScrollIndicator = false
+        cv.bouncesHorizontally = false
         
-        $0.showsHorizontalScrollIndicator = false
-        $0.showsVerticalScrollIndicator = false
-    }
+        cv.register(TutorialCell.self, forCellWithReuseIdentifier: TutorialCell.identifier)
+        cv.delegate = self
+        cv.dataSource = self
+        return cv
+    }()
     
     private lazy var skipButton = UIButton().then {
         $0.backgroundColor = .red02
+    }
+    
+    private lazy var startButton = UIButton().then {
+        $0.backgroundColor = .green02
     }
     
     override func viewDidLoad() {
@@ -39,22 +54,59 @@ class TutorialViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        setupScrollView()
+        setCollectionConstraints()
+        setSkipButton()
+    }
+    
+    private func setCollectionConstraints() {
+        self.view.addSubview(tutorialImageCollectionView)
+        
+        tutorialImageCollectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    private func setPageControlConstraints() {
+        self.view.addSubview(pageControl)
+        
+        pageControl.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.height.equalTo(30)
+        }
     }
     
     private func setSkipButton() {
         self.view.addSubview(skipButton)
+        self.view.addSubview(startButton)
         
         skipButton.snp.makeConstraints { make in
-            make.height.equalTo(100)
+            make.height.equalTo(50)
             make.width.equalTo(100)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.trailing.equalTo(self.view.safeAreaLayoutGuide.snp.trailing)
+        }
+        
+        startButton.snp.makeConstraints { make in
+            make.height.equalTo(70)
+            make.width.equalTo(150)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-30)
         }
     }
     
     private func setupScrollView() {
-        let tutorialImages: [UIImage] = [
-            .tutorial1, .tutorial2, .tutorial3, .tutorial4, .tutorial5
-        ]
+        let scrollView = UIScrollView(frame: view.bounds).then {
+            $0.delegate = self
+            $0.isScrollEnabled = true
+            $0.isPagingEnabled = true
+            
+            $0.bouncesHorizontally = false
+            $0.bouncesVertically = false
+            
+            $0.showsHorizontalScrollIndicator = false
+            $0.showsVerticalScrollIndicator = false
+        }
         
         let screenWidth = view.window?.windowScene?.screen.bounds.width ?? 0
         let screenHeight = view.window?.windowScene?.screen.bounds.height ?? 0
@@ -84,6 +136,18 @@ class TutorialViewController: UIViewController {
 
 extension TutorialViewController: UIScrollViewDelegate {
     
+}
+
+extension TutorialViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return tutorialImages.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TutorialCell.identifier, for: indexPath) as! TutorialCell
+        cell.configure(image: tutorialImages[indexPath.row])
+        return cell
+    }
 }
 
 import SwiftUI
