@@ -8,6 +8,24 @@
 import UIKit
 
 class CalendarView: UIView {
+    // MARK: - init
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .background
+        
+        self.setView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        updateUnderLinePosition(index: segmentControl.selectedSegmentIndex)
+    }
+    
     // MARK: - layout
     private let paperBackgroundView = UIImageView().then {
         $0.image = .paperTexture
@@ -53,7 +71,7 @@ class CalendarView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 3.66)
     }
     
-    public let myRecordCalendar = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+    public let customCalendar = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .horizontal
         $0.minimumLineSpacing = 0
     }).then {
@@ -63,22 +81,29 @@ class CalendarView: UIView {
         $0.backgroundColor = .clear
     }
     
-    // MARK: - init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.backgroundColor = .background
-        
-        self.setView()
+    public let friendDateLabel = UILabel().then {
+        $0.text = "00000000"
+        $0.textColor = .black04
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
+        $0.isHidden = true
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    public let friendLabel = UILabel().then {
+        $0.text = "친구기록"
+        $0.textColor = .black04
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
+        $0.isHidden = true
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        updateUnderLinePosition(index: segmentControl.selectedSegmentIndex)
+    public let friendRecordList = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.minimumLineSpacing = 20
+    }).then {
+        $0.register(FriendRecordListCell.self, forCellWithReuseIdentifier: FriendRecordListCell.identifier)
+        $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        $0.showsHorizontalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = false
+        $0.backgroundColor = .clear
+        $0.isHidden = true
     }
     
     // MARK: - function
@@ -100,7 +125,8 @@ class CalendarView: UIView {
         [
             paperBackgroundView,
             segmentControl, underLineView, underLine, lineView,
-            calendarBackground, myRecordCalendar
+            calendarBackground, customCalendar,
+            friendDateLabel, friendLabel, friendRecordList
         ].forEach {
             addSubview($0)
         }
@@ -134,17 +160,32 @@ class CalendarView: UIView {
             $0.height.equalTo(1)
         }
         
-        myRecordCalendar.snp.makeConstraints {
+        customCalendar.snp.makeConstraints {
             $0.top.equalTo(lineView.snp.bottom).offset(70)
             $0.horizontalEdges.equalToSuperview().inset(50)
             $0.height.equalTo(420)
         }
         
         calendarBackground.snp.makeConstraints {
-            $0.horizontalEdges.equalTo(myRecordCalendar).inset(-22)
-            $0.verticalEdges.equalTo(myRecordCalendar).inset(-20)
+            $0.horizontalEdges.equalTo(customCalendar).inset(-22)
+            $0.verticalEdges.equalTo(customCalendar).inset(-20)
         }
         
+        friendDateLabel.snp.makeConstraints {
+            $0.top.equalTo(calendarBackground.snp.bottom).offset(32)
+            $0.left.equalToSuperview().offset(22)
+        }
+        
+        friendLabel.snp.makeConstraints {
+            $0.centerY.equalTo(friendDateLabel)
+            $0.left.equalTo(friendDateLabel.snp.right).offset(5)
+        }
+        
+        friendRecordList.snp.makeConstraints {
+            $0.top.equalTo(friendDateLabel.snp.bottom).offset(18)
+            $0.horizontalEdges.equalToSuperview().inset(37)
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-10)
+        }
 
     }
 }

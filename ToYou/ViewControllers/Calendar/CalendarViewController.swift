@@ -28,14 +28,15 @@ class CalendarViewController: UIViewController {
         
         DispatchQueue.main.async {
             let indexPath = IndexPath(item: self.currentIndex, section: 0)
-            self.calendarView.myRecordCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            self.calendarView.customCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
     }
     
     // MARK: - function
     private func setCollectionView() {
-        calendarView.myRecordCalendar.delegate = self
-        calendarView.myRecordCalendar.dataSource = self
+        calendarView.customCalendar.delegate = self
+        calendarView.customCalendar.dataSource = self
+        calendarView.friendRecordList.dataSource = self
     }
     
     private func initializeCalendar() {
@@ -59,24 +60,52 @@ class CalendarViewController: UIViewController {
     @objc private func segmentControlChanged(_ segment: UISegmentedControl) {
         calendarView.updateUnderLinePosition(index: segment.selectedSegmentIndex)
         isFriendRecord = segment.selectedSegmentIndex == 1
-        calendarView.myRecordCalendar.reloadData()
+        
+        if isFriendRecord {
+            calendarView.friendDateLabel.isHidden = false
+            calendarView.friendLabel.isHidden = false
+            calendarView.friendRecordList.isHidden = false
+        } else {
+            calendarView.friendDateLabel.isHidden = true
+            calendarView.friendLabel.isHidden = true
+            calendarView.friendRecordList.isHidden = true
+        }
+        
+        calendarView.customCalendar.reloadData()
     }
     
 }
 
 extension CalendarViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return months.count
+        if collectionView == calendarView.customCalendar {
+            return months.count
+        } else if collectionView == calendarView.friendRecordList {
+            return 7
+        }
+        
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCalendarCell.identifier, for: indexPath) as? CustomCalendarCell else {
-            return UICollectionViewCell()
+        if collectionView == calendarView.customCalendar {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CustomCalendarCell.identifier, for: indexPath) as? CustomCalendarCell else {
+                return UICollectionViewCell()
+            }
+            
+            let (year, month) = months[indexPath.item]
+            cell.configure(with: year, month: month, isFriendRecord: isFriendRecord)
+            
+            return cell
+        } else if collectionView == calendarView.friendRecordList {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendRecordListCell.identifier, for: indexPath) as? FriendRecordListCell else {
+                return UICollectionViewCell()
+            }
+            
+            return cell
         }
-        
-        let (year, month) = months[indexPath.item]
-        cell.configure(with: year, month: month, isFriendRecord: isFriendRecord)
-        return cell
+
+        return UICollectionViewCell()
     }
     
     
@@ -88,8 +117,8 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        guard let visibleCell = calendarView.myRecordCalendar.visibleCells.first,
-              let indexPath = calendarView.myRecordCalendar.indexPath(for: visibleCell) else { return }
+        guard let visibleCell = calendarView.customCalendar.visibleCells.first,
+              let indexPath = calendarView.customCalendar.indexPath(for: visibleCell) else { return }
 
         // 첫 번째 혹은 마지막에 도달하면 추가
         if indexPath.item == 0 {
@@ -115,11 +144,11 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         let month = Calendar.current.component(.month, from: newDate)
         
         months.insert((year, month), at: 0)
-        calendarView.myRecordCalendar.reloadData()
+        calendarView.customCalendar.reloadData()
         
         // 기존 위치 유지
         let indexPath = IndexPath(item: 1, section: 0)
-        calendarView.myRecordCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+        calendarView.customCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
     }
 
     // 다음 달 추가
@@ -138,6 +167,6 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         let month = Calendar.current.component(.month, from: newDate)
         
         months.append((year, month))
-        calendarView.myRecordCalendar.reloadData()
+        calendarView.customCalendar.reloadData()
     }
 }
