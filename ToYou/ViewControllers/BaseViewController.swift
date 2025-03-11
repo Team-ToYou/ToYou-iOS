@@ -38,13 +38,16 @@ class BaseViewController: UITabBarController {
     }
     
     private func setupTabBarItems() {
-        let iconSize = CGSize(width: 24, height: 24)
+        let iconSizeForHome = CGSize(width: 24, height: 24)
+        let iconSize = CGSize(width: 30, height: 30)
+        let iconSizeForMyPage = CGSize(width: 28, height: 28)
+        
         let insets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        homeVC.tabBarItem = createTabBarItem(title: "", image: .homeIcon, tag: 0, size: iconSize, insets: insets)
-        friendsVC.tabBarItem = createTabBarItem(title: "", image: .pencilLineIcon, tag: 1, size: iconSize, insets: insets)
-        calendarVC.tabBarItem = createTabBarItem(title: "", image: .calendarIcon, tag: 2, size: iconSize, insets: insets)
-        myPageVC.tabBarItem = createTabBarItem(title: "", image: .profileIcon, tag: 3, size: iconSize, insets: insets)
+        homeVC.tabBarItem = createTabBarItem(title: "", image: .home, tag: 0, size: iconSizeForHome, insets: insets)
+        friendsVC.tabBarItem = createTabBarItem(title: "", image: .pencil, tag: 1, size: iconSize, insets: insets)
+        calendarVC.tabBarItem = createTabBarItem(title: "", image: .calendar, tag: 2, size: iconSize, insets: insets)
+        myPageVC.tabBarItem = createTabBarItem(title: "", image: .user, tag: 3, size: iconSizeForMyPage, insets: insets)
     }
     
     private func createTabBarItem(title: String, image: UIImage, tag: Int, size: CGSize, insets: UIEdgeInsets) -> UITabBarItem {
