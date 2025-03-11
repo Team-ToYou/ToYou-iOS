@@ -81,7 +81,7 @@ class MyPageView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.translatesAutoresizingMaskIntoConstraints = false // 임시 너비 제약조건 제거를 통해 leading.trailing 을 동시에 실행했을 때, 발생하는 경고 삭제
+        // self.translatesAutoresizingMaskIntoConstraints = false // 임시 너비 제약조건 제거를 통해 leading.trailing 을 동시에 실행했을 때, 발생하는 경고 삭제
         self.backgroundColor = .background
         self.addBasicComponents()
         self.addProfileComponents()
@@ -134,7 +134,7 @@ extension MyPageView {
         
         mainStack.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(37)
-            make.trailing.equalToSuperview().offset(-37).priority(.high) // 우선순위 조정
+            make.trailing.equalToSuperview().offset(-37)//.priority(.high) // 우선순위 조정
             make.top.equalTo(profileFrame.snp.bottom).offset(21)
         }
         
