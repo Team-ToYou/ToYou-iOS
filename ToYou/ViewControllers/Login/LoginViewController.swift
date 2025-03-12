@@ -24,6 +24,7 @@ class LoginViewController: UIViewController {
     
     @objc
     private func signinApple() {
+<<<<<<< HEAD
         print("Apple Login Tapped")
         let provider = ASAuthorizationAppleIDProvider()
         let requset = provider.createRequest()
@@ -39,6 +40,15 @@ class LoginViewController: UIViewController {
         let signupVC = PolicyAgreementViewController()
         signupVC.modalPresentationStyle = .overFullScreen
         present(signupVC, animated: false)
+=======
+        stackView()
+    }
+    
+    private func stackView() {
+        let stackVC = PolicyAgreementViewController()
+        stackVC.modalPresentationStyle = .overFullScreen
+        present(stackVC, animated: false)
+>>>>>>> main
     }
     
 }

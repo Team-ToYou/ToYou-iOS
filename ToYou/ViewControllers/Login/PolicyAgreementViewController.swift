@@ -13,11 +13,16 @@ class PolicyAgreementViewController: UIViewController {
     
     let policyLinkWebVC = PrivacyPolicyWebVC()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = policyAgreementView
         self.navigationController?.isNavigationBarHidden = true
         self.setButtonActions()
+<<<<<<< HEAD
+=======
+        policyLinkWebVC.modalPresentationStyle = .overFullScreen
+>>>>>>> main
     }
     
 }
@@ -88,6 +93,10 @@ extension PolicyAgreementViewController {
     
     @objc
     private func popStack() {
+<<<<<<< HEAD
         dismiss(animated: true)
+=======
+        dismiss(animated: false)
+>>>>>>> main
     }
 }
