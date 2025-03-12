@@ -26,15 +26,71 @@ class DiaryCardSelectView: UIView {
         $0.contentMode = .scaleAspectFit
     }
     
+    // 배경 아이콘
+    private let backgroundIcon1 = UIImageView().then {
+        $0.image = .defaultBluredStamp
+        $0.alpha = 0.2
+        $0.contentMode = .scaleAspectFit
+        $0.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 18)
+    }
+    
+    private let backgroundIcon2 = UIImageView().then {
+        $0.image = .defaultBluredStamp
+        $0.alpha = 0.2
+        $0.contentMode = .scaleAspectFit
+        $0.transform = CGAffineTransform(rotationAngle: CGFloat.pi / 18)
+    }
+    
     // 뒤로가기
     public let backButton = UIButton().then {
         $0.setImage(.popUpIcon, for: .normal)
     }
     
+    // 타이틀
+    private let titleLabel = UILabel().then {
+        $0.text = "일기카드 생성하기"
+        $0.textColor = .black04
+        $0.font = UIFont(name: "S-CoreDream-4Regular", size: 17)
+    }
+    
+    private let subTitleLabel = UILabel().then {
+        $0.text = "답하고 싶은 질문을 선택해주세요"
+        $0.textColor = .black04
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+    }
+    
+    private let lineView = UIView().then {
+        $0.backgroundColor = .black02
+    }
+    
+    // 장문형
+    private let longOptionTitle = CustomLabelView(text: "장문형", isLight: true)
+    
+    // 단답형
+    private let shortOptionTitle = CustomLabelView(text: "단답형", isLight: true)
+    
+    // 선택형
+    private let selectOptionTitle = CustomLabelView(text: "선택형", isLight: true)
+    
+    // 다음 버튼
+    private let nextButton = UIButton().then {
+        $0.setTitle("다음", for: .normal)
+        $0.setTitleColor(.black01, for: .normal)
+        $0.titleLabel?.font = UIFont(name: "S-CoreDream-5Medium", size: 15)
+        $0.backgroundColor = .gray00
+        
+        $0.layer.cornerRadius = 7
+    }
+    
     // MARK: - function
     private func setView() {
         [
-            paperBackgroundView, backButton
+            paperBackgroundView, backgroundIcon1, backgroundIcon2, backButton,
+            titleLabel, subTitleLabel, lineView,
+            longOptionTitle,
+            shortOptionTitle,
+            selectOptionTitle,
+            nextButton
         ].forEach {
             addSubview($0)
         }
@@ -43,10 +99,59 @@ class DiaryCardSelectView: UIView {
             $0.edges.equalToSuperview()
         }
         
+        backgroundIcon1.snp.makeConstraints {
+            $0.top.equalToSuperview().offset(300)
+            $0.left.equalToSuperview().offset(-15)
+            $0.width.equalTo(85)
+        }
+        
+        backgroundIcon2.snp.makeConstraints {
+            $0.bottom.equalToSuperview().offset(-80)
+            $0.right.equalToSuperview().offset(20)
+            $0.width.equalTo(128)
+        }
+        
         backButton.snp.makeConstraints {
             $0.top.equalToSuperview().offset(65)
             $0.left.equalToSuperview().offset(17)
             $0.width.height.equalTo(19.25)
+        }
+        
+        titleLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.centerY.equalTo(backButton)
+        }
+        
+        subTitleLabel.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(9)
+        }
+        
+        lineView.snp.makeConstraints {
+            $0.top.equalTo(subTitleLabel.snp.bottom).offset(9)
+            $0.horizontalEdges.equalToSuperview().inset(36)
+            $0.height.equalTo(1)
+        }
+        
+        longOptionTitle.snp.makeConstraints {
+            $0.top.equalTo(lineView.snp.bottom).offset(24)
+            $0.left.equalToSuperview().offset(30)
+        }
+        
+        shortOptionTitle.snp.makeConstraints {
+            $0.top.equalTo(longOptionTitle.snp.bottom).offset(53)
+            $0.left.equalTo(longOptionTitle.snp.left)
+        }
+        
+        selectOptionTitle.snp.makeConstraints {
+            $0.top.equalTo(shortOptionTitle.snp.bottom).offset(53)
+            $0.left.equalTo(longOptionTitle.snp.left)
+        }
+        
+        nextButton.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(32)
+            $0.bottom.equalToSuperview().offset(-34)
+            $0.height.equalTo(43)
         }
     }
 }
