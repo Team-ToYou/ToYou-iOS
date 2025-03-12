@@ -64,15 +64,9 @@ extension NicknameViewController {
     
     @objc
     private func stackView() {
-<<<<<<< HEAD
-        let stackView = UserTypePickerViewController()
-        stackView.modalPresentationStyle = .overFullScreen
-        present(stackView, animated: false)
-=======
         let stackVC = UserTypePickerViewController()
         stackVC.modalPresentationStyle = .overFullScreen
         present(stackVC, animated: false)
->>>>>>> main
     }
     
 }
