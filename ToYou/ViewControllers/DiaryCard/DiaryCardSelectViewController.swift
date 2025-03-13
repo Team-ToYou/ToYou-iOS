@@ -14,6 +14,11 @@ class DiaryCardSelectViewController: UIViewController {
         super.viewDidLoad()
         self.view = diaryCardSelectView
         
+        diaryCardSelectView.longOptionCollectionView.dataSource = self
+        diaryCardSelectView.longOptionCollectionView.delegate = self
+        diaryCardSelectView.shortOptionCollectionView.dataSource = self
+        diaryCardSelectView.shortOptionCollectionView.delegate = self
+        
         setAction()
     }
     
@@ -26,4 +31,45 @@ class DiaryCardSelectViewController: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
 
+}
+
+// MARK: - extension
+extension DiaryCardSelectViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if collectionView == diaryCardSelectView.longOptionCollectionView {
+            return 2
+        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
+            return 3
+        }
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if collectionView == diaryCardSelectView.longOptionCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NonSelectQuestionCell.identifier, for: indexPath) as? NonSelectQuestionCell else {
+                return UICollectionViewCell()
+            }
+            
+            return cell
+        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NonSelectQuestionCell.identifier, for: indexPath) as? NonSelectQuestionCell else {
+                return UICollectionViewCell()
+            }
+            
+            return cell
+        }
+        return UICollectionViewCell()
+    }
+    
+}
+
+extension DiaryCardSelectViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == diaryCardSelectView.longOptionCollectionView {
+            return CGSize(width: 170, height: 100)
+        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
+            return CGSize(width: 170, height: 100)
+        }
+        return CGSize(width: 100, height: 100)
+    }
 }

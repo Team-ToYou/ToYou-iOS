@@ -66,8 +66,26 @@ class DiaryCardSelectView: UIView {
     // 장문형
     private let longOptionTitle = CustomLabelView(text: "장문형", isLight: true)
     
+    public let longOptionCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.minimumInteritemSpacing = 16
+        $0.scrollDirection = .horizontal
+    }).then {
+        $0.register(NonSelectQuestionCell.self, forCellWithReuseIdentifier: NonSelectQuestionCell.identifier)
+        $0.backgroundColor = .clear
+        $0.showsHorizontalScrollIndicator = false
+    }
+    
     // 단답형
     private let shortOptionTitle = CustomLabelView(text: "단답형", isLight: true)
+    
+    public let shortOptionCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.minimumInteritemSpacing = 16
+        $0.scrollDirection = .horizontal
+    }).then {
+        $0.register(NonSelectQuestionCell.self, forCellWithReuseIdentifier: NonSelectQuestionCell.identifier)
+        $0.backgroundColor = .clear
+        $0.showsHorizontalScrollIndicator = false
+    }
     
     // 선택형
     private let selectOptionTitle = CustomLabelView(text: "선택형", isLight: true)
@@ -87,8 +105,8 @@ class DiaryCardSelectView: UIView {
         [
             paperBackgroundView, backgroundIcon1, backgroundIcon2, backButton,
             titleLabel, subTitleLabel, lineView,
-            longOptionTitle,
-            shortOptionTitle,
+            longOptionTitle, longOptionCollectionView,
+            shortOptionTitle, shortOptionCollectionView,
             selectOptionTitle,
             nextButton
         ].forEach {
@@ -138,13 +156,27 @@ class DiaryCardSelectView: UIView {
             $0.left.equalToSuperview().offset(30)
         }
         
+        longOptionCollectionView.snp.makeConstraints {
+            $0.top.equalTo(longOptionTitle.snp.bottom).offset(16)
+            $0.left.equalTo(longOptionTitle.snp.left)
+            $0.right.equalToSuperview().offset(-30)
+            $0.height.equalTo(100)
+        }
+        
         shortOptionTitle.snp.makeConstraints {
-            $0.top.equalTo(longOptionTitle.snp.bottom).offset(53)
+            $0.top.equalTo(longOptionCollectionView.snp.bottom).offset(33)
             $0.left.equalTo(longOptionTitle.snp.left)
         }
         
+        shortOptionCollectionView.snp.makeConstraints {
+            $0.top.equalTo(shortOptionTitle.snp.bottom).offset(16)
+            $0.left.equalTo(shortOptionTitle.snp.left)
+            $0.right.equalToSuperview().offset(-30)
+            $0.height.equalTo(100)
+        }
+        
         selectOptionTitle.snp.makeConstraints {
-            $0.top.equalTo(shortOptionTitle.snp.bottom).offset(53)
+            $0.top.equalTo(shortOptionCollectionView.snp.bottom).offset(33)
             $0.left.equalTo(longOptionTitle.snp.left)
         }
         
