@@ -90,6 +90,15 @@ class DiaryCardSelectView: UIView {
     // 선택형
     private let selectOptionTitle = CustomLabelView(text: "선택형", isLight: true)
     
+    public let selectOptionCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
+        $0.minimumInteritemSpacing = 16
+        $0.scrollDirection = .horizontal
+    }).then {
+        $0.register(SelectQuestionCell.self, forCellWithReuseIdentifier: SelectQuestionCell.identifier)
+        $0.backgroundColor = .clear
+        $0.showsHorizontalScrollIndicator = false
+    }
+    
     // 다음 버튼
     private let nextButton = UIButton().then {
         $0.setTitle("다음", for: .normal)
@@ -107,7 +116,7 @@ class DiaryCardSelectView: UIView {
             titleLabel, subTitleLabel, lineView,
             longOptionTitle, longOptionCollectionView,
             shortOptionTitle, shortOptionCollectionView,
-            selectOptionTitle,
+            selectOptionTitle, selectOptionCollectionView,
             nextButton
         ].forEach {
             addSubview($0)
@@ -178,6 +187,13 @@ class DiaryCardSelectView: UIView {
         selectOptionTitle.snp.makeConstraints {
             $0.top.equalTo(shortOptionCollectionView.snp.bottom).offset(33)
             $0.left.equalTo(longOptionTitle.snp.left)
+        }
+        
+        selectOptionCollectionView.snp.makeConstraints {
+            $0.top.equalTo(selectOptionTitle.snp.bottom).offset(16)
+            $0.left.equalTo(shortOptionTitle.snp.left)
+            $0.right.equalToSuperview().offset(-30)
+            $0.height.equalTo(190)
         }
         
         nextButton.snp.makeConstraints {
