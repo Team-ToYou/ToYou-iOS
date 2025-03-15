@@ -34,15 +34,7 @@ class EditProfileView: UIView {
     private lazy var signUpTopLine = UIView().then {
         $0.backgroundColor = .gray00
     }
-    
-    private lazy var scrollView = UIScrollView().then {
-        $0.bouncesHorizontally = false
-        $0.bouncesVertically = false
-        $0.showsHorizontalScrollIndicator = false
-        $0.showsVerticalScrollIndicator = false
         
-    }
-    
     private lazy var profileImage = UIImageView().then {
         $0.image = .defaultProfile
         $0.contentMode = .scaleAspectFit
@@ -97,26 +89,24 @@ class EditProfileView: UIView {
     }
     
     public lazy var studentButton = UserTypeButton()
-    
     public lazy var collegeButton = UserTypeButton()
-    
     public lazy var workerButton = UserTypeButton()
-    
     public lazy var ectButton = UserTypeButton()
     
     // MARK: Confirm Button
     public lazy var completeButton = ConfirmButton()
+    
+    public lazy var scrollView = UIScrollView().then {
+        $0.bounces = false
+        $0.isScrollEnabled = true
+        $0.showsVerticalScrollIndicator = false
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .background
         self.setupBackground()
         self.signUpTopTitleComponents()
-        
-        self.setProfileImageComponent()
-        self.setNicknameEditComponent()
-        self.setUserTypeEditComponent()
-        self.setCompleteButtonComponent()
     }
     
     required init?(coder: NSCoder) {
@@ -190,30 +180,47 @@ extension EditProfileView {
 // MARK: 컴포넌트 관리
 extension EditProfileView {
     
-    private func setProfileImageComponent() {
-        self.addSubview(profileImage)
+    public func configure() {
+        let screenWidth = UIScreen.main.bounds.width
+        let screenHeight = UIScreen.main.bounds.height
         
-        profileImage.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.height.width.equalTo(122)
-            make.top.equalTo(signUpTopLine).offset(40)
-        }
+        scrollView.contentSize = CGSize(width: screenWidth , height: 700)
+        
+        self.setScrollViewComponents()
+        self.setProfileImageComponent()
+        self.setNicknameEditComponent()
+        self.setUserTypeEditComponent()
+        self.setCompleteButtonComponent()
     }
     
     private func setScrollViewComponents() {
         self.addSubview(scrollView)
         
         scrollView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview() // 추가
+            make.width.equalTo(self.safeAreaLayoutGuide.snp.width)
+            make.top.equalTo(signUpTopLine.snp.bottom)
         }
     }
     
+    private func setProfileImageComponent() {
+        scrollView.addSubview(profileImage)
+        
+        profileImage.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.height.width.equalTo(122)
+            make.top.equalTo(scrollView.snp.top).offset(40)
+        }
+    }
+        
     private func setNicknameEditComponent() {
-        self.addSubview(nicknameEditFrame)
+        scrollView.addSubview(nicknameEditFrame)
         
         nicknameEditFrame.snp.makeConstraints { make in
             make.top.equalTo(profileImage.snp.bottom).offset(30)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalToSuperview().offset(-60)
             make.height.equalTo(90)
         }
         
@@ -246,12 +253,13 @@ extension EditProfileView {
     }
     
     private func setUserTypeEditComponent() {
-        self.addSubview(userTypeMainFrame)
+        scrollView.addSubview(userTypeMainFrame)
         
         userTypeMainFrame.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(nicknameEditFrame.snp.bottom).offset(62)
-            make.height.equalTo(250)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalToSuperview().offset(-60)
+            make.height.equalTo(220)
         }
         
         userTypeMainFrame.addSubview(userTypeMainLabel)
@@ -292,14 +300,15 @@ extension EditProfileView {
     }
     
     private func setCompleteButtonComponent() {
-        self.addSubview(completeButton)
+        scrollView.addSubview(completeButton)
         
         completeButton.configure(labelText: "완료")
         
         completeButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(32)
-            make.bottom.equalToSuperview().inset(69)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalToSuperview().offset(-60)
             make.height.equalTo(43)
+            make.top.equalTo(userTypeMainFrame.snp.bottom).offset(30)
         }
     }
     

@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 import UserNotifications
+import Alamofire
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -64,18 +65,36 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 extension AppDelegate: MessagingDelegate {
+//    
+//    // 토큰의 갱신이 일어났을 때, 호출되는 함수
+//    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+//        if let token = KeychainService.get(key: K.Key.fcmToken) { // 이미 token이 로컬에 저장되어 있는 경우
+//            updateTokenToServer(token)
+//        } else { // 토큰이 저장 X, (처음 앱을 연 경우)
+//            if let token = fcmToken {
+//                sendTokenToServer(token)
+//            } else { // 예외처리, fcmToken이 nil인 경우
+//                
+//            }
+//        }
+//    }
     
-    // 파이어베이스 MessagingDelegate 설정
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("FCMToken : \(String(describing: fcmToken!))")
-        
-        let dataDict: [String: String] = ["token": fcmToken ?? ""]
-        NotificationCenter.default.post(
-            name: Notification.Name("FCMToken"),
-            object: nil,
-            userInfo: dataDict
-        )
-        // TODO: If necessary send token to application server.
-        // Note: This callback is fired at each app startup and whenever a new token is generated.
-    }
+    // 1. 토큰을 서버에 전송 => 성공 시, 로컬에도 저장
+//    func sendTokenToServer(_ token: String) {
+//        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+//        
+//        let parameters [""]
+//        
+//        AF.request(K.URLString.baseURL + "/fcm/send",
+//                   method: .post,
+//                   parameters: ,
+//                   headers: ["accept": "*/*"])
+//    }
+//    
+//    // 2. 토큰 값을 갱신
+//    func updateTokenToServer(_ token: String) {
+//        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+//        
+//        
+//    }
 }

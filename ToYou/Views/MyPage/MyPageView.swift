@@ -79,14 +79,19 @@ class MyPageView: UIView {
         $0.layer.cornerRadius = 17.5
     }
     
+    public lazy var scrollView = UIScrollView().then {
+        $0.bouncesHorizontally = false
+        $0.bouncesVertically = false
+        $0.showsVerticalScrollIndicator = false
+        $0.isScrollEnabled = true
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         // self.translatesAutoresizingMaskIntoConstraints = false // 임시 너비 제약조건 제거를 통해 leading.trailing 을 동시에 실행했을 때, 발생하는 경고 삭제
         self.backgroundColor = .background
         self.addBasicComponents()
         self.addProfileComponents()
-        self.addButtonStack()
-        self.addAccountRelatedComponents()
     }
     
     required init?(coder: NSCoder) {
@@ -95,7 +100,6 @@ class MyPageView: UIView {
 }
 
 extension MyPageView {
-    
     public func configure(nickname: String, friends: Int) {
         nicknameLabel.text = nickname
         friendsLabel.text = "친구 \(friends)먕"
@@ -105,14 +109,34 @@ extension MyPageView {
 
 extension MyPageView {
     
+    public func configure() {
+        let screenWidth = UIScreen.main.bounds.width
+        let screenHeight = UIScreen.main.bounds.height
+        
+        scrollView.contentSize = CGSize(width: screenWidth , height: 550)
+        
+        addScrollView()
+        addButtonStack()
+        addAccountRelatedComponents()
+    }
+    
+    private func addScrollView() {
+        self.addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.top.equalTo(profileFrame.snp.bottom).offset(21)
+        }
+    }
+    
     private func addAccountRelatedComponents() {
-        self.addSubview(accountFrame)
+        scrollView.addSubview(accountFrame)
         accountFrame.addSubview(logoutButton)
         accountFrame.addSubview(revokeButton)
         
         accountFrame.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(mainStack.snp.bottom).offset(50)
+            make.top.equalTo(mainStack.snp.bottom).offset(53)
             make.height.equalTo(35)
             make.width.equalTo(238)
         }
@@ -130,12 +154,12 @@ extension MyPageView {
     }
     
     private func addButtonStack() {
-        self.addSubview(mainStack)
+        scrollView.addSubview(mainStack)
         
         mainStack.snp.makeConstraints { make in
+            make.width.equalToSuperview().inset(37)
             make.leading.equalToSuperview().offset(37)
-            make.trailing.equalToSuperview().offset(-37)//.priority(.high) // 우선순위 조정
-            make.top.equalTo(profileFrame.snp.bottom).offset(21)
+            make.top.equalTo(scrollView.snp.top)
         }
         
         mainStack.addArrangedSubview(notificationSetButton)
