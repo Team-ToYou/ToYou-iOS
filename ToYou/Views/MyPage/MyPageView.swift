@@ -111,7 +111,6 @@ extension MyPageView {
     
     public func configure() {
         let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
         
         scrollView.contentSize = CGSize(width: screenWidth , height: 550)
         
@@ -198,7 +197,8 @@ extension MyPageView {
         profileFrame.addSubview(editProfileDetailButton)
         
         profileFrame.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(37)
+            make.width.equalToSuperview().inset(37)
+            make.leading.equalToSuperview().offset(37)
             make.height.equalTo(52)
             make.top.equalTo(mainLabel.snp.bottom).offset(30)
         }

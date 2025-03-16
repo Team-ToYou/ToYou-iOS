@@ -182,7 +182,7 @@ extension EditProfileView {
     
     public func configure() {
         let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
+        // let screenHeight = UIScreen.main.bounds.height
         
         scrollView.contentSize = CGSize(width: screenWidth , height: 700)
         

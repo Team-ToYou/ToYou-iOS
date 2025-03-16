@@ -40,7 +40,7 @@ class BaseViewController: UITabBarController {
     private func setupTabBarItems() {
         let iconSizeForHome = CGSize(width: 24, height: 24)
         let iconSize = CGSize(width: 30, height: 30)
-        let iconSizeForMyPage = CGSize(width: 28, height: 28)
+        let iconSizeForMyPage = CGSize(width: 32, height: 32)
         
         let insets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
