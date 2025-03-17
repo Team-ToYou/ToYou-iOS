@@ -15,6 +15,10 @@ class TutorialViewController: UIViewController {
         .tutorial1, .tutorial2, .tutorial3, .tutorial4, .tutorial5
     ]
     
+    private let tutorialImagesForiPhoneWhichHasHomeButton: [UIImage] = [
+        .tutorial1HomeButton, .tutorial2HomeButton, .tutorial3HomeButton, .tutorial4HomeButton, .tutorial5HomeButton
+    ]
+    
     private lazy var pageControl = UIPageControl().then {
         $0.currentPage = 0
         $0.numberOfPages = 5
@@ -92,6 +96,7 @@ class TutorialViewController: UIViewController {
     
 }
 
+//MARK: Page Control
 extension TutorialViewController {
     private func setPageControlConstraints() {
         self.view.addSubview(pageControl)
@@ -117,6 +122,7 @@ extension TutorialViewController {
     }
 }
 
+//MARK: Button Actions
 extension TutorialViewController {
     func setButtonAction() {
         skipButton.addTarget(self, action: #selector(skipOrStartPressed), for: .touchUpInside)
@@ -129,14 +135,20 @@ extension TutorialViewController {
     }
 }
 
+//MARK: CollectionViewController
 extension TutorialViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("Height \(UIScreen.main.bounds.height)")
         return tutorialImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TutorialCell.identifier, for: indexPath) as! TutorialCell
-        cell.configure(image: tutorialImages[indexPath.row])
+        if UIScreen.main.bounds.height <= 736 {
+            cell.configure(image: tutorialImagesForiPhoneWhichHasHomeButton[indexPath.row])
+        } else {
+            cell.configure(image: tutorialImages[indexPath.row])
+        }
         return cell
     }
     
@@ -151,6 +163,7 @@ extension TutorialViewController: UICollectionViewDelegate, UICollectionViewData
     }
 }
 
+// MARK: ScrollViewController
 extension TutorialViewController: UIScrollViewDelegate {
     private func setupScrollView() {
         let scrollView = UIScrollView(frame: view.bounds).then {
