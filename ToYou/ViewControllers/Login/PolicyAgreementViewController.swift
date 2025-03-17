@@ -64,6 +64,7 @@ extension PolicyAgreementViewController {
     
     @objc
     private func goToPolicyWebView(_ sender: UIButton) {
+        policyLinkWebVC.modalPresentationStyle = .popover
         present(policyLinkWebVC, animated: true)
     }
     

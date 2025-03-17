@@ -18,12 +18,22 @@ class MyPageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = myPageView
+        self.myPageView.scrollView.delegate = self
         addButtonActions()
         
         sendFeedbackWebVC.modalPresentationStyle = .popover
         sendQueryWebVC.modalPresentationStyle = .popover
         policyLinkWebVC.modalPresentationStyle = .popover
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        myPageView.configure()
+    }
+    
+}
+
+extension MyPageViewController: UIScrollViewDelegate {
     
 }
 
@@ -85,7 +95,6 @@ extension MyPageViewController {
     }
     
 }
-
 
 import SwiftUI
 #Preview {

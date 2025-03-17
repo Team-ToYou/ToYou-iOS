@@ -20,10 +20,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let userdefaults = UserDefaults.standard
         
-        print("scene")
-        if !userdefaults.bool(forKey: K.Key.tutorial) { // 저장이 안되어 있는 경우
+        if !userdefaults.bool(forKey: K.Key.tutorial) { // false: 저장이 안되어 있는 경우
             window?.rootViewController = TutorialViewController()
-        } else { // 이미 튜토리얼을 완료한 경우
+        } else { // true: 이미 튜토리얼을 완료한 경우
             window?.rootViewController = BaseViewController()
         }
         

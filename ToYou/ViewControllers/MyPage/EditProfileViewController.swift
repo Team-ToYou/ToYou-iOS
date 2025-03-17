@@ -14,8 +14,10 @@ class EditProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = editProfileView
-        self.navigationController?.isNavigationBarHidden = true
+        
         self.editProfileView.nicknameTextField.delegate = self
+        self.editProfileView.scrollView.delegate = self
+        
         self.setbasicButtonActions()
         self.setNicknameActions()
         self.setUserTypeButtonActions()
@@ -23,6 +25,15 @@ class EditProfileViewController: UIViewController {
         editProfileView.configure(nickname: "Rudy", userType: .college)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        editProfileView.configure()
+    }
+    
+}
+
+// MARK: Button Actions
+extension EditProfileViewController {
     private func setbasicButtonActions() {
         editProfileView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         editProfileView.completeButton.addTarget(self, action: #selector(comfirmChange), for: .touchUpInside)
@@ -37,12 +48,6 @@ class EditProfileViewController: UIViewController {
     private func comfirmChange() {
         print("confirmed")
     }
-    
-}
-
-// MARK:
-extension EditProfileViewController {
-    
 }
 
 // MARK: Nickname Editing
@@ -81,8 +86,11 @@ extension EditProfileViewController {
     
 }
 
-extension EditProfileViewController: UITextFieldDelegate {
+extension EditProfileViewController: UIScrollViewDelegate {
     
+}
+
+extension EditProfileViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         // 중복확인 API 연결
         editProfileView.nicknameTextField.resignFirstResponder()
@@ -131,4 +139,8 @@ extension EditProfileViewController {
     }
 
 }
-    
+
+import SwiftUI
+#Preview {
+    EditProfileViewController()
+}
