@@ -11,6 +11,22 @@ import Then
 
 class TutorialViewController: UIViewController {
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        setCollectionConstraints()
+        setSkipButton()
+        setButtonAction()
+        setPageControlConstraints()
+        setPageControlAction()
+    }
+    
+//    private let scrollView = UIScrollView().then {
+//        $0.delegate = self
+//    }
+    
     private let tutorialImages: [UIImage] = [
         .tutorial1, .tutorial2, .tutorial3, .tutorial4, .tutorial5
     ]
@@ -54,19 +70,7 @@ class TutorialViewController: UIViewController {
         $0.backgroundColor = .clear
         $0.isEnabled = false
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        setCollectionConstraints()
-        setSkipButton()
-        setButtonAction()
-        setPageControlConstraints()
-        setPageControlAction()
-    }
-    
+        
     private func setCollectionConstraints() {
         self.view.addSubview(tutorialImageCollectionView)
         
@@ -151,20 +155,20 @@ extension TutorialViewController: UICollectionViewDelegate, UICollectionViewData
         }
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let index = indexPath.row
-        if index == tutorialImages.count - 1 {
-            startButton.isEnabled = true
-        } else {
-            startButton.isEnabled = false
-        }
-        pageControl.currentPage = index
-    }
+            
 }
 
 // MARK: ScrollViewController
 extension TutorialViewController: UIScrollViewDelegate {
+    // CollecionView도 ScrollView를 상속받아서 ScrollView의 영향을 받는다.
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageWidth = tutorialImageCollectionView.frame.width
+        let currentPage = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
+        
+        pageControl.currentPage = currentPage
+        startButton.isEnabled = (currentPage == tutorialImages.count - 1)
+    }
+    
     private func setupScrollView() {
         let scrollView = UIScrollView(frame: view.bounds).then {
             $0.delegate = self
