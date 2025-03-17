@@ -9,6 +9,8 @@ import UIKit
 
 class DiaryCardSelectViewController: UIViewController {
     let diaryCardSelectView = DiaryCardSelectView()
+    
+    private var selectedItemsCount: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +29,25 @@ class DiaryCardSelectViewController: UIViewController {
     // MARK: - action
     private func setAction() {
         diaryCardSelectView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        diaryCardSelectView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
     @objc private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func nextButtonTapped() {
+        let answerVC = DiaryCardAnswerViewController()
+        answerVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(answerVC, animated: true)
+    }
+    
+    // MARK: - function
+    private func updateNextButtonState() {
+        let isActive = selectedItemsCount > 0
+        diaryCardSelectView.nextButton.isEnabled = isActive ? true : false
+        diaryCardSelectView.nextButton.backgroundColor = isActive ? .black01 : .gray00
+        diaryCardSelectView.nextButton.setTitleColor(isActive ? .black04 : .black01, for: .normal)
     }
 
 }
@@ -71,6 +88,43 @@ extension DiaryCardSelectViewController: UICollectionViewDataSource {
             return cell
         }
         return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == diaryCardSelectView.longOptionCollectionView {
+            guard let cell = collectionView.cellForItem(at: indexPath) as? NonSelectQuestionCell else { return }
+            
+            cell.checkboxButton.toggle()
+            
+            if cell.checkboxButton.isChecked {
+                selectedItemsCount += 1
+            } else {
+                selectedItemsCount -= 1
+            }
+        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
+            guard let cell = collectionView.cellForItem(at: indexPath) as? NonSelectQuestionCell else { return }
+            
+            cell.checkboxButton.toggle()
+            
+            if cell.checkboxButton.isChecked {
+                selectedItemsCount += 1
+            } else {
+                selectedItemsCount -= 1
+            }
+        } else if collectionView == diaryCardSelectView.selectOptionCollectionView {
+            guard let cell = collectionView.cellForItem(at: indexPath) as? SelectQuestionCell else { return }
+            
+            cell.checkboxButton.toggle()
+            
+            if cell.checkboxButton.isChecked {
+                selectedItemsCount += 1
+            } else {
+                selectedItemsCount -= 1
+            }
+        }
+        
+        updateNextButtonState()
+
     }
     
 }

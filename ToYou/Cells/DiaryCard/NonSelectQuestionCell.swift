@@ -13,7 +13,6 @@ class NonSelectQuestionCell: UICollectionViewCell {
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setAction()
         setView()
     }
     
@@ -36,16 +35,6 @@ class NonSelectQuestionCell: UICollectionViewCell {
         $0.text = "From. 미주"
         $0.textColor = .black04
         $0.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 11)
-    }
-    
-    // MARK: - action
-    private func setAction() {
-        checkboxButton.addTarget(self, action: #selector(checkboxTapped), for: .touchUpInside)
-    }
-    
-    @objc
-    private func checkboxTapped() {
-        checkboxButton.toggle()
     }
     
     // MARK: - function
