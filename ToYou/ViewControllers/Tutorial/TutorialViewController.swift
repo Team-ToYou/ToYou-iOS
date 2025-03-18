@@ -11,8 +11,28 @@ import Then
 
 class TutorialViewController: UIViewController {
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        setCollectionConstraints()
+        setSkipButton()
+        setButtonAction()
+        setPageControlConstraints()
+        setPageControlAction()
+    }
+    
+//    private let scrollView = UIScrollView().then {
+//        $0.delegate = self
+//    }
+    
     private let tutorialImages: [UIImage] = [
         .tutorial1, .tutorial2, .tutorial3, .tutorial4, .tutorial5
+    ]
+    
+    private let tutorialImagesForiPhoneWhichHasHomeButton: [UIImage] = [
+        .tutorial1HomeButton, .tutorial2HomeButton, .tutorial3HomeButton, .tutorial4HomeButton, .tutorial5HomeButton
     ]
     
     private lazy var pageControl = UIPageControl().then {
@@ -50,19 +70,7 @@ class TutorialViewController: UIViewController {
         $0.backgroundColor = .clear
         $0.isEnabled = false
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        setCollectionConstraints()
-        setSkipButton()
-        setButtonAction()
-        setPageControlConstraints()
-        setPageControlAction()
-    }
-    
+        
     private func setCollectionConstraints() {
         self.view.addSubview(tutorialImageCollectionView)
         
@@ -92,6 +100,7 @@ class TutorialViewController: UIViewController {
     
 }
 
+//MARK: Page Control
 extension TutorialViewController {
     private func setPageControlConstraints() {
         self.view.addSubview(pageControl)
@@ -117,6 +126,7 @@ extension TutorialViewController {
     }
 }
 
+//MARK: Button Actions
 extension TutorialViewController {
     func setButtonAction() {
         skipButton.addTarget(self, action: #selector(skipOrStartPressed), for: .touchUpInside)
@@ -129,29 +139,36 @@ extension TutorialViewController {
     }
 }
 
+//MARK: CollectionViewController
 extension TutorialViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("Height \(UIScreen.main.bounds.height)")
         return tutorialImages.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TutorialCell.identifier, for: indexPath) as! TutorialCell
-        cell.configure(image: tutorialImages[indexPath.row])
+        if UIScreen.main.bounds.height <= 736 {
+            cell.configure(image: tutorialImagesForiPhoneWhichHasHomeButton[indexPath.row])
+        } else {
+            cell.configure(image: tutorialImages[indexPath.row])
+        }
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let index = indexPath.row
-        if index == tutorialImages.count - 1 {
-            startButton.isEnabled = true
-        } else {
-            startButton.isEnabled = false
-        }
-        pageControl.currentPage = index
-    }
+            
 }
 
+// MARK: ScrollViewController
 extension TutorialViewController: UIScrollViewDelegate {
+    // CollecionView도 ScrollView를 상속받아서 ScrollView의 영향을 받는다.
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let pageWidth = tutorialImageCollectionView.frame.width
+        let currentPage = Int((scrollView.contentOffset.x + pageWidth / 2) / pageWidth)
+        
+        pageControl.currentPage = currentPage
+        startButton.isEnabled = (currentPage == tutorialImages.count - 1)
+    }
+    
     private func setupScrollView() {
         let scrollView = UIScrollView(frame: view.bounds).then {
             $0.delegate = self
