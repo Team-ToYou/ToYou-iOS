@@ -8,10 +8,16 @@
 import UIKit
 
 class CustomAnswerView: UIView {
+    private var isLongAnswer: Bool // 장문형 여부
+    private var maxLength: Int { return isLongAnswer ? 200 : 50 } // 글자 수 제한
+    
     // MARK: - init
-    override init(frame: CGRect) {
+    init(isLongAnswer: Bool) {
+        self.isLongAnswer = isLongAnswer
         super.init(frame: .zero)
         setView()
+        textView.delegate = self // delegate 설정
+        updatePlaceholder() // Placeholder 업데이트
     }
     
     required init?(coder: NSCoder) {
@@ -24,35 +30,73 @@ class CustomAnswerView: UIView {
         $0.layer.cornerRadius = 5.3
     }
     
-    private let textField = UITextView().then {
-        $0.textColor = .black04
+    private let textView = UITextView().then {
+        $0.text = "답변을 입력해주세요."
+        $0.textColor = .black00
         $0.font = UIFont(name: "S-CoreDream-3Light", size: 11)
         $0.backgroundColor = .clear
     }
     
-    private let count = UILabel().then {
+    private let countLabel = UILabel().then {
         $0.text = "(0/200)"
         $0.font = UIFont(name: "S-CoreDream-3Light", size: 9)
         $0.textColor = .black00
     }
     
     // MARK: - function
+    private func updatePlaceholder() {
+        textView.text = "답변을 입력해주세요." // 기본값
+        textView.textColor = .lightGray
+        countLabel.text = "(0/\(maxLength))"
+    }
+    
+    private func updateCharacterCount() {
+        countLabel.text = "(\(textView.text.count)/\(maxLength))"
+    }
+    
     private func setView() {
-        [ backView, textField, count ].forEach { addSubview($0) }
+        [ backView, textView, countLabel ].forEach { addSubview($0) }
         
         backView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
         
-        textField.snp.makeConstraints {
+        textView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(8)
             $0.horizontalEdges.equalToSuperview().inset(6)
-            $0.bottom.equalTo(count.snp.top).offset(-10)
+            $0.bottom.equalTo(countLabel.snp.top).offset(-10)
         }
         
-        count.snp.makeConstraints {
+        countLabel.snp.makeConstraints {
             $0.right.equalToSuperview().inset(6)
             $0.bottom.equalToSuperview().inset(8)
+        }
+        
+        updateCharacterCount()
+    }
+}
+
+// MARK: - extension
+extension CustomAnswerView: UITextViewDelegate {
+    func textViewDidChange(_ textView: UITextView) {
+        let maxLength = self.maxLength
+        if textView.text.count > maxLength {
+            textView.text = String(textView.text.prefix(maxLength))
+        }
+        countLabel.text = "(\(textView.text.count)/\(maxLength))"
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == "답변을 입력해주세요." {
+            textView.text = ""
+            textView.textColor = .black04
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "답변을 입력해주세요."
+            textView.textColor = .black00
         }
     }
 }

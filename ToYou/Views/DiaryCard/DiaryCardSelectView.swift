@@ -73,6 +73,7 @@ class DiaryCardSelectView: UIView {
         $0.register(NonSelectQuestionCell.self, forCellWithReuseIdentifier: NonSelectQuestionCell.identifier)
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
+        $0.contentInset = .init(top: 0, left: 30, bottom: 0, right: 30)
     }
     
     // 단답형
@@ -85,6 +86,7 @@ class DiaryCardSelectView: UIView {
         $0.register(NonSelectQuestionCell.self, forCellWithReuseIdentifier: NonSelectQuestionCell.identifier)
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
+        $0.contentInset = .init(top: 0, left: 30, bottom: 0, right: 30)
     }
     
     // 선택형
@@ -97,6 +99,7 @@ class DiaryCardSelectView: UIView {
         $0.register(SelectQuestionCell.self, forCellWithReuseIdentifier: SelectQuestionCell.identifier)
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
+        $0.contentInset = .init(top: 0, left: 30, bottom: 0, right: 30)
     }
     
     // 다음 버튼
@@ -167,8 +170,7 @@ class DiaryCardSelectView: UIView {
         
         longOptionCollectionView.snp.makeConstraints {
             $0.top.equalTo(longOptionTitle.snp.bottom).offset(16)
-            $0.left.equalTo(longOptionTitle.snp.left)
-            $0.right.equalToSuperview().offset(-30)
+            $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(100)
         }
         
@@ -179,8 +181,7 @@ class DiaryCardSelectView: UIView {
         
         shortOptionCollectionView.snp.makeConstraints {
             $0.top.equalTo(shortOptionTitle.snp.bottom).offset(16)
-            $0.left.equalTo(shortOptionTitle.snp.left)
-            $0.right.equalToSuperview().offset(-30)
+            $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(100)
         }
         
@@ -191,8 +192,7 @@ class DiaryCardSelectView: UIView {
         
         selectOptionCollectionView.snp.makeConstraints {
             $0.top.equalTo(selectOptionTitle.snp.bottom).offset(16)
-            $0.left.equalTo(shortOptionTitle.snp.left)
-            $0.right.equalToSuperview().offset(-30)
+            $0.horizontalEdges.equalToSuperview()
             $0.height.equalTo(190)
         }
         

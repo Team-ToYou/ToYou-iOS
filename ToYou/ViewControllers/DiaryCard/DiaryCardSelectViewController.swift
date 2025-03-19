@@ -84,6 +84,7 @@ extension DiaryCardSelectViewController: UICollectionViewDataSource {
             }
             
             cell.optionTableView.dataSource = self
+            cell.optionTableView.isUserInteractionEnabled = false
             
             return cell
         }

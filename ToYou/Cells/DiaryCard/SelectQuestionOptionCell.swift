@@ -1,10 +1,3 @@
-//
-//  SelectQuestionOptionCell.swift
-//  ToYou
-//
-//  Created by 김미주 on 14/03/2025.
-//
-
 import UIKit
 
 class SelectQuestionOptionCell: UITableViewCell {
@@ -27,12 +20,22 @@ class SelectQuestionOptionCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        
+        if selected {
+            backView.layer.borderColor = UIColor.black.cgColor
+            backView.layer.borderWidth = 1.0
+        } else {
+            backView.layer.borderColor = UIColor.clear.cgColor
+            backView.layer.borderWidth = 0
+        }
     }
     
     // MARK: - layout
     private let backView = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 5.3
+        $0.layer.borderColor = UIColor.clear.cgColor
+        $0.layer.borderWidth = 0
     }
     
     private let optionLabel = UILabel().then {
@@ -56,5 +59,4 @@ class SelectQuestionOptionCell: UITableViewCell {
             $0.left.equalToSuperview().offset(7.7)
         }
     }
-
 }

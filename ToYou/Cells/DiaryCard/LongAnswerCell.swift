@@ -28,7 +28,7 @@ class LongAnswerCell: UICollectionViewCell {
         $0.numberOfLines = 3
     }
     
-    private let textField = CustomAnswerView()
+    private let textField = CustomAnswerView(isLongAnswer: true)
     
     private let fromLabel = UILabel().then {
         $0.text = "From. 미주"
