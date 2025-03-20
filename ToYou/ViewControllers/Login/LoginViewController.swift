@@ -7,6 +7,7 @@
 
 import UIKit
 import AuthenticationServices
+import Alamofire
 
 class LoginViewController: UIViewController {
     
@@ -35,19 +36,6 @@ class LoginViewController: UIViewController {
         controller.performRequests()                  // 로그인창 띄우기
     }
     
-    private func signupVC() {
-        let signupVC = PolicyAgreementViewController()
-        signupVC.modalPresentationStyle = .overFullScreen
-        present(signupVC, animated: false)
-        stackView()
-    }
-    
-    private func stackView() {
-        let stackVC = PolicyAgreementViewController()
-        stackVC.modalPresentationStyle = .overFullScreen
-        present(stackVC, animated: false)
-    }
-    
 }
 
 extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
@@ -69,22 +57,10 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
                 let identityToken = appleIDCredential.identityToken,
                 let authCodeString = String(data: authorizationCode, encoding: .utf8),
                 let identifyTokenString = String(data: identityToken, encoding: .utf8) {
-                print("authorizationCode: \(authorizationCode)")
-                print("identityToken: \(identityToken)")
+                loginWithApple(authorizationCode: authCodeString)
                 print("authCodeString: \(authCodeString)")
                 print("identifyTokenString: \(identifyTokenString)")
             }
-            
-            print("useridentifier: \(userIdentifier)")
-            print("fullName: \(fullName)")
-            print("email: \(email)")
-            
-            // 첫 회원일 시, 회원가입 화면으로 이동
-            signupVC()
-            
-            // 기존 유저일 시, 홈화면으로 이동
-            // RootViewControllerService.toBaseViewController()
-            
         case let passwordCredential as ASPasswordCredential:
             print("passwordCredential: \(passwordCredential)")
             
@@ -92,7 +68,55 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             break
         }
     }
+}
+
+extension LoginViewController {
     
+    func loginWithApple(authorizationCode: String) {
+        let tail = "/auth/apple"
+        let url = K.URLString.baseURL + tail
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "authorizationCode": authorizationCode
+        ]
+        
+        // JSONEncoding 사용하기
+        AF.request(url,
+                   method: .post,
+                   headers: headers)
+        .validate()
+        .responseDecodable(of: AppleLoginResponse.self) { response in
+            switch response.result {
+            case .success(let apiResponse):
+                if apiResponse.isSuccess {
+                    // 기존 가입한 유저가 다시 로그인한 경우
+                    if let accessToken = apiResponse.result?.access_token, let refreshToken = apiResponse.result?.refresh_token {
+                        RootViewControllerService.toBaseViewController()
+                    } else { // 처음 로그인한 유저, 가입 절차로 넘어감
+                        let policyVC = PolicyAgreementViewController()
+                        policyVC.modalPresentationStyle = .overFullScreen
+                        self.present(policyVC, animated: false)
+                    }
+                } else {
+                    print("\(tail) send API 오류: \(apiResponse.code) - \(apiResponse.message)")
+                }
+            case .failure(let error):
+                print("\(tail) send 요청 실패: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    struct AppleLoginResponse: Codable {
+        let isSuccess : Bool
+        let code : String
+        let message : String
+        let result: EmptyMessage?
+    }
+
+    struct EmptyMessage: Codable {
+        let access_token: String
+        let refresh_token: String
+    }
     
 }
 
