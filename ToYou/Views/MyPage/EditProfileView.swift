@@ -125,7 +125,7 @@ extension EditProfileView {
             studentButton.selectedView()
         case .college:
             collegeButton.selectedView()
-        case .worker:
+        case .office:
             workerButton.selectedView()
         case .ect:
             ectButton.selectedView()
@@ -270,7 +270,7 @@ extension EditProfileView {
         
         studentButton.configure(userType: .student)
         collegeButton.configure(userType: .college)
-        workerButton.configure(userType: .worker)
+        workerButton.configure(userType: .office)
         ectButton.configure(userType: .ect)
         
         userTypeMainLabel.snp.makeConstraints { make in

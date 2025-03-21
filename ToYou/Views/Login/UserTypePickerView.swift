@@ -84,7 +84,7 @@ class UserTypePickerView: UIView {
         
         studentButton.configure(userType: .student)
         collegeButton.configure(userType: .college)
-        workerButton.configure(userType: .worker)
+        workerButton.configure(userType: .office)
         ectButton.configure(userType: .ect)
         
         studentButton.snp.makeConstraints { make in

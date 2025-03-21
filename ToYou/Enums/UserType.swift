@@ -7,6 +7,19 @@
 
 import Foundation
 
-enum UserType {
-    case student, college, worker, ect
+enum UserType: String {
+    case student, college, office , ect
+    
+    func rawValueForAPI() -> String {
+        switch self {
+        case .student:
+            return "STUDENT"
+        case .college:
+            return "COLLEGE"
+        case .office:
+            return "OFFICE"
+        case .ect:
+            return "ETC"
+        }
+    }
 }

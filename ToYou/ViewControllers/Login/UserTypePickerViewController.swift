@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Alamofire
 
 class UserTypePickerViewController: UIViewController {
 
-    let userTypePiverView = UserTypePickerView()
+    private let userTypePiverView = UserTypePickerView()
+    private var isMarketingAgreementChecked: Bool = false
+    private var userNickname: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,6 +21,10 @@ class UserTypePickerViewController: UIViewController {
         self.setButtonActions()
     }
     
+}
+
+//MARK: Button Actions
+extension UserTypePickerViewController {
     func setButtonActions() {
         userTypePiverView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         userTypePiverView.nextButton.addTarget(self, action: #selector(changeRootToHomeVC), for: .touchUpInside)
@@ -60,6 +67,21 @@ class UserTypePickerViewController: UIViewController {
     private func popStack() {
         dismiss(animated: false)
     }
+
+}
+
+//MARK: API
+extension UserTypePickerViewController {
+    // 이전 뷰컨에서 정보를 받아옴
+    public func configure( checked: Bool, userNickname: String ) {
+        self.isMarketingAgreementChecked = checked
+        self.userNickname = userNickname
+    }
+    
+    private func signUp() {
+        
+    }
+    
 }
 
 import SwiftUI

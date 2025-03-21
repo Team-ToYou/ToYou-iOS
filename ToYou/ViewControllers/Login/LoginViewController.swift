@@ -84,13 +84,15 @@ extension LoginViewController {
         AF.request(url,
                    method: .post,
                    headers: headers)
-        .validate()
-        .responseDecodable(of: AppleLoginResponse.self) { response in
+        .responseDecodable(of: ToYouResponse<AppleLoginResult>.self) { response in
             switch response.result {
             case .success(let apiResponse):
                 if apiResponse.isSuccess {
                     // 기존 가입한 유저가 다시 로그인한 경우
                     if let accessToken = apiResponse.result?.access_token, let refreshToken = apiResponse.result?.refresh_token {
+                        // accessToken과 refreshToken을 저장
+                        let _ = KeychainService.add(key: K.Key.accessToken, value: accessToken)
+                        let _ = KeychainService.add(key: K.Key.refreshToken, value: refreshToken)
                         RootViewControllerService.toBaseViewController()
                     } else { // 처음 로그인한 유저, 가입 절차로 넘어감
                         let policyVC = PolicyAgreementViewController()
@@ -106,14 +108,7 @@ extension LoginViewController {
         }
     }
     
-    struct AppleLoginResponse: Codable {
-        let isSuccess : Bool
-        let code : String
-        let message : String
-        let result: EmptyMessage?
-    }
-
-    struct EmptyMessage: Codable {
+    struct AppleLoginResult: Codable {
         let access_token: String
         let refresh_token: String
     }

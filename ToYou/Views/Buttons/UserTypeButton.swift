@@ -44,7 +44,7 @@ class UserTypeButton: UIButton {
             mainLabel.text = "중·고등학생"
         case .college:
             mainLabel.text = "대학생"
-        case .worker:
+        case .office:
             mainLabel.text = "직장인"
         case .ect:
             mainLabel.text = "기타"
