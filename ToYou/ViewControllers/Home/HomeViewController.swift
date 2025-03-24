@@ -8,12 +8,12 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-    let homeVeiw = HomeView()
+    let homeView = HomeView()
 //    var emotion = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view = homeVeiw
+        self.view = homeView
         navigationController?.navigationBar.isHidden = true
         
 //        setView(emotion: emotion)
@@ -25,17 +25,19 @@ class HomeViewController: UIViewController {
         let item = Home.dummy().first { $0.emotion == emotion }
         
         if let item = item {
-            homeVeiw.commentLabel.text = item.comment
-            homeVeiw.dateBackView.backgroundColor = item.color
-            homeVeiw.emotionImage.image = item.bubble
-            homeVeiw.backgroundColor = item.color
+            homeView.commentLabel.text = item.comment
+            homeView.dateBackView.backgroundColor = item.color
+            homeView.emotionImage.image = item.bubble
+            homeView.backgroundColor = item.color
         }
     }
     
     // MARK: - action
     private func setAction() {
-        homeVeiw.emotionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(emotionSelect)))
-        homeVeiw.emotionImage.isUserInteractionEnabled = true
+        homeView.emotionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(emotionSelect)))
+        homeView.mailBoxImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(diaryCardSelect)))
+        homeView.emotionImage.isUserInteractionEnabled = true
+        homeView.mailBoxImage.isUserInteractionEnabled = true
     }
     
     @objc
@@ -43,6 +45,13 @@ class HomeViewController: UIViewController {
         let emotionVC = EmotionViewController()
         emotionVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(emotionVC, animated: true)
+    }
+    
+    @objc
+    private func diaryCardSelect(sender: UITapGestureRecognizer) {
+        let diaryVC = DiaryCardSelectViewController()
+        diaryVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(diaryVC, animated: true)
     }
     
 }
