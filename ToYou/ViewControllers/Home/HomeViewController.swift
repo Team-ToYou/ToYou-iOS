@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class HomeViewController: UIViewController {
     let homeView = HomeView()
@@ -18,6 +19,7 @@ class HomeViewController: UIViewController {
         
 //        setView(emotion: emotion)
         setAction()
+        getAPI()
     }
     
     // MARK: - function
@@ -30,6 +32,29 @@ class HomeViewController: UIViewController {
             homeView.emotionImage.image = item.bubble
             homeView.backgroundColor = item.color
         }
+    }
+    
+    private func getAPI() {
+        // 임시 accessToken
+        let token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MTA1MTIsImV4cCI6MTc0NDAyMDExMiwic3ViIjoiMiIsImlkIjoyLCJjYXRlZ29yeSI6ImFjY2VzcyJ9.P07B0Yl4RZk0TGuIYOrw2LQndsFY3XysjbliOoX7IxE"
+        
+        let headers: HTTPHeaders = [
+            "Authorization": token
+        ]
+        
+        AF.request("https://to-you.store/users/home", method: .get, encoding: JSONEncoding.default, headers: headers)
+            .responseDecodable(of: HomeResponse.self) { response in
+                switch response.result {
+                case .success(let value):
+                    print(value)
+                    
+                    let emotion = value.result.emotion
+                    self.setView(emotion: emotion)
+                    
+                case .failure(let error):
+                    print(error)
+                }
+            }
     }
     
     // MARK: - action
