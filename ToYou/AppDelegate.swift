@@ -73,7 +73,7 @@ extension AppDelegate: MessagingDelegate {
                 updateTokenToServer(fcmToken)
             } else {
                 if KeychainService.add(key: K.Key.fcmToken, value: fcmToken) {
-                    print("FCMToken saved successfully in Keychain")
+                    // print("FCMToken saved successfully in Keychain")
                 }
                 sendTokenToServer(fcmToken)
             }
@@ -84,7 +84,9 @@ extension AppDelegate: MessagingDelegate {
     func sendTokenToServer(_ token: String) {
         let tail = "/fcm/token"
         let url = K.URLString.baseURL + tail
-        let accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDEzNTQyMTAsImV4cCI6MTc0MjU2MzgxMCwic3ViIjoiMyIsImlkIjozLCJjYXRlZ29yeSI6ImFjY2VzcyJ9.7l3IQYZQ3cgZcB15Sp1B_UoEsw8qnvXnFWh82I95Jn0"
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else {
+            return
+        }
         let headers: HTTPHeaders = [
             "accept": "*/*",
             "Authorization": "Bearer \(accessToken)",
@@ -99,7 +101,7 @@ extension AppDelegate: MessagingDelegate {
                    parameters: parameters,
                    encoding: JSONEncoding.default,
                    headers: headers)
-        .responseDecodable(of: FCMResponse.self) { response in
+        .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
             switch response.result {
             case .success(let apiResponse):
                 if apiResponse.isSuccess {
@@ -118,7 +120,9 @@ extension AppDelegate: MessagingDelegate {
         // guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let tail = "/fcm/token"
         let url = K.URLString.baseURL + tail
-        let accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDEzNTQyMTAsImV4cCI6MTc0MjU2MzgxMCwic3ViIjoiMyIsImlkIjozLCJjYXRlZ29yeSI6ImFjY2VzcyJ9.7l3IQYZQ3cgZcB15Sp1B_UoEsw8qnvXnFWh82I95Jn0"
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else {
+            return
+        }
         let headers: HTTPHeaders = [
                 "accept": "*/*",
                 "Authorization": accessToken,
@@ -130,7 +134,7 @@ extension AppDelegate: MessagingDelegate {
                    parameters: parameters,
                    encoding: JSONEncoding.default,
                    headers: headers)
-        .responseDecodable(of: FCMResponse.self) { response in
+        .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
             // 서버 응답 상태 코드 확인
             if let statusCode = response.response?.statusCode {
                 print("상태 코드: \(statusCode)")
@@ -139,7 +143,7 @@ extension AppDelegate: MessagingDelegate {
             case .success(let apiResponse):
                 if apiResponse.isSuccess {
                     if KeychainService.update(key: K.Key.fcmToken, value: token) {
-                        print("FCMToken updated successfully in Keychain")
+                        // print("FCMToken updated successfully in Keychain")
                     }
                 } else {
                     print("\(tail) patch API 오류: \(apiResponse.code) - \(apiResponse.message)")
@@ -148,5 +152,9 @@ extension AppDelegate: MessagingDelegate {
                 print("\(tail) patch 요청 실패: \(error.localizedDescription)")
             }
         }
+    }
+    
+    struct EmptyResult: Codable {
+        
     }
 }

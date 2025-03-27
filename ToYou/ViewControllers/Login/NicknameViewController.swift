@@ -12,6 +12,7 @@ class NicknameViewController: UIViewController {
     
     private let nicknameView = NicknameView()
     private var isMarketingAgreementChecked: Bool = false
+    private var appleAuth: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,7 +91,7 @@ extension NicknameViewController {
     private func stackView() {
         let stackVC = UserTypePickerViewController()
         // 닉네임과 마케팅 동의 여부를 전송
-        stackVC.configure(checked: isMarketingAgreementChecked, userNickname: nicknameView.nicknameTextField.text!)
+        stackVC.configure(appleAuth: appleAuth, checked: isMarketingAgreementChecked, userNickname: nicknameView.nicknameTextField.text!)
         stackVC.modalPresentationStyle = .overFullScreen
         present(stackVC, animated: false)
     }
@@ -105,7 +106,8 @@ extension NicknameViewController: UITextFieldDelegate {
         return true
     }
     
-    func marketingChecked(_ check: Bool) {
+    func configure(appleAuth: String , check: Bool) {
+        self.appleAuth = appleAuth
         isMarketingAgreementChecked = check
     }
     

@@ -28,7 +28,7 @@ class LoginViewController: UIViewController {
         print("Apple Login Tapped")
         let provider = ASAuthorizationAppleIDProvider()
         let requset = provider.createRequest()
-        requset.requestedScopes = [.fullName, .email,] // 사용자에게 제공받을 정보를 선택 (이름 및 이메일)
+        requset.requestedScopes = [.fullName,] // 사용자에게 제공받을 정보를 선택 (이름 및 이메일)
 
         let controller = ASAuthorizationController(authorizationRequests: [requset])
         controller.delegate = self                    // 로그인 정보 관련 대리자 설정
@@ -49,21 +49,19 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             // You can create an account in your system.
-            let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName
-            let email = appleIDCredential.email
+            // let userIdentifier = appleIDCredential.user
+            // let fullName = appleIDCredential.fullName
+            // let email = appleIDCredential.email
             
             if  let authorizationCode = appleIDCredential.authorizationCode,
                 let identityToken = appleIDCredential.identityToken,
                 let authCodeString = String(data: authorizationCode, encoding: .utf8),
-                let identifyTokenString = String(data: identityToken, encoding: .utf8) {
+                let _ = String(data: identityToken, encoding: .utf8) {
                 loginWithApple(authorizationCode: authCodeString)
                 print("authCodeString: \(authCodeString)")
-                print("identifyTokenString: \(identifyTokenString)")
             }
         case let passwordCredential as ASPasswordCredential:
             print("passwordCredential: \(passwordCredential)")
-            
         default:
             break
         }
@@ -89,13 +87,19 @@ extension LoginViewController {
             case .success(let apiResponse):
                 if apiResponse.isSuccess {
                     // 기존 가입한 유저가 다시 로그인한 경우
-                    if let accessToken = apiResponse.result?.access_token, let refreshToken = apiResponse.result?.refresh_token {
-                        // accessToken과 refreshToken을 저장
+                    if let loginResult = apiResponse.result {
+                        let accessToken = loginResult.accessToken
+                        let refreshToken = loginResult.refreshToken
+                        // print("accessToken \(accessToken)")
+                        // print("refreshToken \(refreshToken)")
                         let _ = KeychainService.add(key: K.Key.accessToken, value: accessToken)
                         let _ = KeychainService.add(key: K.Key.refreshToken, value: refreshToken)
                         RootViewControllerService.toBaseViewController()
                     } else { // 처음 로그인한 유저, 가입 절차로 넘어감
+                        // print("accessToken nil")
+                        // print("refreshToken nil")
                         let policyVC = PolicyAgreementViewController()
+                        policyVC.configure(appletAuth: authorizationCode)
                         policyVC.modalPresentationStyle = .overFullScreen
                         self.present(policyVC, animated: false)
                     }
@@ -109,8 +113,8 @@ extension LoginViewController {
     }
     
     struct AppleLoginResult: Codable {
-        let access_token: String
-        let refresh_token: String
+        let accessToken: String
+        let refreshToken: String
     }
     
 }

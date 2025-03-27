@@ -13,6 +13,8 @@ class UserTypePickerViewController: UIViewController {
     private let userTypePiverView = UserTypePickerView()
     private var isMarketingAgreementChecked: Bool = false
     private var userNickname: String = ""
+    private var appleAuth: String = ""
+    private var selectedType: UserType?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +29,7 @@ class UserTypePickerViewController: UIViewController {
 extension UserTypePickerViewController {
     func setButtonActions() {
         userTypePiverView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
-        userTypePiverView.nextButton.addTarget(self, action: #selector(changeRootToHomeVC), for: .touchUpInside)
+        userTypePiverView.nextButton.addTarget(self, action: #selector(signUp), for: .touchUpInside)
         let buttons = [
             userTypePiverView.studentButton,
             userTypePiverView.collegeButton,
@@ -37,11 +39,6 @@ extension UserTypePickerViewController {
         for btn in buttons {
             btn.addTarget(self, action: #selector(selectUserType(_ :)), for: .touchUpInside)
         }
-    }
-    
-    @objc
-    private func changeRootToHomeVC() {
-        RootViewControllerService.toBaseViewController()
     }
     
     @objc
@@ -57,6 +54,7 @@ extension UserTypePickerViewController {
             if btn == sender {
                 btn.selectedView()
                 userTypePiverView.nextButton.available()
+                self.selectedType = btn.returnUserType()
             } else {
                 btn.notSelectedView()
             }
@@ -73,13 +71,54 @@ extension UserTypePickerViewController {
 //MARK: API
 extension UserTypePickerViewController {
     // 이전 뷰컨에서 정보를 받아옴
-    public func configure( checked: Bool, userNickname: String ) {
+    public func configure(appleAuth: String, checked: Bool, userNickname: String ) {
+        self.appleAuth = appleAuth
         self.isMarketingAgreementChecked = checked
         self.userNickname = userNickname
     }
     
+    @objc
     private func signUp() {
+        let tail = "/auth/signup/apple"
+        let url = K.URLString.baseURL + tail
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "authorizationCode": appleAuth,
+            "Content-Type": "application/json"
+        ]
+        let parameters: [String: Any] = [
+            "adConsent": isMarketingAgreementChecked,
+            "nickname": userNickname,
+            "status": selectedType!.rawValueForAPI()
+        ]
         
+        AF.request(
+            url,
+            method: .post,
+            parameters: parameters,
+            headers: headers
+        )
+        // .validate(statusCode: 200..<300)
+        .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
+            switch response.result {
+            case .success(let apiResponse):
+                
+            case .failure(let error):
+                print("\(url) post 요청 실패: \(error.localizedDescription)")
+            }
+        }
+        .responseDecodable(of: ToYouErrorResponse.self) { response in
+            switch response.result {
+            case .success(let response):
+                print("\(response)")
+            case .failure(let error):
+                print("\(url) post 요청 실패: \(error.localizedDescription)")
+            }
+        }
+        
+        struct EmptyResult: Codable {
+            
+        }
     }
     
 }
