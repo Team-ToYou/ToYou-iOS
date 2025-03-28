@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class LogoutPopupVC: UIViewController {
 
@@ -26,7 +27,26 @@ class LogoutPopupVC: UIViewController {
     
     @objc
     private func logout() {
-        // 로그아웃 동작
+        let url = K.URLString.baseURL + "/auth/logout/apple"
+        guard let refreshToken = KeychainService.get(key: K.Key.refreshToken) else { return }
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer " + refreshToken,
+            "Content-Type": "application/json"
+        ]
+        AF.request(
+            url,
+            method: .post,
+            headers: headers
+        ).responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
+            switch response.result {
+            case .success(_):
+                self.dismiss(animated: true, completion: nil)
+                RootViewControllerService.toLoginViewController()
+            case .failure(let error):
+                print("\(url) post 요청 실패: \(error.localizedDescription)")
+            }
+        }
     }
     
     @objc

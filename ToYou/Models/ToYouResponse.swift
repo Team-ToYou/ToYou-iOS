@@ -23,3 +23,5 @@ struct ToYouErrorResponse : Codable {
     let code: String
     let message: String
 }
+
+struct EmptyResult: Codable {}

@@ -154,7 +154,4 @@ extension AppDelegate: MessagingDelegate {
         }
     }
     
-    struct EmptyResult: Codable {
-        
-    }
 }
