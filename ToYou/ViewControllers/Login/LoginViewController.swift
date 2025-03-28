@@ -29,7 +29,7 @@ class LoginViewController: UIViewController {
         let provider = ASAuthorizationAppleIDProvider()
         let requset = provider.createRequest()
         requset.requestedScopes = [.fullName,] // 사용자에게 제공받을 정보를 선택 (이름 및 이메일)
-
+        
         let controller = ASAuthorizationController(authorizationRequests: [requset])
         controller.delegate = self                    // 로그인 정보 관련 대리자 설정
         controller.presentationContextProvider = self // 인증창을 보여주기 위해 대리자 설정
@@ -77,7 +77,6 @@ extension LoginViewController {
             "accept": "*/*",
             "authorizationCode": authorizationCode
         ]
-        
         // JSONEncoding 사용하기
         AF.request(url,
                    method: .post,
@@ -86,22 +85,22 @@ extension LoginViewController {
             switch response.result {
             case .success(let apiResponse):
                 if apiResponse.isSuccess {
-                    // 기존 가입한 유저가 다시 로그인한 경우
                     if let loginResult = apiResponse.result {
+                        print("is New? \(loginResult.isUser)")
                         let accessToken = loginResult.accessToken
                         let refreshToken = loginResult.refreshToken
-                        // print("accessToken \(accessToken)")
-                        // print("refreshToken \(refreshToken)")
+                        print("accessToken  \(accessToken)")
+                        print("refreshToken \(refreshToken)")
                         let _ = KeychainService.add(key: K.Key.accessToken, value: accessToken)
                         let _ = KeychainService.add(key: K.Key.refreshToken, value: refreshToken)
-                        RootViewControllerService.toBaseViewController()
-                    } else { // 처음 로그인한 유저, 가입 절차로 넘어감
-                        // print("accessToken nil")
-                        // print("refreshToken nil")
-                        let policyVC = PolicyAgreementViewController()
-                        policyVC.configure(appletAuth: authorizationCode)
-                        policyVC.modalPresentationStyle = .overFullScreen
-                        self.present(policyVC, animated: false)
+                        if loginResult.isUser  { // 기존 가입한 유저가 다시 로그인한 경우
+                            RootViewControllerService.toBaseViewController()
+                        } else { // 처음 로그인한 유저, 가입 절차로 넘어감
+                            let policyVC = PolicyAgreementViewController()
+                            policyVC.configure(appletAuth: authorizationCode)
+                            policyVC.modalPresentationStyle = .overFullScreen
+                            self.present(policyVC, animated: false)
+                        }
                     }
                 } else {
                     print("\(tail) send API 오류: \(apiResponse.code) - \(apiResponse.message)")
@@ -113,6 +112,7 @@ extension LoginViewController {
     }
     
     struct AppleLoginResult: Codable {
+        let isUser: Bool
         let accessToken: String
         let refreshToken: String
     }

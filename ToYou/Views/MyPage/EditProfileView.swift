@@ -121,13 +121,13 @@ extension EditProfileView {
         nicknameTextField.text = nickname
         originalUserType = userType
         switch userType {
-        case .student:
+        case .school:
             studentButton.selectedView()
         case .college:
             collegeButton.selectedView()
         case .office:
             workerButton.selectedView()
-        case .ect:
+        case .etc:
             ectButton.selectedView()
         }
     }
@@ -268,10 +268,10 @@ extension EditProfileView {
         userTypeMainFrame.addSubview(workerButton)
         userTypeMainFrame.addSubview(ectButton)
         
-        studentButton.configure(userType: .student)
+        studentButton.configure(userType: .school)
         collegeButton.configure(userType: .college)
         workerButton.configure(userType: .office)
-        ectButton.configure(userType: .ect)
+        ectButton.configure(userType: .etc)
         
         userTypeMainLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview()

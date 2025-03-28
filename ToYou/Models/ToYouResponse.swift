@@ -12,6 +12,12 @@ struct ToYouResponse<T: Codable> : Codable {
     let result: T?
 }
 
+struct ToYouResponseWithoutResult : Codable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+}
+
 struct ToYouErrorResponse : Codable {
     let isSuccess: Bool
     let code: String

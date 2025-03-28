@@ -8,17 +8,17 @@
 import Foundation
 
 enum UserType: String {
-    case student, college, office , ect
+    case school, college, office , etc
     
     func rawValueForAPI() -> String {
         switch self {
-        case .student:
-            return "STUDENT"
+        case .school:
+            return "SCHOOL"
         case .college:
             return "COLLEGE"
         case .office:
             return "OFFICE"
-        case .ect:
+        case .etc:
             return "ETC"
         }
     }

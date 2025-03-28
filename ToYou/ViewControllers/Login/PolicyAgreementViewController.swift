@@ -88,7 +88,7 @@ extension PolicyAgreementViewController {
     @objc
     private func goToNext() {
         let nickNameVC = NicknameViewController()
-        nickNameVC.configure(appleAuth: appletAuth, check: false)
+        nickNameVC.configure(check: false)
         nickNameVC.modalPresentationStyle = .overFullScreen
         present(nickNameVC, animated: false)
     }
