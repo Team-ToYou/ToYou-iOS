@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if !userdefaults.bool(forKey: K.Key.tutorial) { // false: 저장이 안되어 있는 경우
             window?.rootViewController = TutorialViewController()
         } else { // true: 이미 튜토리얼을 완료한 경우
-            window?.rootViewController = BaseViewController()
+            window?.rootViewController = LoginViewController()
         }
         
         return

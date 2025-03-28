@@ -12,7 +12,7 @@ class PolicyAgreementViewController: UIViewController {
     let policyAgreementView = PolicyAgreementView()
     
     let policyLinkWebVC = PrivacyPolicyWebVC()
-    
+    private var appletAuth: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +20,10 @@ class PolicyAgreementViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
         self.setButtonActions()
         policyLinkWebVC.modalPresentationStyle = .overFullScreen
+    }
+    
+    public func configure(appletAuth: String) {
+        self.appletAuth = appletAuth
     }
     
 }
@@ -84,6 +88,7 @@ extension PolicyAgreementViewController {
     @objc
     private func goToNext() {
         let nickNameVC = NicknameViewController()
+        nickNameVC.configure(check: false)
         nickNameVC.modalPresentationStyle = .overFullScreen
         present(nickNameVC, animated: false)
     }
