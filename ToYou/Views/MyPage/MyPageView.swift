@@ -90,8 +90,6 @@ class MyPageView: UIView {
         super.init(frame: frame)
         // self.translatesAutoresizingMaskIntoConstraints = false // 임시 너비 제약조건 제거를 통해 leading.trailing 을 동시에 실행했을 때, 발생하는 경고 삭제
         self.backgroundColor = .background
-        self.addBasicComponents()
-        self.addProfileComponents()
     }
     
     required init?(coder: NSCoder) {
@@ -114,6 +112,8 @@ extension MyPageView {
         
         scrollView.contentSize = CGSize(width: screenWidth , height: 550)
         
+        addBasicComponents()
+        addProfileComponents()
         addScrollView()
         addButtonStack()
         addAccountRelatedComponents()
@@ -126,6 +126,31 @@ extension MyPageView {
             make.leading.trailing.bottom.equalToSuperview()
             make.top.equalTo(profileFrame.snp.bottom).offset(21)
         }
+    }
+    
+    private func addButtonStack() {
+        scrollView.addSubview(mainStack)
+        
+        let screenWidth = UIScreen.main.bounds.width - 74
+        
+        mainStack.snp.makeConstraints { make in
+            make.width.equalTo(screenWidth)
+            make.centerX.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+        }
+        
+        mainStack.addArrangedSubview(notificationSetButton)
+        mainStack.addArrangedSubview(sendFeedbackButton)
+        mainStack.addArrangedSubview(sendQueryButton)
+        mainStack.addArrangedSubview(policyButton)
+        mainStack.addArrangedSubview(versionLabel)
+        
+        notificationSetButton.configure(title: "알림 설정")
+        sendFeedbackButton.configure(title: "의견 보내기")
+        sendQueryButton.configure(title: "문의하기")
+        policyButton.configure(title: "약관 및 정책")
+        versionLabel.configure(title: "서비스 버전")
+        versionLabel.versionButton()
     }
     
     private func addAccountRelatedComponents() {
@@ -150,29 +175,6 @@ extension MyPageView {
             make.trailing.top.equalToSuperview()
         }
         
-    }
-    
-    private func addButtonStack() {
-        scrollView.addSubview(mainStack)
-        
-        mainStack.snp.makeConstraints { make in
-            make.width.equalToSuperview().inset(37)
-            make.leading.equalToSuperview().offset(37)
-            make.top.equalTo(scrollView.snp.top)
-        }
-        
-        mainStack.addArrangedSubview(notificationSetButton)
-        mainStack.addArrangedSubview(sendFeedbackButton)
-        mainStack.addArrangedSubview(sendQueryButton)
-        mainStack.addArrangedSubview(policyButton)
-        mainStack.addArrangedSubview(versionLabel)
-        
-        notificationSetButton.configure(title: "알림 설정")
-        sendFeedbackButton.configure(title: "의견 보내기")
-        sendQueryButton.configure(title: "문의하기")
-        policyButton.configure(title: "약관 및 정책")
-        versionLabel.configure(title: "서비스 버전")
-        versionLabel.versionButton()
     }
     
     private func addBasicComponents() {
