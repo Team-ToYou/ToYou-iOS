@@ -98,16 +98,16 @@ class MyPageView: UIView {
 }
 
 extension MyPageView {
-    public func configure(nickname: String, friends: Int) {
-        nicknameLabel.text = nickname
-        friendsLabel.text = "친구 \(friends)먕"
+    public func configure(nickname: String?, friends: Int?) {
+        nicknameLabel.text = nickname ?? " "
+        friendsLabel.text = "친구 \(friends ?? 0)명"
     }
     
 }
 
 extension MyPageView {
     
-    public func configure() {
+    public func setConstraints() {
         let screenWidth = UIScreen.main.bounds.width
         
         scrollView.contentSize = CGSize(width: screenWidth , height: 550)

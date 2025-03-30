@@ -82,10 +82,10 @@ class UserTypePickerView: UIView {
         self.addSubview(workerButton)
         self.addSubview(ectButton)
         
-        studentButton.configure(userType: .school)
-        collegeButton.configure(userType: .college)
-        workerButton.configure(userType: .office)
-        ectButton.configure(userType: .etc)
+        studentButton.configure(userType: .SCHOOL)
+        collegeButton.configure(userType: .COLLEGE)
+        workerButton.configure(userType: .OFFICE)
+        ectButton.configure(userType: .ETC)
         
         studentButton.snp.makeConstraints { make in
             make.top.equalTo(subLabel.snp.bottom).offset(24)
