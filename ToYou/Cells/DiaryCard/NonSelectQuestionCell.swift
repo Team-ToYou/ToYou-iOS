@@ -62,4 +62,9 @@ class NonSelectQuestionCell: UICollectionViewCell {
             $0.centerX.equalToSuperview()
         }
     }
+    
+    func setQuestion(content: String, questioner: String) {
+        self.questionLabel.text = content
+        self.fromLabel.text = "From. \(questioner)"
+    }
 }

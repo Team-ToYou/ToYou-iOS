@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import Alamofire
 
 class DiaryCardSelectViewController: UIViewController {
     let diaryCardSelectView = DiaryCardSelectView()
     
     private var selectedItemsCount: Int = 0
+    
+    private var longQuestionList: [Question] = []
+    private var shortQuestionList: [Question] = []
+    private var selectQuestionList: [Question] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +29,7 @@ class DiaryCardSelectViewController: UIViewController {
         diaryCardSelectView.selectOptionCollectionView.delegate = self
         
         setAction()
+        setAPI()
     }
     
     // MARK: - action
@@ -50,17 +56,49 @@ class DiaryCardSelectViewController: UIViewController {
         diaryCardSelectView.nextButton.setTitleColor(isActive ? .black04 : .black01, for: .normal)
     }
 
+    private func setAPI() {
+        let url = "https://to-you.store/questions"
+        
+        // 임시 accessToken
+        let token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MTA1MTIsImV4cCI6MTc0NDAyMDExMiwic3ViIjoiMiIsImlkIjoyLCJjYXRlZ29yeSI6ImFjY2VzcyJ9.P07B0Yl4RZk0TGuIYOrw2LQndsFY3XysjbliOoX7IxE"
+        
+        let headers: HTTPHeaders = [
+            "Authorization": token
+        ]
+        
+        AF.request(url, method: .get, headers: headers)
+            .validate()
+            .responseDecodable(of: QuestionResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    print("questions api success")
+                    
+                    // 질문 타입에 따라 분류
+                    self.longQuestionList = data.result.questionList.filter { $0.questionType == .long }
+                    self.shortQuestionList = data.result.questionList.filter { $0.questionType == .short }
+                    self.selectQuestionList = data.result.questionList.filter { $0.questionType == .optional }
+
+                    // UI 업데이트
+                    self.diaryCardSelectView.longOptionCollectionView.reloadData()
+                    self.diaryCardSelectView.shortOptionCollectionView.reloadData()
+                    self.diaryCardSelectView.selectOptionCollectionView.reloadData()
+                    
+                case .failure(let error):
+                    print("questions api fail")
+                }
+            }
+    }
 }
 
 // MARK: - extension
 extension DiaryCardSelectViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == diaryCardSelectView.longOptionCollectionView {
-            return 2
+            return longQuestionList.count
         } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
-            return 3
+            return shortQuestionList.count
         } else if collectionView == diaryCardSelectView.selectOptionCollectionView {
-            return 2
+            return selectQuestionList.count
         }
         return 0
     }
@@ -70,20 +108,22 @@ extension DiaryCardSelectViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NonSelectQuestionCell.identifier, for: indexPath) as? NonSelectQuestionCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = longQuestionList[indexPath.item]
+            cell.setQuestion(content: question.content, questioner: question.questioner)
             return cell
         } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NonSelectQuestionCell.identifier, for: indexPath) as? NonSelectQuestionCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = shortQuestionList[indexPath.item]
+            cell.setQuestion(content: question.content, questioner: question.questioner)
             return cell
         } else if collectionView == diaryCardSelectView.selectOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectQuestionCell.identifier, for: indexPath) as? SelectQuestionCell else {
                 return UICollectionViewCell()
             }
-            
-            cell.optionTableView.dataSource = self
+            let question = selectQuestionList[indexPath.item]
+            cell.setQuestion(content: question.content, options: question.answerOption ?? [], questioner: question.questioner)
             cell.optionTableView.isUserInteractionEnabled = false
             
             return cell
@@ -140,20 +180,5 @@ extension DiaryCardSelectViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: 172, height: 190)
         }
         return CGSize(width: 100, height: 100)
-    }
-}
-
-extension DiaryCardSelectViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SelectQuestionOptionCell.identifier, for: indexPath) as? SelectQuestionOptionCell else {
-            return UITableViewCell()
-        }
-        cell.selectionStyle = .none
-        
-        return cell
     }
 }
