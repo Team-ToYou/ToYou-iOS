@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class MyPageViewController: UIViewController {
     
@@ -26,13 +27,47 @@ class MyPageViewController: UIViewController {
         policyLinkWebVC.modalPresentationStyle = .popover
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        getUserInfo()
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        myPageView.configure()
+        myPageView.setConstraints()
     }
     
 }
 
+extension MyPageViewController {
+    private func getUserInfo() {
+        let url = K.URLString.baseURL + "/users/mypage"
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = ["accept" : " ",
+                                    "Authorization": "Bearer " + accessToken]
+        AF.request(
+            url,
+            method: .get,
+            headers: headers
+        ).responseDecodable(of: ToYouResponse<MyPageResult>.self) { response in
+            switch response.result {
+            case .success(let APIResponse):
+                guard let result = APIResponse.result else { return }
+                print(result)
+                self.myPageView.configure(nickname: result.nickname, friends: result.friendNum)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    struct MyPageResult: Codable {
+        let userId: Int?
+        let nickname: String?
+        let friendNum: Int?
+        let status: UserType?
+    }
+}
 extension MyPageViewController: UIScrollViewDelegate {
     
 }

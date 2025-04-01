@@ -22,7 +22,7 @@ class EditProfileViewController: UIViewController {
         self.setNicknameActions()
         self.setUserTypeButtonActions()
         self.hideKeyboardWhenTappedAround()
-        editProfileView.configure(nickname: "Rudy", userType: .college)
+        editProfileView.configure(nickname: "Rudy", userType: .COLLEGE)
     }
     
     override func viewDidLayoutSubviews() {
