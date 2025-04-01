@@ -11,7 +11,7 @@ import Alamofire
 class NicknameViewController: UIViewController {
     
     private let nicknameView = NicknameView()
-    private var isMarketingAgreementChecked: Bool = false
+    private var isMarketingAgreementChecked: Bool = true
     private var appleAuth: String = ""
     
     override func viewDidLoad() {
