@@ -50,6 +50,8 @@ extension URLSession {
             methodString = "PUT"
         case .get:
             methodString = "GET"
+        case .patch:
+            methodString = "PATCH"
         default :
             break
         }

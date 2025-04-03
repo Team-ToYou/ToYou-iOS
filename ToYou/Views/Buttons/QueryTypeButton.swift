@@ -26,7 +26,7 @@ class QueryTypeButton: UIButton {
     
     private lazy var subLabel = UILabel().then {
         $0.text = " "
-        $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 11)
+        $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 13) // 1차 QA +2
         $0.textColor = .black00
     }
     

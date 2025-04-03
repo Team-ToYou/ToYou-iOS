@@ -9,6 +9,8 @@ import UIKit
 
 class UserTypePickerView: UIView {
     
+    let buttonSpacing: CGFloat = 12
+    
     // MARK: Main Components
     private lazy var mainLabel = UILabel().then {
         $0.text = "현재 상태를 알려주세요."
@@ -19,7 +21,7 @@ class UserTypePickerView: UIView {
     private lazy var subLabel = UILabel().then {
         $0.text = "선택하신 정보를 기반으로 맞춤형 질문을 추천해드립니다.\n다른 목적으로 사용되거나 제 3자에게 제공되지 않습니다."
         $0.numberOfLines = 2
-        $0.font = UIFont(name: K.Font.s_core_regular , size: 12)
+        $0.font = UIFont(name: K.Font.s_core_regular , size: 13)
         $0.textAlignment = .center
         $0.textColor = .black02
     }
@@ -93,17 +95,17 @@ class UserTypePickerView: UIView {
         }
         
         collegeButton.snp.makeConstraints { make in
-            make.top.equalTo(studentButton.snp.bottom).offset(24)
+            make.top.equalTo(studentButton.snp.bottom).offset(buttonSpacing)
             make.leading.trailing.equalToSuperview().inset(60)
         }
         
         workerButton.snp.makeConstraints { make in
-            make.top.equalTo(collegeButton.snp.bottom).offset(24)
+            make.top.equalTo(collegeButton.snp.bottom).offset(buttonSpacing)
             make.leading.trailing.equalToSuperview().inset(60)
         }
         
         ectButton.snp.makeConstraints { make in
-            make.top.equalTo(workerButton.snp.bottom).offset(24)
+            make.top.equalTo(workerButton.snp.bottom).offset(buttonSpacing)
             make.leading.trailing.equalToSuperview().inset(60)
         }
         

@@ -30,7 +30,7 @@ class MyPageView: UIView {
         $0.layer.cornerRadius = 26
     }
     
-    private lazy var nicknameLabel = UILabel().then {
+    public lazy var nicknameLabel = UILabel().then {
         $0.text = " "
         $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 24)
         $0.textColor = .black04
@@ -98,11 +98,11 @@ class MyPageView: UIView {
 }
 
 extension MyPageView {
-    public func configure(nickname: String?, friends: Int?) {
-        nicknameLabel.text = nickname ?? " "
-        friendsLabel.text = "친구 \(friends ?? 0)명"
-    }
     
+    public func configure(myPageInfo: MyPageResult) {
+        nicknameLabel.text = myPageInfo.nickname ?? " "
+        friendsLabel.text = "친구 \(myPageInfo.friendNum ?? 0)명"
+    }
 }
 
 extension MyPageView {
