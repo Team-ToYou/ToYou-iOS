@@ -20,7 +20,7 @@ class NicknameView: UIView {
         $0.placeholder = "닉네임을 입력해주세요"
         $0.textColor = .black04
         $0.tintColor = .black01
-        $0.font = UIFont(name: K.Font.s_core_light, size: 15)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 13)
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 7
         
