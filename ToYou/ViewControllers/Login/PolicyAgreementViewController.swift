@@ -88,7 +88,7 @@ extension PolicyAgreementViewController {
     @objc
     private func goToNext() {
         let nickNameVC = NicknameViewController()
-        nickNameVC.configure(check: false)
+        nickNameVC.configure(check: true)
         nickNameVC.modalPresentationStyle = .overFullScreen
         present(nickNameVC, animated: false)
     }

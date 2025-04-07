@@ -12,7 +12,7 @@ import Then
 class SettingCustomButton: UIButton {
     
     private lazy var mainTitle = UILabel().then {
-        $0.font = UIFont(name: K.Font.s_core_regular, size: 11)
+        $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
         $0.textColor = .black04
     }
     

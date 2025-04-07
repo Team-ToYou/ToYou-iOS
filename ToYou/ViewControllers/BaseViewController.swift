@@ -38,9 +38,10 @@ class BaseViewController: UITabBarController {
     }
     
     private func setupTabBarItems() {
-        let iconSizeForHome = CGSize(width: 24, height: 24)
-        let iconSize = CGSize(width: 30, height: 30)
-        let iconSizeForMyPage = CGSize(width: 32, height: 32)
+        let size: CGFloat = 1.75
+        let iconSizeForHome = CGSize(width: 12 * size, height: 12 * size)
+        let iconSize = CGSize(width: 15 * size, height: 15 * size)
+        let iconSizeForMyPage = CGSize(width: 16 * size, height: 16 * size)
         
         let insets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
@@ -81,4 +82,9 @@ extension UIImage {
             draw(in: CGRect(origin: .zero, size: size))
         }
     }
+}
+
+import SwiftUI
+#Preview {
+    BaseViewController()
 }

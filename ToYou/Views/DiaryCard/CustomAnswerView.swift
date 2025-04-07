@@ -62,7 +62,7 @@ class CustomAnswerView: UIView {
         }
         
         textView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(8)
+            $0.top.equalToSuperview()
             $0.horizontalEdges.equalToSuperview().inset(6)
             $0.bottom.equalTo(countLabel.snp.top).offset(-10)
         }
