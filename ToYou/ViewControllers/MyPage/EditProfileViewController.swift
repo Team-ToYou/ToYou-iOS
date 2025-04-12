@@ -12,7 +12,8 @@ class EditProfileViewController: UIViewController {
     
     let editProfileView = EditProfileView()
     var myPageInfo: MyPageResult?
-    var refreshMyPage: ((String) -> Void)?
+    var updateNickname: ((String) -> Void)?
+    var updateUserType: ((UserType) -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +75,7 @@ extension EditProfileViewController {
         let parameters: [String: Any] = [
             "nickname": editProfileView.newNickname!
         ]
-        URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
+        // URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
         AF.request(
             url,
             method: .patch,
@@ -85,7 +86,7 @@ extension EditProfileViewController {
         .responseDecodable(of: ToYouResponseWithoutResult.self) { response in
             switch response.result {
             case .success(_):
-                self.refreshMyPage?(self.editProfileView.newNickname!)
+                self.updateNickname?(self.editProfileView.newNickname!)
                 self.editProfileView.updatedNickname()
                 self.editProfileView.resetNickname()
                 self.editProfileView.completeButton.unavailable()
@@ -107,7 +108,7 @@ extension EditProfileViewController {
         let parameters: [String: Any] = [
             "status": editProfileView.newUserType!.rawValueForAPI()
         ]
-        URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
+        // URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
         AF.request(
             url,
             method: .patch,
@@ -118,6 +119,7 @@ extension EditProfileViewController {
         .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
             switch response.result {
             case .success(_):
+                self.updateUserType?(self.editProfileView.newUserType!)
                 self.editProfileView.resetUserType()
                 self.editProfileView.completeButton.unavailable()
                 self.editProfileView.updateNewUserType()

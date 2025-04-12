@@ -158,7 +158,7 @@ extension EditProfileView {
         let buttons = [studentButton, collegeButton, workerButton, etcButton]
         for btn in buttons {
             if btn.returnUserType() == originalUserType {
-                print("유저 타입은 \(btn.returnUserType())입니다.")
+                // print("유저 타입은 \(btn.returnUserType())입니다.")
                 btn.selectedView()
             } else {
                 btn.notSelectedView()

@@ -84,8 +84,11 @@ extension MyPageViewController {
     @objc
     private func goToEditProfile() {
         self.editProfileViewController.configure(myPageInfo: self.myPageInfo!)
-        editProfileViewController.refreshMyPage = { [weak self] data in
+        editProfileViewController.updateNickname = { [weak self] data in
             self?.myPageView.nicknameLabel.text = data
+        }
+        editProfileViewController.updateUserType = { [weak self] data in
+            self?.myPageInfo?.status = data
         }
         editProfileViewController.modalPresentationStyle = .overFullScreen
         present(editProfileViewController, animated: false)

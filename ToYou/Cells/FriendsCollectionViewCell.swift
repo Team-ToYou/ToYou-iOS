@@ -7,6 +7,15 @@
 
 import UIKit
 
+struct FriendInfo {
+    let nickname: String
+    let emotion: Emotion?
+}
+
+class FriendsModel {
+    static let dummies: [FriendInfo] = []
+}
+
 protocol FriendCollectionViewCellDelegate: AnyObject {
     func sendQuery(to friend: FriendInfo)
     func disconnect(with friend: FriendInfo)
