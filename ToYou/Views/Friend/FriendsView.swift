@@ -116,8 +116,6 @@ extension FriendsView {
             make.height.equalTo(FriendCellHeight)
         }
         
-        friendSearchResultView.configure(emotion: nil, nickname: "ddd", state: .sentRequestToMe)
-        
     }
     
     private func setupBackground() {

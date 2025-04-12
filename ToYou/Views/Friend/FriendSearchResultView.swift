@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class FriendSearchResultView: UIView {
     
     private var currentState: FriendSearchResultEnum?
@@ -28,7 +29,7 @@ class FriendSearchResultView: UIView {
         $0.textColor = .black04
     }
     
-    private lazy var stateButton = FriendStateButton()
+    public lazy var stateButton = FriendStateButton()
     
     private lazy var warningFrame = UIView().then {
         $0.backgroundColor = .white
@@ -41,7 +42,7 @@ class FriendSearchResultView: UIView {
     }
     
     private lazy var unhappyImage = UIImageView().then {
-        $0.image = .worriedGrayIcon
+        $0.image = .unhappyIcon
         $0.contentMode = .scaleAspectFit
     }
     

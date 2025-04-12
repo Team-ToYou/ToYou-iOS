@@ -12,6 +12,7 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
     
     let friendsView = FriendsView()
     let disconnectPopupVC = DisconnectFriendPopupVC()
+    var searchFriendResult: SearchFriendResult?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,11 +22,12 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         friendsView.friendsCollectionView.dataSource = self
         friendsView.searchTextField.delegate = self
         hideKeyboardWhenTappedAround()
+        self.addActions()
     }
     
 }
 
-// MARK: 친구요청 보내기
+// MARK: 친구 추가하기
 extension FriendsViewController {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -33,7 +35,7 @@ extension FriendsViewController {
         searchUserNickname(nickname)
         return true
     }
-    
+    // 친구 검색
     private func searchUserNickname(_ nickname: String) {
         if nickname.isEmpty {
             view.endEditing(true)
@@ -42,7 +44,6 @@ extension FriendsViewController {
         // API 연동
         guard let accessToken = KeychainService.get(key: K.Key.accessToken),
               let encodedNickname = nickname.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
-        print(encodedNickname)
         let tail = "/friends/search"
         let url = K.URLString.baseURL + tail + "?keyword=" + encodedNickname
         let headers: HTTPHeaders = [
@@ -55,18 +56,18 @@ extension FriendsViewController {
             encoding: JSONEncoding.default,
             headers: headers,
         )
-        .responseDecodable(of: ToYouResponse<SearchFriendRecord>.self) { response in
+        .responseDecodable(of: ToYouResponse<SearchFriendResult>.self) { response in
             switch response.result {
             case .success(let apiResponse):
                 print(apiResponse)
                 switch apiResponse.result?.friendStatus {
-                case "FRIEND": // 친구
+                case .FRIEND: // 친구
                     self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .alreadyFriend)
-                case "NOT_FRIEND": // 친구 X
+                case .NOT_FRIEND: // 친구 X
                     self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .canRequest)
-                case "REQUEST_SENT": // 친구 요청 보냄
+                case .REQUEST_SENT: // 친구 요청 보냄
                     self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .cancelRequire)
-                case "REQUEST_RECEIVED": // 친구 요청 받음
+                case .REQUEST_RECEIVED: // 친구 요청 받음
                     self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .sentRequestToMe)
                 case .none:
                     if apiResponse.code == "USER400" {
@@ -74,28 +75,91 @@ extension FriendsViewController {
                     } else if apiResponse.code == "USER401" {
                         self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .couldNotSendToMe)
                     }
-                default:
-                    break
                 }
+                self.searchFriendResult = apiResponse.result
             case .failure(let error):
+                self.friendsView.friendSearchResultView.configure(emotion: .normal, nickname: " ", state: .networkError)
                 print("\(url) get 요청 실패: \(error.localizedDescription)")
             }
         }
     }
     
-    struct SearchFriendRecord: Codable {
-        let userId: Int
-        let nickname: String
-        let friendStatus: String
+    private func addActions() {
+        self.friendsView.friendSearchResultView.stateButton.addTarget(self, action: #selector(friendButtonTapped), for: .touchUpInside)
     }
     
-    enum RequestStatus: Codable {
-        case FRIEND, NOT_FRIEND, REQUEST_SENT, REQUEST_RECEIVED
+    @objc
+    private func friendButtonTapped() {
+        friendsAPI(searchFriendResult?.friendStatus ?? nil)
     }
     
+    private func friendsAPI(_ status: FriendStatusEnum? ) {
+        var method: HTTPMethod?
+        var tail: String?
+        switch status {
+        case .FRIEND, .none: // 함수 종료
+            return
+        case .NOT_FRIEND: // 요청 하기
+            tail = "/friends/requests"
+            method = .post
+        case .REQUEST_SENT: // 요청 거절하기
+            tail = "/friends"
+            method = .delete
+        case .REQUEST_RECEIVED: // 요청 수락하기
+            tail = "/friends/requests/approve"
+            method = .patch
+        }
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken),
+              let userId = searchFriendResult?.userId else { return }
+        let url = K.URLString.baseURL + tail!
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)",
+            "Content-Type": "application/json"
+        ]
+        let parameters: [String: Any] = [
+            "userId": userId
+        ]
+        AF.request(
+            url,
+            method: method!,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers,
+        ).responseDecodable(of: ToYouResponse<RequestFriendResult>.self) { response in
+            switch response.result {
+            case .success(_):
+                print("\(String(describing: method)) 요청 완료")
+                return
+                // collectionView.reload()
+            case .failure(let error):
+                print("\(url) \(String(describing: method)) 요청 실패: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func deleteFriend() {
+        
+    }
+}
+
+struct RequestFriendResult: Codable {
+    let myName: String
+}
+    
+struct SearchFriendResult: Codable {
+    let userId: Int
+    let nickname: String
+    let friendStatus: FriendStatusEnum
+}
+
+enum FriendStatusEnum: String, Codable {
+    case FRIEND, NOT_FRIEND, REQUEST_SENT, REQUEST_RECEIVED
 }
 
 extension FriendsViewController: UICollectionViewDataSource {
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return FriendsModel.dummies.count
