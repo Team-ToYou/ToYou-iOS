@@ -56,9 +56,10 @@ extension EditProfileViewController {
         if editProfileView.isNicknameChecked { // 변경된 닉네임이 확인된 경우
             patchNickname()
         }
-        if editProfileView.newUserType != editProfileView.originalUserType { // 유저 타입이 다른 경우
+        if let _ = editProfileView.newUserType, editProfileView.newUserType != editProfileView.originalUserType { // 유저 타입이 다른 경우
             patchUerType()
         }
+        editProfileView.checkAnyInfoChanged()
     }
     
     private func patchNickname() {
