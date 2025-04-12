@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import Alamofire
 
-class FriendsViewController: UIViewController {
+class FriendsViewController: UIViewController, UITextFieldDelegate {
     
     let friendsView = FriendsView()
     let disconnectPopupVC = DisconnectFriendPopupVC()
@@ -16,11 +17,80 @@ class FriendsViewController: UIViewController {
         super.viewDidLoad()
         self.view = friendsView
         disconnectPopupVC.modalPresentationStyle = .overFullScreen
-        
         friendsView.friendsCollectionView.delegate = self
         friendsView.friendsCollectionView.dataSource = self
-        
+        friendsView.searchTextField.delegate = self
         hideKeyboardWhenTappedAround()
+    }
+    
+}
+
+// MARK: 친구요청 보내기
+extension FriendsViewController {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let nickname = friendsView.searchTextField.text ?? ""
+        searchUserNickname(nickname)
+        return true
+    }
+    
+    private func searchUserNickname(_ nickname: String) {
+        if nickname.isEmpty {
+            view.endEditing(true)
+            return
+        } // 빈거면 그냥 내리기
+        // API 연동
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken),
+              let encodedNickname = nickname.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+        print(encodedNickname)
+        let tail = "/friends/search"
+        let url = K.URLString.baseURL + tail + "?keyword=" + encodedNickname
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        AF.request(
+            url,
+            method: .get,
+            encoding: JSONEncoding.default,
+            headers: headers,
+        )
+        .responseDecodable(of: ToYouResponse<SearchFriendRecord>.self) { response in
+            switch response.result {
+            case .success(let apiResponse):
+                print(apiResponse)
+                switch apiResponse.result?.friendStatus {
+                case "FRIEND": // 친구
+                    self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .alreadyFriend)
+                case "NOT_FRIEND": // 친구 X
+                    self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .canRequest)
+                case "REQUEST_SENT": // 친구 요청 보냄
+                    self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .cancelRequire)
+                case "REQUEST_RECEIVED": // 친구 요청 받음
+                    self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .sentRequestToMe)
+                case .none:
+                    if apiResponse.code == "USER400" {
+                        self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .notExist)
+                    } else if apiResponse.code == "USER401" {
+                        self.friendsView.friendSearchResultView.configure(emotion: .none, nickname: nickname, state: .couldNotSendToMe)
+                    }
+                default:
+                    break
+                }
+            case .failure(let error):
+                print("\(url) get 요청 실패: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    struct SearchFriendRecord: Codable {
+        let userId: Int
+        let nickname: String
+        let friendStatus: String
+    }
+    
+    enum RequestStatus: Codable {
+        case FRIEND, NOT_FRIEND, REQUEST_SENT, REQUEST_RECEIVED
     }
     
 }
