@@ -59,11 +59,10 @@ class DiaryCardSelectViewController: UIViewController {
     private func setAPI() {
         let url = "https://to-you.store/questions"
         
-        // 임시 accessToken
-        let token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MTA1MTIsImV4cCI6MTc0NDAyMDExMiwic3ViIjoiMiIsImlkIjoyLCJjYXRlZ29yeSI6ImFjY2VzcyJ9.P07B0Yl4RZk0TGuIYOrw2LQndsFY3XysjbliOoX7IxE"
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         
         let headers: HTTPHeaders = [
-            "Authorization": token
+            "Authorization": "Bearer " + accessToken
         ]
         
         AF.request(url, method: .get, headers: headers)
@@ -84,7 +83,7 @@ class DiaryCardSelectViewController: UIViewController {
                     self.diaryCardSelectView.selectOptionCollectionView.reloadData()
                     
                 case .failure(let error):
-                    print("questions api fail")
+                    print("questions api fail: \(error)")
                 }
             }
     }

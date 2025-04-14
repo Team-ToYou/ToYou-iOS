@@ -14,4 +14,13 @@ class DiaryCardPreviewController: UIViewController {
         super.viewDidLoad()
         self.view = diaryCardPreview
     }
+    
+    // MARK: - action
+    private func setAction() {
+        diaryCardPreview.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func backButtonTapped() {
+        self.navigationController?.popViewController(animated: true)
+    }
 }

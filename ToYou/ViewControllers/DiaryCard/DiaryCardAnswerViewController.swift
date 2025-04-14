@@ -27,10 +27,17 @@ class DiaryCardAnswerViewController: UIViewController {
     // MARK: - action
     private func setAction() {
         diaryCardAnswerView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+        diaryCardAnswerView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
     @objc private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func nextButtonTapped() {
+        let previewVC = DiaryCardPreviewController()
+        previewVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(previewVC, animated: true)
     }
 }
 
