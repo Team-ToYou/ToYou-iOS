@@ -10,15 +10,18 @@ import Alamofire
 
 class HomeViewController: UIViewController {
     let homeView = HomeView()
-//    var emotion = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeView
         navigationController?.navigationBar.isHidden = true
         
-//        setView(emotion: emotion)
         setAction()
+        getAPI()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         getAPI()
     }
     
@@ -35,11 +38,11 @@ class HomeViewController: UIViewController {
     }
     
     private func getAPI() {
-        // 임시 accessToken
-        let token = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NDI4MTA1MTIsImV4cCI6MTc0NDAyMDExMiwic3ViIjoiMiIsImlkIjoyLCJjYXRlZ29yeSI6ImFjY2VzcyJ9.P07B0Yl4RZk0TGuIYOrw2LQndsFY3XysjbliOoX7IxE"
+        print("HomeAPI")
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         
         let headers: HTTPHeaders = [
-            "Authorization": token
+            "Authorization": "Bearer " + accessToken
         ]
         
         AF.request("https://to-you.store/users/home", method: .get, encoding: JSONEncoding.default, headers: headers)

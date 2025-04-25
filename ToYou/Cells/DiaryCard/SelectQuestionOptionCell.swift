@@ -59,4 +59,8 @@ class SelectQuestionOptionCell: UITableViewCell {
             $0.left.equalToSuperview().offset(7.7)
         }
     }
+    
+    func setOptionText(_ text: String) {
+        self.optionLabel.text = text
+    }
 }

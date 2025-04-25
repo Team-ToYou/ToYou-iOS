@@ -9,11 +9,16 @@ import UIKit
 
 class SelectQuestionCell: UICollectionViewCell {
     static let identifier = "SelectQuestionCell"
-    
+    public var optionList: [String] = [] {
+        didSet {
+            optionTableView.reloadData()
+        }
+    }
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setView()
+        optionTableView.dataSource = self
     }
     
     required init?(coder: NSCoder) {
@@ -75,5 +80,26 @@ class SelectQuestionCell: UICollectionViewCell {
             $0.top.equalTo(optionTableView.snp.bottom).offset(7.5)
             $0.right.equalToSuperview()
         }
+    }
+    
+    func setQuestion(content: String, options: [String], questioner: String) {
+        self.questionLabel.text = content
+        self.optionList = options
+        self.fromLabel.text = "From. \(questioner)"
+    }
+}
+
+extension SelectQuestionCell: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return optionList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SelectQuestionOptionCell.identifier, for: indexPath) as? SelectQuestionOptionCell else {
+            return UITableViewCell()
+        }
+        cell.selectionStyle = .none
+        cell.setOptionText(optionList[indexPath.row])
+        return cell
     }
 }
