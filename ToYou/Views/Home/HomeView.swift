@@ -16,7 +16,7 @@ class HomeView: UIView {
     
     private let toyouLabel = UILabel().then {
         $0.text = "투유"
-        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 30)
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 35)
         $0.textColor = .black04
     }
     
@@ -121,4 +121,10 @@ class HomeView: UIView {
         }
     }
     
+}
+
+import SwiftUI
+
+#Preview {
+    HomeView()
 }

@@ -38,6 +38,7 @@ class HomeViewController: UIViewController {
     }
     
     private func getAPI() {
+        print("HomeAPI")
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         
         let headers: HTTPHeaders = [
