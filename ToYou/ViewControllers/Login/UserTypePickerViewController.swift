@@ -11,7 +11,7 @@ import Alamofire
 class UserTypePickerViewController: UIViewController {
 
     private let userTypePiverView = UserTypePickerView()
-    private var isMarketingAgreementChecked: Bool = false
+    private var isMarketingAgreementChecked: Bool = true
     private var userNickname: String = ""
     private var appleAuth: String = ""
     private var selectedType: UserType?
@@ -80,10 +80,10 @@ extension UserTypePickerViewController {
     private func signUp() {
         let tail = "/auth/signup/apple"
         let url = K.URLString.baseURL + tail
-        guard let refreshToken = KeychainService.get(key: K.Key.refreshToken) else { return }
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let headers: HTTPHeaders = [
             "accept": "*/*",
-            "Authorization": "Bearer " + refreshToken,
+            "Authorization": "Bearer " + accessToken,
             "Content-Type": "application/json"
         ]
         let parameters: [String: Any] = [
@@ -96,18 +96,28 @@ extension UserTypePickerViewController {
             url,
             method: .post,
             parameters: parameters,
+            encoding: JSONEncoding.default,
             headers: headers
         )
         .responseDecodable(of: ToYouResponseWithoutResult.self) { response in
             switch response.result {
-            case .success(_):
+            case .success(let response):
                 RootViewControllerService.toBaseViewController()
             case .failure(let error):
                 print("\(url) post 요청 실패: \(error.localizedDescription)")
             }
         }
+        .responseDecodable(of: ToYou400ErrorResponse.self) { response in
+            switch response.result {
+            case .success(let data):
+                break
+            case .failure(let error):
+                break
+            }
+        }
         
     }
+    
 }
 
 import SwiftUI

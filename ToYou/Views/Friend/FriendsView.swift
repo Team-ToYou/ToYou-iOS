@@ -37,7 +37,7 @@ class FriendsView: UIView {
         $0.spellCheckingType = .no
     }
     
-    private lazy var friendSearchResultView = FriendSearchResultView()
+    public lazy var friendSearchResultView = FriendSearchResultView()
     
     // 친구 목록
     private lazy var friendsListLabel = UILabel().then {
@@ -115,8 +115,6 @@ extension FriendsView {
             make.top.equalTo(searchTextField.snp.bottom).offset(15.8)
             make.height.equalTo(FriendCellHeight)
         }
-        
-        friendSearchResultView.configure(emotion: nil, nickname: "ddd", state: .acceptRequire)
         
     }
     

@@ -28,13 +28,13 @@ class BinarySelectionPopupView: UIView {
     public lazy var leftConfirmButton = UIButton().then {
         $0.setTitle("취소", for: .normal)
         $0.setTitleColor(.black04, for: .normal)
-        $0.titleLabel?.font = UIFont(name: K.Font.s_core_medium, size: 12.5)
+        $0.titleLabel?.font = UIFont(name: K.Font.s_core_light, size: 13)
     }
     
     public lazy var rightConfirmButton = UIButton().then {
         $0.setTitle("삭제", for: .normal)
         $0.setTitleColor(.red01, for: .normal)
-        $0.titleLabel?.font = UIFont(name: K.Font.s_core_medium, size: 12.5)
+        $0.titleLabel?.font = UIFont(name: K.Font.s_core_light, size: 13)
     }
     
     override init(frame: CGRect) {

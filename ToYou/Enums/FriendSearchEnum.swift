@@ -8,5 +8,5 @@
 import Foundation
 
 enum FriendSearchResultEnum {
-    case require, cancelRequire, alreadyFriend, acceptRequire, notExist, couldNotSendToMe
+    case canRequest, cancelRequire, alreadyFriend, sentRequestToMe, notExist, couldNotSendToMe, networkError
 }

@@ -11,7 +11,7 @@ import Alamofire
 class NicknameViewController: UIViewController {
     
     private let nicknameView = NicknameView()
-    private var isMarketingAgreementChecked: Bool = false
+    private var isMarketingAgreementChecked: Bool = true
     private var appleAuth: String = ""
     
     override func viewDidLoad() {
@@ -58,7 +58,6 @@ extension NicknameViewController {
     
     @objc
     private func checkOverlapped() {
-        // users/nickname/check?nickname=짱구
         let tail = "/users/nickname/check"
         let url = K.URLString.baseURL + tail + "?nickname=\(nicknameView.nicknameTextField.text!)"
         let headers: HTTPHeaders = [
@@ -80,10 +79,6 @@ extension NicknameViewController {
             case .failure(let error):
                 print("\(url) get 요청 실패: \(error.localizedDescription)")
             }
-        }
-        
-        struct NicknameCheckResult: Codable {
-            let exists: Bool
         }
     }
     

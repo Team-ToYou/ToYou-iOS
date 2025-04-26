@@ -33,7 +33,7 @@ class FriendStateButton: UIButton {
     
     public func configure(state: FriendSearchResultEnum) {
         switch state {
-        case .require:
+        case .canRequest:
             stateLabel.text = "친구 요청"
             self.backgroundColor = .gray00
         case .cancelRequire:
@@ -42,13 +42,16 @@ class FriendStateButton: UIButton {
         case .alreadyFriend:
             stateLabel.text = "친구"
             self.backgroundColor = .gray00
-        case .acceptRequire:
+        case .sentRequestToMe:
             stateLabel.text = "친구 수락"
             self.backgroundColor = .gray00
         case .notExist:
             stateLabel.text = " "
             self.backgroundColor = .white
         case .couldNotSendToMe:
+            stateLabel.text = " "
+            self.backgroundColor = .white
+        case .networkError:
             stateLabel.text = " "
             self.backgroundColor = .white
         }

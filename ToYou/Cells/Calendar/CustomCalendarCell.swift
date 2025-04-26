@@ -121,7 +121,7 @@ extension CustomCalendarCell: UICollectionViewDataSource {
 
 extension CustomCalendarCell: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.frame.width - (5 * 6)) / 7 // 7열 구조 유지, 간격 고려
+        let width = CGFloat(Int((collectionView.frame.width - (5 * 6)) / 7)) // 7열 구조 유지, 간격 고려
         let height = width
         return CGSize(width: width, height: height)
     }
