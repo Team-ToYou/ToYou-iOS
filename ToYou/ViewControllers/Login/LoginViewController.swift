@@ -25,7 +25,6 @@ class LoginViewController: UIViewController {
     
     @objc
     private func signinApple() {
-        print("Apple Login Tapped")
         let provider = ASAuthorizationAppleIDProvider()
         let requset = provider.createRequest()
         requset.requestedScopes = [.fullName,] // 사용자에게 제공받을 정보를 선택 (이름 및 이메일)
@@ -93,7 +92,7 @@ extension LoginViewController {
                         print("refreshToken \(refreshToken)")
                         let _ = KeychainService.add(key: K.Key.accessToken, value: accessToken)
                         let _ = KeychainService.add(key: K.Key.refreshToken, value: refreshToken)
-                        if loginResult.isUser  { // 기존 가입한 유저가 다시 로그인한 경우
+                        if loginResult.isUser!  { // 기존 가입한 유저가 다시 로그인한 경우
                             RootViewControllerService.toBaseViewController()
                         } else { // 처음 로그인한 유저, 가입 절차로 넘어감
                             let policyVC = PolicyAgreementViewController()
@@ -112,14 +111,11 @@ extension LoginViewController {
     }
     
     struct AppleLoginResult: Codable {
-        let isUser: Bool
+        let isUser: Bool?
         let accessToken: String
         let refreshToken: String
     }
     
-}
-
-import SwiftUI
-#Preview {
-    LoginViewController()
+    
+    
 }
