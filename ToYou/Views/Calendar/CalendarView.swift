@@ -189,3 +189,9 @@ class CalendarView: UIView {
 
     }
 }
+
+import SwiftUI
+
+#Preview {
+    CalendarViewController()
+}
