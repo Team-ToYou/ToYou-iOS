@@ -12,13 +12,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        let rootNavigation = UINavigationController(rootViewController: BaseViewController())
         
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = rootNavigation
         window?.makeKeyAndVisible()
+        
+        let userdefaults = UserDefaults.standard
+
+//        if userdefaults.bool(forKey: K.Key.tutorial) { // false: 저장이 안되어 있는 경우
+//            window?.rootViewController = TutorialViewController()
+//        } else { // true: 이미 튜토리얼을 완료한 경우
+//            window?.rootViewController = LoginViewController()
+//        }
+        
+        window?.rootViewController = BaseViewController()
         
         return
     }

@@ -9,8 +9,13 @@ import UIKit
 
 class EditProfileView: UIView {
     
-    public var isNicknameChecked: Bool = true
+    private let navigationBarHeight = 55
+    private let tabBarHeight = 68
+    
+    public var isNicknameChecked: Bool = false
+    public var newNickname: String?
     public var originalUserType: UserType?
+    public var newUserType: UserType?
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
@@ -31,7 +36,7 @@ class EditProfileView: UIView {
     private lazy var signUpTopLine = UIView().then {
         $0.backgroundColor = .gray00
     }
-    
+        
     private lazy var profileImage = UIImageView().then {
         $0.image = .defaultProfile
         $0.contentMode = .scaleAspectFit
@@ -86,25 +91,42 @@ class EditProfileView: UIView {
     }
     
     public lazy var studentButton = UserTypeButton()
-    
     public lazy var collegeButton = UserTypeButton()
-    
     public lazy var workerButton = UserTypeButton()
-    
-    public lazy var ectButton = UserTypeButton()
+    public lazy var etcButton = UserTypeButton()
     
     // MARK: Confirm Button
-    public lazy var completeButton = ConfirmButtonView()
+    public lazy var completeButton = ConfirmButton()
+    
+    public lazy var scrollView = UIScrollView().then {
+        $0.bounces = false
+        $0.isScrollEnabled = true
+        $0.showsVerticalScrollIndicator = false
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .background
         self.setupBackground()
         self.signUpTopTitleComponents()
-        self.setProfileImageComponent()
-        self.setNicknameEditComponent()
-        self.setUserTypeEditComponent()
-        self.setCompleteButtonComponent()
+    }
+    
+    public func checkAnyInfoChanged() {
+        if isNicknameChecked || newUserType != originalUserType {
+            completeButton.available()
+        } else {
+            completeButton.unavailable()
+        }
+    }
+    
+    public func resetNickname() {
+        isNicknameChecked = false
+        newNickname = nil
+    }
+    
+    public func resetUserType() {
+        originalUserType = newUserType
+        newUserType = nil
     }
     
     required init?(coder: NSCoder) {
@@ -115,18 +137,32 @@ class EditProfileView: UIView {
 
 // MARK: 사용자 정보를 불러온 후, 뷰를 구성
 extension EditProfileView {
-    public func configure( nickname: String, userType: UserType) {
-        nicknameTextField.text = nickname
-        originalUserType = userType
-        switch userType {
-        case .student:
+    public func configure( result: MyPageResult) {
+        nicknameTextField.text = result.nickname
+        originalUserType = result.status
+        switch result.status {
+        case .SCHOOL:
             studentButton.selectedView()
-        case .college:
+        case .COLLEGE:
             collegeButton.selectedView()
-        case .worker:
+        case .OFFICE:
             workerButton.selectedView()
-        case .ect:
-            ectButton.selectedView()
+        case .ETC:
+            etcButton.selectedView()
+        default :
+            break
+        }
+    }
+    
+    public func updateNewUserType() {
+        let buttons = [studentButton, collegeButton, workerButton, etcButton]
+        for btn in buttons {
+            if btn.returnUserType() == originalUserType {
+                print("유저 타입은 \(btn.returnUserType())입니다.")
+                btn.selectedView()
+            } else {
+                btn.notSelectedView()
+            }
         }
     }
     
@@ -138,10 +174,9 @@ extension EditProfileView {
 // MARK: 닉네임 수정 관련 동작
 extension EditProfileView {
     
-    public func defaultState() { // 기본 상태 or 텍스트 가 없는 상태
+    public func defaultState() { // 기본 상태 or 텍스트가 없는 상태
         warningLabel.text = "중복된 닉네임인지 확인해주세요."
         warningLabel.textColor = .black04
-        completeButton.unavailable()
         overlappedCheck.unavailable()
     }
     
@@ -149,51 +184,77 @@ extension EditProfileView {
         warningLabel.text = "중복된 닉네임인지 확인해주세요."
         warningLabel.textColor = .black04
         overlappedCheck.available()
-        completeButton.unavailable()
     }
     
     public func textLengthWarning() { // 입력중, 텍스트 길이가 15자를 넘는 경우
         warningLabel.text = "15자 이내로 입력해주세요."
         warningLabel.textColor = .black04
         overlappedCheck.unavailable()
-        completeButton.unavailable()
     }
     
     public func satisfiedNickname() { // 확인 결과, 사용 가능한 닉네임
-        isNicknameChecked = true
         warningLabel.text = "사용 가능한 닉네임입니다."
         warningLabel.textColor = .red02
-        completeButton.available()
     }
     
     public func unsatisfiedNickname() { // 확인 결과, 중복된 닉네임
         warningLabel.text = "이미 사용 중인 닉네임입니다."
         warningLabel.textColor = .red02
-        completeButton.unavailable()
+        overlappedCheck.unavailable()
+    }
+    
+    public func updatedNickname() { // 성공적으로 바뀐다면, 닉네임이 업데이트 되었습니다.
+        warningLabel.text = "성공적으로 닉네임이 반영되었습니다."
+        warningLabel.textColor = .black04
         overlappedCheck.unavailable()
     }
     
 }
 
-// MARK: 컴포넌트 관리
+// MARK: 제약사항 관리
 extension EditProfileView {
     
-    private func setProfileImageComponent() {
-        self.addSubview(profileImage)
+    public func setConstraints() {
+        let screenWidth = UIScreen.main.bounds.width
+        // let screenHeight = UIScreen.main.bounds.height
+        
+        scrollView.contentSize = CGSize(width: screenWidth , height: 700)
+        
+        self.setScrollViewComponents()
+        self.setProfileImageComponents()
+        self.setNicknameEditComponents()
+        self.setUserTypeEditComponents()
+        self.setCompleteButtonComponents()
+    }
+    
+    private func setScrollViewComponents() {
+        self.addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview() // 추가
+            make.width.equalTo(self.safeAreaLayoutGuide.snp.width)
+            make.top.equalTo(signUpTopLine.snp.bottom)
+        }
+    }
+    
+    private func setProfileImageComponents() {
+        scrollView.addSubview(profileImage)
         
         profileImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.width.equalTo(122)
-            make.top.equalTo(signUpTopLine).offset(40)
+            make.top.equalTo(scrollView.snp.top).offset(40)
         }
     }
-    
-    private func setNicknameEditComponent() {
-        self.addSubview(nicknameEditFrame)
+        
+    private func setNicknameEditComponents() {
+        scrollView.addSubview(nicknameEditFrame)
         
         nicknameEditFrame.snp.makeConstraints { make in
             make.top.equalTo(profileImage.snp.bottom).offset(30)
-            make.leading.trailing.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalToSuperview().offset(-60)
             make.height.equalTo(90)
         }
         
@@ -225,25 +286,26 @@ extension EditProfileView {
         
     }
     
-    private func setUserTypeEditComponent() {
-        self.addSubview(userTypeMainFrame)
+    private func setUserTypeEditComponents() {
+        scrollView.addSubview(userTypeMainFrame)
         
         userTypeMainFrame.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
             make.top.equalTo(nicknameEditFrame.snp.bottom).offset(62)
-            make.height.equalTo(250)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalToSuperview().offset(-60)
+            make.height.equalTo(220)
         }
         
         userTypeMainFrame.addSubview(userTypeMainLabel)
         userTypeMainFrame.addSubview(studentButton)
         userTypeMainFrame.addSubview(collegeButton)
         userTypeMainFrame.addSubview(workerButton)
-        userTypeMainFrame.addSubview(ectButton)
+        userTypeMainFrame.addSubview(etcButton)
         
-        studentButton.configure(userType: .student)
-        collegeButton.configure(userType: .college)
-        workerButton.configure(userType: .worker)
-        ectButton.configure(userType: .ect)
+        studentButton.configure(userType: .SCHOOL)
+        collegeButton.configure(userType: .COLLEGE)
+        workerButton.configure(userType: .OFFICE)
+        etcButton.configure(userType: .ETC)
         
         userTypeMainLabel.snp.makeConstraints { make in
             make.leading.top.equalToSuperview()
@@ -264,22 +326,23 @@ extension EditProfileView {
             make.top.equalTo(collegeButton.snp.bottom).offset(10)
         }
         
-        ectButton.snp.makeConstraints { make in
+        etcButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(40)
             make.top.equalTo(workerButton.snp.bottom).offset(10)
         }
         
     }
     
-    private func setCompleteButtonComponent() {
-        self.addSubview(completeButton)
+    private func setCompleteButtonComponents() {
+        scrollView.addSubview(completeButton)
         
         completeButton.configure(labelText: "완료")
         
         completeButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(32)
-            make.bottom.equalToSuperview().inset(69)
+            make.leading.equalToSuperview().offset(30)
+            make.width.equalToSuperview().offset(-60)
             make.height.equalTo(43)
+            make.top.equalTo(userTypeMainFrame.snp.bottom).offset(30)
         }
     }
     

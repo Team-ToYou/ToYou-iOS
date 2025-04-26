@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Alamofire
 
 class NicknameViewController: UIViewController {
     
-    let nicknameView = NicknameView()
+    private let nicknameView = NicknameView()
+    private var isMarketingAgreementChecked: Bool = true
+    private var appleAuth: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +37,7 @@ extension NicknameViewController {
     
     @objc
     private func popStack() {
-        self.navigationController?.popViewController(animated: true)
+        dismiss(animated: false)
     }
     
     @objc
@@ -55,17 +58,37 @@ extension NicknameViewController {
     
     @objc
     private func checkOverlapped() {
-        if true {
-            nicknameView.satisfiedNickname()
-        } else {
-            nicknameView.unsatisfiedNickname()
+        let tail = "/users/nickname/check"
+        let url = K.URLString.baseURL + tail + "?nickname=\(nicknameView.nicknameTextField.text!)"
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+        ]
+        AF.request(
+            url,
+            method: .get,
+            headers: headers
+        )
+        .responseDecodable(of: ToYouResponse<NicknameCheckResult>.self) { response in
+            switch response.result {
+            case .success(_):
+                if response.value!.result!.exists { // true => 사용 불가능한 닉네임
+                    self.nicknameView.unsatisfiedNickname()
+                } else {
+                    self.nicknameView.satisfiedNickname()
+                }
+            case .failure(let error):
+                print("\(url) get 요청 실패: \(error.localizedDescription)")
+            }
         }
     }
     
     @objc
     private func stackView() {
-        let stackView = UserTypePickerViewController()
-        navigationController?.pushViewController(stackView, animated: true)
+        let stackVC = UserTypePickerViewController()
+        // 닉네임과 마케팅 동의 여부를 전송
+        stackVC.configure(checked: isMarketingAgreementChecked, userNickname: nicknameView.nicknameTextField.text!)
+        stackVC.modalPresentationStyle = .overFullScreen
+        present(stackVC, animated: false)
     }
     
 }
@@ -76,6 +99,10 @@ extension NicknameViewController: UITextFieldDelegate {
         // 중복확인 API 연결
         nicknameView.nicknameTextField.resignFirstResponder()
         return true
+    }
+    
+    func configure(check: Bool) {
+        isMarketingAgreementChecked = check
     }
     
 }

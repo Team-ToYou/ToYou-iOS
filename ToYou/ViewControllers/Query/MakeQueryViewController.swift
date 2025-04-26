@@ -109,9 +109,11 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     
     func isAllFilled() {
         if makeQueryView.textView.text.count > 0 &&
-            makeQueryView.textView.text.count < 51 {
+            makeQueryView.textView.text.count < 51 &&
+            QueryChoiceModel.shared.count < 4 &&
+            QueryChoiceModel.shared.count > 1 {
             for text in QueryChoiceModel.shared {
-                if text == "" {
+                if text == "" || text.count > 31 {
                     makeQueryView.confirmButton.unavailable()
                     return
                 }

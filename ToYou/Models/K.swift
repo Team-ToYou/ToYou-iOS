@@ -22,8 +22,19 @@ struct K {
     }
     
     struct URLString {
+        static let baseURL = "https://to-you.store"
+        
+        // 약관, 피드백, 질문 링크
         static let privacyPolicyLink = "https://sumptuous-metacarpal-d3a.notion.site/1437c09ca64e80fb88f6d8ab881ffee3?pvs=74"
         static let sendFeedbackLink = "https://forms.gle/fJweAP16cT4Tc3cA6"
         static let sendQueryLink = "http://pf.kakao.com/_xiuPIn/chat"
     }
+    
+    struct Key {
+        static let accessToken = "accessToken"
+        static let refreshToken = "refreshToken"
+        static let tutorial = "Tutorial" // 튜토리얼을 했는지 안했는지 확인하기 위함
+        static let fcmToken = "fcmToken" // FCM 토큰 키
+    }
+    
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class FriendSearchResultView: UIView {
     
     private var currentState: FriendSearchResultEnum?
@@ -28,7 +29,7 @@ class FriendSearchResultView: UIView {
         $0.textColor = .black04
     }
     
-    private lazy var stateButton = FriendStateButton()
+    public lazy var stateButton = FriendStateButton()
     
     private lazy var warningFrame = UIView().then {
         $0.backgroundColor = .white
@@ -135,7 +136,7 @@ extension FriendSearchResultView {
         warningFrame.isHidden = false
         nicknameLabel.text = nickname
         switch state {
-        case .require:
+        case .canRequest:
             mainFrame.bringSubviewToFront(friendResultFrame)
             stateButton.configure(state: state)
         case .cancelRequire:
@@ -144,7 +145,7 @@ extension FriendSearchResultView {
         case .alreadyFriend:
             mainFrame.bringSubviewToFront(friendResultFrame)
             stateButton.configure(state: state)
-        case .acceptRequire:
+        case .sentRequestToMe:
             mainFrame.bringSubviewToFront(friendResultFrame)
             stateButton.configure(state: state)
         case .notExist:
@@ -153,6 +154,9 @@ extension FriendSearchResultView {
         case .couldNotSendToMe:
             mainFrame.bringSubviewToFront(warningFrame)
             warningLabel.text = "스스로에게 요청할 수 없습니다. 다시 입력해주세요"
+        case .networkError:
+            mainFrame.bringSubviewToFront(warningFrame)
+            warningLabel.text = "네트워크 에러가 발생했어요."
         }
         
         if let _ = emotion {

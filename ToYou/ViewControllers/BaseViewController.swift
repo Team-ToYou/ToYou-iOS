@@ -17,7 +17,7 @@ class CustomTabBar: UITabBar {
 
 class BaseViewController: UITabBarController {
     
-    let homeVC = HomeViewController()
+    let homeVC = UINavigationController(rootViewController: HomeViewController())
     
     let friendsVC = FriendsViewController()
     
@@ -38,13 +38,17 @@ class BaseViewController: UITabBarController {
     }
     
     private func setupTabBarItems() {
-        let iconSize = CGSize(width: 24, height: 24)
+        let size: CGFloat = 1.75
+        let iconSizeForHome = CGSize(width: 12 * size, height: 12 * size)
+        let iconSize = CGSize(width: 15 * size, height: 15 * size)
+        let iconSizeForMyPage = CGSize(width: 16 * size, height: 16 * size)
+        
         let insets = UIEdgeInsets(top: 6, left: 0, bottom: -6, right: 0)
         
-        homeVC.tabBarItem = createTabBarItem(title: "", image: .homeIcon, tag: 0, size: iconSize, insets: insets)
-        friendsVC.tabBarItem = createTabBarItem(title: "", image: .pencilLineIcon, tag: 1, size: iconSize, insets: insets)
-        calendarVC.tabBarItem = createTabBarItem(title: "", image: .calendarIcon, tag: 2, size: iconSize, insets: insets)
-        myPageVC.tabBarItem = createTabBarItem(title: "", image: .profileIcon, tag: 3, size: iconSize, insets: insets)
+        homeVC.tabBarItem = createTabBarItem(title: "", image: .home, tag: 0, size: iconSizeForHome, insets: insets)
+        friendsVC.tabBarItem = createTabBarItem(title: "", image: .pencil, tag: 1, size: iconSize, insets: insets)
+        calendarVC.tabBarItem = createTabBarItem(title: "", image: .calendar, tag: 2, size: iconSize, insets: insets)
+        myPageVC.tabBarItem = createTabBarItem(title: "", image: .user, tag: 3, size: iconSizeForMyPage, insets: insets)
     }
     
     private func createTabBarItem(title: String, image: UIImage, tag: Int, size: CGSize, insets: UIEdgeInsets) -> UITabBarItem {
@@ -78,4 +82,9 @@ extension UIImage {
             draw(in: CGRect(origin: .zero, size: size))
         }
     }
+}
+
+import SwiftUI
+#Preview {
+    BaseViewController()
 }

@@ -19,7 +19,7 @@ class SendQueryView: UIView {
         $0.setImage(.popUpIcon , for: .normal)
     }
     
-    public lazy var confirmButton = ConfirmButtonView()
+    public lazy var confirmButton = ConfirmButton()
     
     private lazy var mainTitleLabel = UILabel().then {
         $0.text = "질문하기"
@@ -44,7 +44,7 @@ class SendQueryView: UIView {
     
     private lazy var ananymousLabel = UILabel().then {
         $0.text = "익명으로 보내기"
-        $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 16)
+        $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 18)
         $0.textColor = .black00
     }
     
@@ -53,7 +53,7 @@ class SendQueryView: UIView {
     public lazy var warningLabel = UILabel().then {
         $0.text = "비방 및 욕설은 처벌받을 수 있습니다."
         $0.textColor = .red02
-        $0.font = UIFont(name: K.Font.s_core_light, size: 10)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 11)
     }
     
     override init(frame: CGRect) {
@@ -83,9 +83,8 @@ class SendQueryView: UIView {
         
         warningLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(confirmButton.snp.bottom).offset(17.5)
+            make.top.equalTo(confirmButton.snp.bottom).offset(10.5)
         }
-        
         
     }
     
