@@ -17,15 +17,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-        
-        APIService.reissueRefreshToken { code in
-            switch code {
-            case .success:
-                RootViewControllerService.toBaseViewController()
-            case .error, .expired:
-                RootViewControllerService.toLoginViewController()
-            }
+
+        let userdefaults = UserDefaults.standard
+
+        if userdefaults.bool(forKey: K.Key.tutorial) { // false: 저장이 안되어 있는 경우
+            window?.rootViewController = TutorialViewController()
+        } else { // true: 이미 튜토리얼을 완료한 경우
+            window?.rootViewController = LoginViewController()
         }
+        
+//        window?.rootViewController = BaseViewController()
+        
+        return
     }
     
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {

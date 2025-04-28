@@ -47,7 +47,7 @@ class DiaryCardPreview: UIView {
         $0.backgroundColor = .black02
     }
     
-    private let previewCard = MyDiaryCard()
+    public let previewCard = MyDiaryCard()
     
     private let saveEditButton = UIButton().then {
         $0.setTitle("저장하기", for: .normal)
