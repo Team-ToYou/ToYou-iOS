@@ -165,6 +165,11 @@ extension FriendSearchResultView {
         
         currentState = state
     }
+    
+    public func afterRequestSucceeded() {
+        mainFrame.bringSubviewToFront(friendResultFrame)
+        stateButton.configure(state: .cancelRequire)
+    }
 }
 
 import SwiftUI

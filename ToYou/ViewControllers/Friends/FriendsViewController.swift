@@ -93,7 +93,7 @@ extension FriendsViewController {
         friendsAPI(searchFriendResult?.friendStatus ?? nil)
     }
     
-    private func friendsAPI(_ status: FriendStatusEnum? ) {
+    private func friendsAPI(_ status: FriendStatusEnum?) {
         var method: HTTPMethod?
         var tail: String?
         switch status {
@@ -130,6 +130,10 @@ extension FriendsViewController {
             switch response.result {
             case .success(_):
                 print("\(String(describing: method)) 요청 완료")
+                if tail == "/friends/requests" { // 요청하기가 완료
+                    // 요청 취소로 상태 전환
+                    self.friendsView.friendSearchResultView.afterRequestSucceeded()
+                }
                 return
                 // collectionView.reload()
             case .failure(let error):
