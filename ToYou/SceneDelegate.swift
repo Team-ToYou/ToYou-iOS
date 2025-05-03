@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             case .success:
                 RootViewControllerService.toBaseViewController()
             case .error, .expired:
-                RootViewControllerService.toLoginViewController()
+                break
             }
         }
     }

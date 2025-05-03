@@ -43,6 +43,8 @@ class LogoutPopupVC: UIViewController {
             case .success(_):
                 self.dismiss(animated: true, completion: nil)
                 RootViewControllerService.toLoginViewController()
+                let _ = KeychainService.delete(key: K.Key.accessToken)
+                let _ = KeychainService.delete(key: K.Key.refreshToken)
             case .failure(let error):
                 print("\(url) post 요청 실패: \(error.localizedDescription)")
             }
