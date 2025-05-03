@@ -17,7 +17,7 @@ enum ReissueCode: String {
 class APIService {
     static func reissueRefreshToken( completion: @escaping(ReissueCode) -> Void) {
         guard let refreshToken = KeychainService.get(key: K.Key.refreshToken) else {
-            completion(.error);
+            RootViewControllerService.toLoginViewController()
             return
         } // 없는 토큰은 무효한 토큰과 마찬가지
         let tail = "/auth/reissue"
