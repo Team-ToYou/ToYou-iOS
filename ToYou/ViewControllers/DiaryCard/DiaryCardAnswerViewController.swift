@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol AnswerInputDelegate: AnyObject {
+    func didUpdateAnswerState()
+}
+
 class DiaryCardAnswerViewController: UIViewController {
     let diaryCardAnswerView = DiaryCardAnswerView()
     
@@ -23,6 +27,7 @@ class DiaryCardAnswerViewController: UIViewController {
         setCollectionView()
         setAction()
         classifyQuestions()
+        hideKeyboardWhenTappedAround()
     }
     
     // MARK: - function
@@ -81,21 +86,21 @@ extension DiaryCardAnswerViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             let question = longQuestions[indexPath.item]
-            cell.setQuestion(content: question.content, questioner: question.questioner)
+            cell.setQuestion(content: question.content, questioner: question.questioner, delegate: self)
             return cell
         } else if collectionView == diaryCardAnswerView.shortOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShortAnswerCell.identifier, for: indexPath) as? ShortAnswerCell else {
                 return UICollectionViewCell()
             }
             let question = shortQuestions[indexPath.item]
-            cell.setQuestion(content: question.content, questioner: question.questioner)
+            cell.setQuestion(content: question.content, questioner: question.questioner, delegate: self)
             return cell
         } else if collectionView == diaryCardAnswerView.selectOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectAnswerCell.identifier, for: indexPath) as? SelectAnswerCell else {
                 return UICollectionViewCell()
             }
             let question = selectQuestions[indexPath.item]
-            cell.setQuestion(content: question.content, options: question.answerOption ?? [], questioner: question.questioner)
+            cell.setQuestion(content: question.content, options: question.answerOption ?? [], questioner: question.questioner, delegate: self)
             return cell
         }
         return UICollectionViewCell()
@@ -113,5 +118,48 @@ extension DiaryCardAnswerViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: 171, height: 160)
         }
         return CGSize(width: 100, height: 100)
+    }
+}
+
+extension DiaryCardAnswerViewController: AnswerInputDelegate {
+    func didUpdateAnswerState() {
+        updateNextButtonState()
+    }
+
+    private func updateNextButtonState() {
+        var allLongAnswered = true
+        var allShortAnswered = true
+        var allSelectAnswered = true
+
+        for i in 0..<longQuestions.count {
+            if let cell = diaryCardAnswerView.longOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? LongAnswerCell {
+                if cell.getAnswerText().isEmpty {
+                    allLongAnswered = false
+                    break
+                }
+            }
+        }
+
+        for i in 0..<shortQuestions.count {
+            if let cell = diaryCardAnswerView.shortOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? ShortAnswerCell {
+                if cell.getAnswerText().isEmpty {
+                    allShortAnswered = false
+                    break
+                }
+            }
+        }
+
+        for i in 0..<selectQuestions.count {
+            if let cell = diaryCardAnswerView.selectOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? SelectAnswerCell {
+                if !cell.isOptionSelected() {
+                    allSelectAnswered = false
+                    break
+                }
+            }
+        }
+
+        let isValid = allLongAnswered && allShortAnswered && allSelectAnswered
+        diaryCardAnswerView.nextButton.backgroundColor = isValid ? .black01 : .gray00
+        diaryCardAnswerView.nextButton.setTitleColor(isValid ? .black04 : .black01, for: .normal)
     }
 }

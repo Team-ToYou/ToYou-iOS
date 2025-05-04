@@ -63,8 +63,14 @@ class LongAnswerCell: UICollectionViewCell {
         }
     }
     
-    public func setQuestion(content: String, questioner: String) {
+    public func setQuestion(content: String, questioner: String, delegate: AnswerInputDelegate) {
         questionLabel.text = content
         fromLabel.text = "From. \(questioner)"
+        textField.delegate = delegate
+    }
+
+    
+    public func getAnswerText() -> String {
+        return textField.getText()
     }
 }

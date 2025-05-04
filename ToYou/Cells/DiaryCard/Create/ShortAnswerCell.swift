@@ -63,8 +63,13 @@ class ShortAnswerCell: UICollectionViewCell {
         }
     }
     
-    public func setQuestion(content: String, questioner: String) {
+    func setQuestion(content: String, questioner: String, delegate: AnswerInputDelegate) {
         questionLabel.text = content
         fromLabel.text = "From. \(questioner)"
+        textField.delegate = delegate
+    }
+    
+    func getAnswerText() -> String {
+        return textField.getText()
     }
 }

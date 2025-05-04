@@ -10,6 +10,9 @@ import UIKit
 class SelectAnswerCell: UICollectionViewCell {
     static let identifier = "SelectAnswerCell"
     
+    private var selectedOptionIndex: Int? = nil
+    weak var delegate: AnswerInputDelegate?
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -42,6 +45,24 @@ class SelectAnswerCell: UICollectionViewCell {
         $0.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 11)
     }
     
+    // MARK: - action
+    @objc private func optionTapped(_ sender: UITapGestureRecognizer) {
+        guard let selectedView = sender.view else { return }
+        selectedOptionIndex = selectedView.tag
+        delegate?.didUpdateAnswerState()
+        
+        // 옵션 텍스트
+        let options: [String] = optionStackView.arrangedSubviews.compactMap { view in
+            (view.subviews.first as? UILabel)?.text
+        }
+
+        // 질문 텍스트, 질문자
+        let content = questionLabel.text ?? ""
+        let questioner = fromLabel.text?.replacingOccurrences(of: "From. ", with: "") ?? ""
+        
+        setQuestion(content: questionLabel.text ?? "", options: options, questioner: questioner, delegate: delegate!)
+    }
+    
     // MARK: - function
     private func setView() {
         [
@@ -68,7 +89,8 @@ class SelectAnswerCell: UICollectionViewCell {
         }
     }
     
-    func setQuestion(content: String, options: [String], questioner: String) {
+    func setQuestion(content: String, options: [String], questioner: String, delegate: AnswerInputDelegate) {
+        self.delegate = delegate
         self.questionLabel.text = content
         self.fromLabel.text = "From. \(questioner)"
 
@@ -76,13 +98,18 @@ class SelectAnswerCell: UICollectionViewCell {
         optionStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
         // 새로운 옵션 추가
-        for option in options {
+        for (index, option) in options.enumerated() {
             let backView = UIView().then {
                 $0.backgroundColor = .white
                 $0.layer.cornerRadius = 5.3
                 $0.layer.borderColor = UIColor.clear.cgColor
                 $0.layer.borderWidth = 0
+                $0.tag = index
+                $0.isUserInteractionEnabled = true
             }
+            
+            let tap = UITapGestureRecognizer(target: self, action: #selector(optionTapped(_:)))
+            backView.addGestureRecognizer(tap)
             
             let optionLabel = UILabel().then {
                 $0.text = option
@@ -101,6 +128,16 @@ class SelectAnswerCell: UICollectionViewCell {
                 $0.centerY.equalToSuperview()
                 $0.left.equalToSuperview().offset(7.7)
             }
+            
+            if index == selectedOptionIndex {
+                backView.layer.borderColor = UIColor.black.cgColor
+                backView.layer.borderWidth = 1
+            }
         }
     }
+    
+    public func isOptionSelected() -> Bool {
+        return selectedOptionIndex != nil
+    }
+
 }
