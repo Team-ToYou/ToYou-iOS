@@ -63,12 +63,10 @@ class FriendsCollectionViewCell: UICollectionViewCell {
         nicknameLabel.text = friend.nickname
         if let emotion = friend.emotion {
             profileImage.image = emotion.stampImage()
-            emotionLabel.text = emotion.emotionExplanation()
         } else {
             profileImage.image = .defaultStamp
-            emotionLabel.text = " "
         }
-        
+        emotionLabel.text = friend.ment
         sendQueryButton.addTarget(self, action: #selector(sendQuery), for: .touchUpInside)
         deleteFriendButton.addTarget(self, action: #selector(disconnect), for: .touchUpInside)
     }

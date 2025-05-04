@@ -175,6 +175,11 @@ extension FriendSearchResultView {
         mainFrame.bringSubviewToFront(friendResultFrame)
         stateButton.configure(state: .canRequest)
     }
+    
+    public func afterAcceptRequest() {
+        mainFrame.bringSubviewToFront(friendResultFrame)
+        stateButton.configure(state: .alreadyFriend)
+    }
 }
 
 import SwiftUI

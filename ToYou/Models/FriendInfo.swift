@@ -6,33 +6,100 @@
 //
 
 import Foundation
+import Alamofire
 
-struct FriendInfo {
+struct FriendInfo: Codable {
+    let userId: Int
     let nickname: String
     let emotion: Emotion?
+    let ment: String?
 }
 
-class FriendsModel {
-    static let dummies: [FriendInfo] = [
-        FriendInfo(nickname: "민준", emotion: .happy),
-        FriendInfo(nickname: "서연", emotion: .excited),
-        FriendInfo(nickname: "도윤", emotion: .normal),
-        FriendInfo(nickname: "지민", emotion: .worried),
-        FriendInfo(nickname: "예준", emotion: .angry),
-        FriendInfo(nickname: "하은", emotion: nil),
-        FriendInfo(nickname: "주원", emotion: .normal),
-        FriendInfo(nickname: "소율", emotion: .excited),
-        FriendInfo(nickname: "지호", emotion: .worried),
-        FriendInfo(nickname: "수아", emotion: .angry),
-        FriendInfo(nickname: "현우", emotion: .happy),
-        FriendInfo(nickname: "지윤", emotion: .normal),
-        FriendInfo(nickname: "준서", emotion: .excited),
-        FriendInfo(nickname: "하린", emotion: .worried),
-        FriendInfo(nickname: "건우", emotion: nil),
-        FriendInfo(nickname: "소민", emotion: .happy),
-        FriendInfo(nickname: "태민", emotion: .normal),
-        FriendInfo(nickname: "예린", emotion: .excited),
-        FriendInfo(nickname: "우진", emotion: .worried),
-        FriendInfo(nickname: "민서", emotion: .angry)
-    ]
+struct FriendsListResult: Codable {
+    let friendList: [FriendInfo]
+}
+
+enum FriendCode: String {
+    case COMMON200, JWT400, ERROR500, FRIEND401
+}
+
+class FriendsList {
+    static var data: [FriendInfo] = []
+    
+    static func fetchList(completion: @escaping (FriendCode) -> Void) {
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let tail = "/friends"
+        let url = K.URLString.baseURL + tail
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        AF.request(
+            url,
+            method: .get,
+            encoding: JSONEncoding.default,
+            headers: headers
+        ).responseDecodable(of: ToYouResponse<FriendsListResult>.self) { response in
+            switch response.result {
+            case .success(let apiResponse):
+                switch apiResponse.code {
+                case FriendCode.COMMON200.rawValue:
+                    if let list = apiResponse.result?.friendList {
+                        print("/friends get success", list)
+                        data = list
+                    }
+                    print("/friends get success, no cell")
+                    completion(.COMMON200)
+                case FriendCode.JWT400.rawValue:
+                    completion(.JWT400)
+                case FriendCode.ERROR500.rawValue:
+                    completion(.ERROR500)
+                default:
+                    completion(.ERROR500)
+                }
+            case .failure(let error):
+                print("/friends .get : \(error)")
+                completion(.ERROR500)
+            }
+        }
+    }
+    
+    static func deleteFriend(friendId: Int, completion: @escaping (FriendCode) -> Void) {
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let tail = "/friends"
+        let url = K.URLString.baseURL + tail
+        let parameters: [String: Any] = [
+            "userId": friendId
+        ]
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        AF.request(
+            url,
+            method: .delete,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers
+        ).responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
+            switch response.result {
+            case .success(let apiResponse):
+                switch apiResponse.code {
+                case FriendCode.COMMON200.rawValue:
+                    completion(.COMMON200)
+                case FriendCode.JWT400.rawValue:
+                    completion(.JWT400)
+                case FriendCode.ERROR500.rawValue:
+                    completion(.ERROR500)
+                default:
+                    completion(.ERROR500)
+                }
+            case .failure(let error):
+                print("/friends .get : \(error)")
+                completion(.ERROR500)
+            }
+        }
+    }
+    
+    
 }
