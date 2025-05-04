@@ -102,7 +102,7 @@ extension UserTypePickerViewController {
         .responseDecodable(of: ToYouResponseWithoutResult.self) { response in
             switch response.result {
             case .success(let response):
-                RootViewControllerService.toBaseViewController()
+                RootViewControllerService.toTutorialViewController()
             case .failure(let error):
                 print("\(url) post 요청 실패: \(error.localizedDescription)")
             }

@@ -25,6 +25,21 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
         self.addActions()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        FriendsList.fetchList { code in
+            switch code {
+            case .COMMON200:
+                self.friendsView.friendsCollectionView.reloadData()
+            case .JWT400:
+                RootViewControllerService.toLoginViewController()
+            case .FRIEND401: // 해당 친구 정보가 존재하지 않음
+                break
+            case .ERROR500:
+                break
+            }
+        }
+    }
+    
 }
 
 // MARK: 친구 추가하기
@@ -78,7 +93,7 @@ extension FriendsViewController {
                 }
                 self.searchFriendResult = apiResponse.result
             case .failure(let error):
-                self.friendsView.friendSearchResultView.configure(emotion: .normal, nickname: " ", state: .networkError)
+                self.friendsView.friendSearchResultView.configure(emotion: .NORMAL, nickname: " ", state: .networkError)
                 print("\(url) get 요청 실패: \(error.localizedDescription)")
             }
         }
@@ -93,7 +108,7 @@ extension FriendsViewController {
         friendsAPI(searchFriendResult?.friendStatus ?? nil)
     }
     
-    private func friendsAPI(_ status: FriendStatusEnum? ) {
+    private func friendsAPI(_ status: FriendStatusEnum?) {
         var method: HTTPMethod?
         var tail: String?
         switch status {
@@ -102,7 +117,7 @@ extension FriendsViewController {
         case .NOT_FRIEND: // 요청 하기
             tail = "/friends/requests"
             method = .post
-        case .REQUEST_SENT: // 요청 거절하기
+        case .REQUEST_SENT: // 요청 거절/취소하기
             tail = "/friends"
             method = .delete
         case .REQUEST_RECEIVED: // 요청 수락하기
@@ -130,17 +145,37 @@ extension FriendsViewController {
             switch response.result {
             case .success(_):
                 print("\(String(describing: method)) 요청 완료")
+                switch status {
+                case .FRIEND: // 이미 친구인 상태
+                    break
+                case .NOT_FRIEND: // 요청하기가 완료
+                    self.searchFriendResult?.friendStatus = .REQUEST_SENT
+                    self.friendsView.friendSearchResultView.afterRequestSucceeded()
+                case .REQUEST_SENT:
+                    self.searchFriendResult?.friendStatus = .NOT_FRIEND
+                    self.friendsView.friendSearchResultView.afterRequestCanceledOrDenied()
+                case .REQUEST_RECEIVED: // 요청 수락
+                    FriendsList.fetchList { code in // 리스트 업데이트
+                        switch code {
+                        case .COMMON200:
+                            self.friendsView.friendSearchResultView.afterAcceptRequest()
+                            self.friendsView.friendsCollectionView.reloadData()
+                        case .JWT400:
+                            RootViewControllerService.toLoginViewController()
+                        case .ERROR500, .FRIEND401:
+                            break
+                        }
+                    }
+                case .none:
+                    break
+                }
                 return
-                // collectionView.reload()
             case .failure(let error):
                 print("\(url) \(String(describing: method)) 요청 실패: \(error.localizedDescription)")
             }
         }
     }
     
-    private func deleteFriend() {
-        
-    }
 }
 
 struct RequestFriendResult: Codable {
@@ -150,7 +185,7 @@ struct RequestFriendResult: Codable {
 struct SearchFriendResult: Codable {
     let userId: Int
     let nickname: String
-    let friendStatus: FriendStatusEnum
+    var friendStatus: FriendStatusEnum
 }
 
 enum FriendStatusEnum: String, Codable {
@@ -159,14 +194,12 @@ enum FriendStatusEnum: String, Codable {
 
 extension FriendsViewController: UICollectionViewDataSource {
     
-    
-    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return FriendsModel.dummies.count
+        return FriendsList.data.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let data = FriendsModel.dummies[indexPath.row]
+        let data = FriendsList.data[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendsCollectionViewCell.identifier, for: indexPath) as! FriendsCollectionViewCell
         cell.configure(friend: data, delegate: self)
         return cell
@@ -183,12 +216,26 @@ extension FriendsViewController: FriendCollectionViewCellDelegate {
     }
     
     func disconnect(with friend: FriendInfo) {
-        present(disconnectPopupVC, animated: false)
+        present(disconnectPopupVC, animated: true)
         
         disconnectPopupVC.completionHandler = { data in
             if data {
-                // 친구 삭제 진행
-                print("\(friend.nickname)을 삭제합니다.")
+                FriendsList.deleteFriend(friendId: friend.userId) { code in
+                    switch code {
+                    case .COMMON200:
+                        FriendsList.fetchList { code in
+                            if code == .COMMON200 {
+                                self.friendsView.friendsCollectionView.reloadData()
+                            }
+                        }
+                    case .JWT400:
+                        RootViewControllerService.toLoginViewController()
+                    case .ERROR500:
+                        break
+                    case .FRIEND401:
+                        break
+                    }
+                }
             } else {
                 print("\(friend.nickname)을 삭제를 취소합니다.")
             }

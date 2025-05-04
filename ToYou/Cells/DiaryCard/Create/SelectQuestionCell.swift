@@ -35,7 +35,7 @@ class SelectQuestionCell: UICollectionViewCell {
         $0.axis = .vertical
         $0.spacing = 8
         $0.alignment = .fill
-        $0.distribution = .fill
+        $0.distribution = .equalSpacing
     }
     
     private let fromLabel = UILabel().then {

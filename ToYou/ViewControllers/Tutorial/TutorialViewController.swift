@@ -64,6 +64,9 @@ class TutorialViewController: UIViewController {
     
     private lazy var skipButton = UIButton().then {
         $0.backgroundColor = .clear
+        $0.setTitle("건너뛰기", for: .normal)
+        $0.titleLabel?.font = UIFont(name: K.Font.s_core_regular, size: 12)
+        $0.setTitleColor(.black, for: .normal)
     }
     
     private lazy var startButton = UIButton().then {
@@ -134,8 +137,7 @@ extension TutorialViewController {
     }
     
     @objc func skipOrStartPressed() {
-        RootViewControllerService.toLoginViewController()
-        UserDefaults.standard.set(true, forKey: K.Key.tutorial)
+        RootViewControllerService.toBaseViewController()
     }
 }
 
