@@ -13,6 +13,7 @@ class DiaryCardPreviewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = diaryCardPreview
+        setAction()
     }
     
     // MARK: - action

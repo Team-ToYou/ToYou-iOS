@@ -18,10 +18,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
         
-        window?.rootViewController = BaseViewController()
-        print(KeychainService.get(key: K.Key.accessToken)!)
-        
-        return
+        APIService.reissueRefreshToken { code in
+            switch code {
+            case .success:
+                RootViewControllerService.toBaseViewController()
+            case .error, .expired:
+                break
+            }
+        }
     }
     
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
