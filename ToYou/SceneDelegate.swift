@@ -18,14 +18,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
         
-        APIService.reissueRefreshToken { code in
-            switch code {
-            case .success:
-                RootViewControllerService.toBaseViewController()
-            case .error, .expired:
-                break
-            }
-        }
+        // 1. 유저의 토큰을 갱신해준다.
+            // 토큰이 없는 경우 -> toLogin
+            // 토큰이 있는 경우
+                // refresh가 유효한 경우 -> 갱신 -> toBase
+                // 만료된 경우 -> toLogin
+        // 2. 유저가 회원가입 절차를 완료했는지 확인한다.
+            // 토큰이 없는 경우 -> toLogin (첫 회원 혹은 로그아웃 혹은 탈퇴)
+            // 토큰이 있는 경우
+                // 필수 내용이 누락된 경우 -> toSignUp -> toTutorial -> toBase
+                // 필수 내용이 모두 기재된 경우 -> toBase & myPage 내용 저장
+        window?.rootViewController = TutorialViewController()
+//        guard let _ = KeychainService.get(key: K.Key.accessToken) else {
+//            RootViewControllerService.toLoginViewController()
+//            return
+//        }
+//        
+//        APIService.reissueRefreshToken { code in
+//            switch code {
+//            case .success:
+//                APIService.isUserFinishedSignUp { isFinished in
+//                    if isFinished {
+//                        RootViewControllerService.toBaseViewController()
+//                    } else {
+//                        RootViewControllerService.toSignUpViewController()
+//                    }
+//                }
+//            case .error, .expired:
+//                RootViewControllerService.toLoginViewController()
+//            }
+//        }
     }
     
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {

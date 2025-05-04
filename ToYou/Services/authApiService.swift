@@ -17,7 +17,7 @@ enum ReissueCode: String {
 class APIService {
     static func reissueRefreshToken( completion: @escaping(ReissueCode) -> Void) {
         guard let refreshToken = KeychainService.get(key: K.Key.refreshToken) else {
-            RootViewControllerService.toLoginViewController()
+            completion(.expired)
             return
         } // 없는 토큰은 무효한 토큰과 마찬가지
         let tail = "/auth/reissue"
@@ -49,10 +49,8 @@ class APIService {
                 case ReissueCode.expired.rawValue:
                     // error, expired 모두 login으로 이동해야함, 내부에서 구현.
                     // why? 여러 곳에서 쓰일것이고 공통된 동작을 할 것이기 때문에 동작을 여기서 미리 지정해도 괜찮다.
-                    RootViewControllerService.toLoginViewController()
                     completion(.expired)
                 default: // 다른 모든 경우는 error 처리
-                    RootViewControllerService.toLoginViewController()
                     completion(.error)
                 }
             case .failure(let error): // 이 에러는 서버에러일 수 있어서, 어떤 동작을 해야할지 생각해볼 필요가 있음
