@@ -47,6 +47,7 @@ class LongAnswerCell: UICollectionViewCell {
         questionLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.left.equalToSuperview()
+            $0.width.equalTo(170)
         }
         
         textField.snp.makeConstraints {
@@ -60,5 +61,10 @@ class LongAnswerCell: UICollectionViewCell {
             $0.top.equalTo(textField.snp.bottom).offset(4.3)
             $0.right.equalToSuperview()
         }
+    }
+    
+    public func setQuestion(content: String, questioner: String) {
+        questionLabel.text = content
+        fromLabel.text = "From. \(questioner)"
     }
 }

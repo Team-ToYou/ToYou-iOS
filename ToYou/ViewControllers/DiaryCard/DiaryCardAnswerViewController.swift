@@ -11,19 +11,38 @@ class DiaryCardAnswerViewController: UIViewController {
     let diaryCardAnswerView = DiaryCardAnswerView()
     
     var selectedQuestions: [Question] = []
+    
+    private var longQuestions: [Question] = []
+    private var shortQuestions: [Question] = []
+    private var selectQuestions: [Question] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = diaryCardAnswerView
-        
+
+        setCollectionView()
+        setAction()
+        classifyQuestions()
+    }
+    
+    // MARK: - function
+    private func setCollectionView() {
         diaryCardAnswerView.longOptionCollectionView.dataSource = self
         diaryCardAnswerView.longOptionCollectionView.delegate = self
         diaryCardAnswerView.shortOptionCollectionView.dataSource = self
         diaryCardAnswerView.shortOptionCollectionView.delegate = self
         diaryCardAnswerView.selectOptionCollectionView.dataSource = self
         diaryCardAnswerView.selectOptionCollectionView.delegate = self
+    }
+    
+    private func classifyQuestions() {
+        longQuestions = selectedQuestions.filter { $0.questionType == .long }
+        shortQuestions = selectedQuestions.filter { $0.questionType == .short }
+        selectQuestions = selectedQuestions.filter { $0.questionType == .optional }
         
-        setAction()
+        diaryCardAnswerView.longStack.isHidden = longQuestions.isEmpty
+        diaryCardAnswerView.shortStack.isHidden = shortQuestions.isEmpty
+        diaryCardAnswerView.selectStack.isHidden = selectQuestions.isEmpty
     }
     
     // MARK: - action
@@ -47,11 +66,11 @@ class DiaryCardAnswerViewController: UIViewController {
 extension DiaryCardAnswerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == diaryCardAnswerView.longOptionCollectionView {
-            return 2
+            return longQuestions.count
         } else if collectionView == diaryCardAnswerView.shortOptionCollectionView {
-            return 3
+            return shortQuestions.count
         } else if collectionView == diaryCardAnswerView.selectOptionCollectionView {
-            return 2
+            return selectQuestions.count
         }
         return 0
     }
@@ -61,19 +80,22 @@ extension DiaryCardAnswerViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LongAnswerCell.identifier, for: indexPath) as? LongAnswerCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = longQuestions[indexPath.item]
+            cell.setQuestion(content: question.content, questioner: question.questioner)
             return cell
         } else if collectionView == diaryCardAnswerView.shortOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShortAnswerCell.identifier, for: indexPath) as? ShortAnswerCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = shortQuestions[indexPath.item]
+            cell.setQuestion(content: question.content, questioner: question.questioner)
             return cell
         } else if collectionView == diaryCardAnswerView.selectOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectAnswerCell.identifier, for: indexPath) as? SelectAnswerCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = selectQuestions[indexPath.item]
+            cell.setQuestion(content: question.content, options: question.answerOption ?? [], questioner: question.questioner)
             return cell
         }
         return UICollectionViewCell()

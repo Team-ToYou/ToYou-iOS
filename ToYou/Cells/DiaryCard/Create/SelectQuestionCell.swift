@@ -27,7 +27,7 @@ class SelectQuestionCell: UICollectionViewCell {
         $0.text = "요즘 어떻게 지내?"
         $0.textColor = .black04
         $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
-        $0.textAlignment = .center
+        $0.textAlignment = .left
         $0.numberOfLines = 3
     }
     
