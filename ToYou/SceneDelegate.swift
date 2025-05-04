@@ -28,26 +28,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // 토큰이 있는 경우
                 // 필수 내용이 누락된 경우 -> toSignUp -> toTutorial -> toBase
                 // 필수 내용이 모두 기재된 경우 -> toBase & myPage 내용 저장
-        window?.rootViewController = TutorialViewController()
-//        guard let _ = KeychainService.get(key: K.Key.accessToken) else {
-//            RootViewControllerService.toLoginViewController()
-//            return
-//        }
-//        
-//        APIService.reissueRefreshToken { code in
-//            switch code {
-//            case .success:
-//                APIService.isUserFinishedSignUp { isFinished in
-//                    if isFinished {
-//                        RootViewControllerService.toBaseViewController()
-//                    } else {
-//                        RootViewControllerService.toSignUpViewController()
-//                    }
-//                }
-//            case .error, .expired:
-//                RootViewControllerService.toLoginViewController()
-//            }
-//        }
+        guard let _ = KeychainService.get(key: K.Key.accessToken) else {
+            RootViewControllerService.toLoginViewController()
+            return
+        }
+        
+        APIService.reissueRefreshToken { code in
+            switch code {
+            case .success:
+                APIService.isUserFinishedSignUp { isFinished in
+                    if isFinished {
+                        RootViewControllerService.toBaseViewController()
+                    } else {
+                        RootViewControllerService.toSignUpViewController()
+                    }
+                }
+            case .error, .expired:
+                RootViewControllerService.toLoginViewController()
+            }
+        }
     }
     
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
