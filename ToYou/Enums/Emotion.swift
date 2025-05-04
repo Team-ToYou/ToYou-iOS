@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum Emotion: String {
+enum Emotion: String, Codable {
     
     case angry, worried, excited, happy, normal
     
