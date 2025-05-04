@@ -26,18 +26,7 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        FriendsList.fetchList { code in
-            switch code {
-            case .COMMON200:
-                self.friendsView.friendsCollectionView.reloadData()
-            case .JWT400:
-                RootViewControllerService.toLoginViewController()
-            case .FRIEND401: // 해당 친구 정보가 존재하지 않음
-                break
-            case .ERROR500:
-                break
-            }
-        }
+        fetchList()
     }
     
 }
@@ -204,6 +193,21 @@ extension FriendsViewController: UICollectionViewDataSource {
         cell.configure(friend: data, delegate: self)
         return cell
     }
+    
+    func fetchList() {
+        FriendsList.fetchList { code in
+            switch code {
+            case .COMMON200:
+                self.friendsView.friendsCollectionView.reloadData()
+            case .JWT400:
+                RootViewControllerService.toLoginViewController()
+            case .FRIEND401: // 해당 친구 정보가 존재하지 않음
+                break
+            case .ERROR500:
+                break
+            }
+        }
+    }
 }
 
 extension FriendsViewController: FriendCollectionViewCellDelegate {
@@ -223,11 +227,7 @@ extension FriendsViewController: FriendCollectionViewCellDelegate {
                 FriendsList.deleteFriend(friendId: friend.userId) { code in
                     switch code {
                     case .COMMON200:
-                        FriendsList.fetchList { code in
-                            if code == .COMMON200 {
-                                self.friendsView.friendsCollectionView.reloadData()
-                            }
-                        }
+                        self.fetchList()
                     case .JWT400:
                         RootViewControllerService.toLoginViewController()
                     case .ERROR500:
