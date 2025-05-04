@@ -93,7 +93,7 @@ extension FriendsViewController {
         friendsAPI(searchFriendResult?.friendStatus ?? nil)
     }
     
-    private func friendsAPI(_ status: FriendStatusEnum? ) {
+    private func friendsAPI(_ status: FriendStatusEnum?) {
         var method: HTTPMethod?
         var tail: String?
         switch status {
@@ -102,7 +102,7 @@ extension FriendsViewController {
         case .NOT_FRIEND: // 요청 하기
             tail = "/friends/requests"
             method = .post
-        case .REQUEST_SENT: // 요청 거절하기
+        case .REQUEST_SENT: // 요청 거절/취소하기
             tail = "/friends"
             method = .delete
         case .REQUEST_RECEIVED: // 요청 수락하기
@@ -130,6 +130,14 @@ extension FriendsViewController {
             switch response.result {
             case .success(_):
                 print("\(String(describing: method)) 요청 완료")
+                if tail == "/friends/requests" { // 요청하기가 완료
+                    // 요청 취소로 상태 전환
+                    self.searchFriendResult?.friendStatus = .REQUEST_SENT
+                    self.friendsView.friendSearchResultView.afterRequestSucceeded()
+                } else if method == .delete {
+                    self.searchFriendResult?.friendStatus = .NOT_FRIEND
+                    self.friendsView.friendSearchResultView.afterRequestCanceledOrDenied()
+                }
                 return
                 // collectionView.reload()
             case .failure(let error):
@@ -150,7 +158,7 @@ struct RequestFriendResult: Codable {
 struct SearchFriendResult: Codable {
     let userId: Int
     let nickname: String
-    let friendStatus: FriendStatusEnum
+    var friendStatus: FriendStatusEnum
 }
 
 enum FriendStatusEnum: String, Codable {
