@@ -54,7 +54,14 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
                 APIService.loginWithApple(authorizationCode: authCodeString) { result in
                     switch result {
                     case true:
-                        RootViewControllerService.toBaseViewController()
+                        APIService.isUserFinishedSignUp() { code in
+                            switch code {
+                            case true:
+                                RootViewControllerService.toBaseViewController()
+                            case false:
+                                RootViewControllerService.toSignUpViewController()
+                            }
+                        }
                     case false:
                         print("로그인 실패")
                         break

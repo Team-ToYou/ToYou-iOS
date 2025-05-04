@@ -134,8 +134,7 @@ extension TutorialViewController {
     }
     
     @objc func skipOrStartPressed() {
-        RootViewControllerService.toLoginViewController()
-        UserDefaults.standard.set(true, forKey: K.Key.tutorial)
+        RootViewControllerService.toBaseViewController()
     }
 }
 

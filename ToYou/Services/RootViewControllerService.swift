@@ -21,4 +21,11 @@ class RootViewControllerService {
         sceneDelegate?.changeRootViewController(LoginViewController(), animated: false)
     }
     
+    static func toSignUpViewController() {
+        sceneDelegate?.changeRootViewController(PolicyAgreementViewController(), animated: false)
+    }
+    
+    static func toTutorialViewController() {
+        sceneDelegate?.changeRootViewController(TutorialViewController(), animated: false)
+    }
 }
