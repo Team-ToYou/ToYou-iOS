@@ -35,7 +35,7 @@ class SelectQuestionCell: UICollectionViewCell {
         $0.axis = .vertical
         $0.spacing = 8
         $0.alignment = .fill
-        $0.distribution = .equalSpacing
+        $0.distribution = .fill
     }
     
     private let fromLabel = UILabel().then {
@@ -68,7 +68,6 @@ class SelectQuestionCell: UICollectionViewCell {
             $0.top.equalTo(questionLabel.snp.bottom).offset(6.3)
             $0.left.equalTo(questionLabel.snp.left).offset(2)
             $0.right.equalToSuperview()
-            $0.height.equalTo(94)
         }
         
         fromLabel.snp.makeConstraints {
@@ -113,3 +112,5 @@ class SelectQuestionCell: UICollectionViewCell {
         }
     }
 }
+
+extension SelectQuestionCell: QuestionSelectable {}

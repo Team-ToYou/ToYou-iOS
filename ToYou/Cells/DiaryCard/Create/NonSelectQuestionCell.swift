@@ -68,3 +68,5 @@ class NonSelectQuestionCell: UICollectionViewCell {
         self.fromLabel.text = "From. \(questioner)"
     }
 }
+
+extension NonSelectQuestionCell: QuestionSelectable {}

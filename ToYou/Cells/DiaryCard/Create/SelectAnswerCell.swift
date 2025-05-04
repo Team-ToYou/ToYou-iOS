@@ -59,7 +59,6 @@ class SelectAnswerCell: UICollectionViewCell {
             $0.top.equalTo(questionLabel.snp.bottom).offset(6.3)
             $0.left.equalTo(questionLabel.snp.left).offset(2)
             $0.right.equalToSuperview()
-            $0.height.equalTo(94)
         }
         
         fromLabel.snp.makeConstraints {

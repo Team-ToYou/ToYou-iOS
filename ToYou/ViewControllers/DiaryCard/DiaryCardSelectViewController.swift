@@ -8,10 +8,15 @@
 import UIKit
 import Alamofire
 
+protocol QuestionSelectable {
+    var checkboxButton: CheckBoxButtonVer02 { get }
+}
+
 class DiaryCardSelectViewController: UIViewController {
     let diaryCardSelectView = DiaryCardSelectView()
     
     private var selectedItemsCount: Int = 0
+    private var selectedQuestions: [Question] = []
     
     private var longQuestionList: [Question] = []
     private var shortQuestionList: [Question] = []
@@ -21,15 +26,19 @@ class DiaryCardSelectViewController: UIViewController {
         super.viewDidLoad()
         self.view = diaryCardSelectView
         
+        setCollectionView()
+        setAction()
+        setAPI()
+    }
+    
+    // MARK: - function
+    private func setCollectionView() {
         diaryCardSelectView.longOptionCollectionView.dataSource = self
         diaryCardSelectView.longOptionCollectionView.delegate = self
         diaryCardSelectView.shortOptionCollectionView.dataSource = self
         diaryCardSelectView.shortOptionCollectionView.delegate = self
         diaryCardSelectView.selectOptionCollectionView.dataSource = self
         diaryCardSelectView.selectOptionCollectionView.delegate = self
-        
-        setAction()
-        setAPI()
     }
     
     // MARK: - action
@@ -45,6 +54,7 @@ class DiaryCardSelectViewController: UIViewController {
     @objc private func nextButtonTapped() {
         let answerVC = DiaryCardAnswerViewController()
         answerVC.hidesBottomBarWhenPushed = true
+        answerVC.selectedQuestions = selectedQuestions
         self.navigationController?.pushViewController(answerVC, animated: true)
     }
     
@@ -86,6 +96,34 @@ class DiaryCardSelectViewController: UIViewController {
                     print("questions api fail: \(error)")
                 }
             }
+    }
+    
+    private func toggleSelection(for collectionView: UICollectionView, at indexPath: IndexPath) {
+        let question: Question
+        let cell: (UICollectionViewCell & QuestionSelectable)
+
+        if collectionView == diaryCardSelectView.longOptionCollectionView {
+            question = longQuestionList[indexPath.item]
+            cell = collectionView.cellForItem(at: indexPath) as! NonSelectQuestionCell
+        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
+            question = shortQuestionList[indexPath.item]
+            cell = collectionView.cellForItem(at: indexPath) as! NonSelectQuestionCell
+        } else {
+            question = selectQuestionList[indexPath.item]
+            cell = collectionView.cellForItem(at: indexPath) as! SelectQuestionCell
+        }
+
+        cell.checkboxButton.toggle()
+
+        if cell.checkboxButton.isChecked {
+            selectedItemsCount += 1
+            selectedQuestions.append(question)
+        } else {
+            selectedItemsCount -= 1
+            selectedQuestions.removeAll { $0.questionId == question.questionId }
+        }
+
+        updateNextButtonState()
     }
 }
 
@@ -130,53 +168,17 @@ extension DiaryCardSelectViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == diaryCardSelectView.longOptionCollectionView {
-            guard let cell = collectionView.cellForItem(at: indexPath) as? NonSelectQuestionCell else { return }
-            
-            cell.checkboxButton.toggle()
-            
-            if cell.checkboxButton.isChecked {
-                selectedItemsCount += 1
-            } else {
-                selectedItemsCount -= 1
-            }
-        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
-            guard let cell = collectionView.cellForItem(at: indexPath) as? NonSelectQuestionCell else { return }
-            
-            cell.checkboxButton.toggle()
-            
-            if cell.checkboxButton.isChecked {
-                selectedItemsCount += 1
-            } else {
-                selectedItemsCount -= 1
-            }
-        } else if collectionView == diaryCardSelectView.selectOptionCollectionView {
-            guard let cell = collectionView.cellForItem(at: indexPath) as? SelectQuestionCell else { return }
-            
-            cell.checkboxButton.toggle()
-            
-            if cell.checkboxButton.isChecked {
-                selectedItemsCount += 1
-            } else {
-                selectedItemsCount -= 1
-            }
-        }
-        
-        updateNextButtonState()
-
+        toggleSelection(for: collectionView, at: indexPath)
     }
     
 }
 
 extension DiaryCardSelectViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView == diaryCardSelectView.longOptionCollectionView {
-            return CGSize(width: 170, height: 100)
-        } else if collectionView == diaryCardSelectView.shortOptionCollectionView {
-            return CGSize(width: 170, height: 100)
-        } else if collectionView == diaryCardSelectView.selectOptionCollectionView {
+        if collectionView == diaryCardSelectView.selectOptionCollectionView {
             return CGSize(width: 172, height: 190)
+        } else {
+            return CGSize(width: 170, height: 100)
         }
-        return CGSize(width: 100, height: 100)
     }
 }

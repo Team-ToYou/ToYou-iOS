@@ -9,6 +9,8 @@ import UIKit
 
 class DiaryCardAnswerViewController: UIViewController {
     let diaryCardAnswerView = DiaryCardAnswerView()
+    
+    var selectedQuestions: [Question] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
