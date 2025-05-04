@@ -72,8 +72,6 @@ extension DiaryCardAnswerViewController: UICollectionViewDataSource {
                 return UICollectionViewCell()
             }
             
-            cell.optionTableView.dataSource = self
-            
             return cell
         }
         return UICollectionViewCell()
@@ -91,20 +89,5 @@ extension DiaryCardAnswerViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: 171, height: 160)
         }
         return CGSize(width: 100, height: 100)
-    }
-}
-
-extension DiaryCardAnswerViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SelectQuestionOptionCell.identifier, for: indexPath) as? SelectQuestionOptionCell else {
-            return UITableViewCell()
-        }
-        cell.selectionStyle = .none
-        
-        return cell
     }
 }

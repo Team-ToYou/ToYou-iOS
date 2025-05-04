@@ -29,11 +29,11 @@ class SelectAnswerCell: UICollectionViewCell {
         $0.numberOfLines = 3
     }
     
-    public let optionTableView = UITableView().then {
-        $0.register(SelectQuestionOptionCell.self, forCellReuseIdentifier: SelectQuestionOptionCell.identifier)
-        $0.separatorStyle = .none
-        $0.isScrollEnabled = false
-        $0.backgroundColor = .clear
+    private let optionStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 8
+        $0.alignment = .fill
+        $0.distribution = .fill
     }
     
     private let fromLabel = UILabel().then {
@@ -45,7 +45,7 @@ class SelectAnswerCell: UICollectionViewCell {
     // MARK: - function
     private func setView() {
         [
-            questionLabel, optionTableView, fromLabel
+            questionLabel, optionStackView, fromLabel
         ].forEach {
             addSubview($0)
         }
@@ -55,7 +55,7 @@ class SelectAnswerCell: UICollectionViewCell {
             $0.left.equalToSuperview()
         }
         
-        optionTableView.snp.makeConstraints {
+        optionStackView.snp.makeConstraints {
             $0.top.equalTo(questionLabel.snp.bottom).offset(6.3)
             $0.left.equalTo(questionLabel.snp.left).offset(2)
             $0.right.equalToSuperview()
@@ -63,7 +63,7 @@ class SelectAnswerCell: UICollectionViewCell {
         }
         
         fromLabel.snp.makeConstraints {
-            $0.top.equalTo(optionTableView.snp.bottom).offset(7.5)
+            $0.top.equalTo(optionStackView.snp.bottom).offset(7.5)
             $0.right.equalToSuperview()
         }
     }

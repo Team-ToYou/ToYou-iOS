@@ -123,7 +123,6 @@ extension DiaryCardSelectViewController: UICollectionViewDataSource {
             }
             let question = selectQuestionList[indexPath.item]
             cell.setQuestion(content: question.content, options: question.answerOption ?? [], questioner: question.questioner)
-            cell.optionTableView.isUserInteractionEnabled = false
             
             return cell
         }
