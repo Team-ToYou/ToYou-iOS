@@ -32,6 +32,8 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
                 self.friendsView.friendsCollectionView.reloadData()
             case .JWT400:
                 RootViewControllerService.toLoginViewController()
+            case .FRIEND401: // 해당 친구 정보가 존재하지 않음
+                break
             case .ERROR500:
                 break
             }
@@ -160,7 +162,7 @@ extension FriendsViewController {
                             self.friendsView.friendsCollectionView.reloadData()
                         case .JWT400:
                             RootViewControllerService.toLoginViewController()
-                        case .ERROR500:
+                        case .ERROR500, .FRIEND401:
                             break
                         }
                     }
@@ -174,9 +176,6 @@ extension FriendsViewController {
         }
     }
     
-    private func deleteFriend() {
-        
-    }
 }
 
 struct RequestFriendResult: Codable {
@@ -194,8 +193,6 @@ enum FriendStatusEnum: String, Codable {
 }
 
 extension FriendsViewController: UICollectionViewDataSource {
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return FriendsList.data.count
@@ -219,12 +216,26 @@ extension FriendsViewController: FriendCollectionViewCellDelegate {
     }
     
     func disconnect(with friend: FriendInfo) {
-        present(disconnectPopupVC, animated: false)
+        present(disconnectPopupVC, animated: true)
         
         disconnectPopupVC.completionHandler = { data in
             if data {
-                // 친구 삭제 진행
-                print("\(friend.nickname)을 삭제합니다.")
+                FriendsList.deleteFriend(friendId: friend.userId) { code in
+                    switch code {
+                    case .COMMON200:
+                        FriendsList.fetchList { code in
+                            if code == .COMMON200 {
+                                self.friendsView.friendsCollectionView.reloadData()
+                            }
+                        }
+                    case .JWT400:
+                        RootViewControllerService.toLoginViewController()
+                    case .ERROR500:
+                        break
+                    case .FRIEND401:
+                        break
+                    }
+                }
             } else {
                 print("\(friend.nickname)을 삭제를 취소합니다.")
             }
