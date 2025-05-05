@@ -8,6 +8,7 @@
 import Foundation
 
 struct DiaryCardAnswerModel {
+    let questionId: Int
     let question: String
     let answers: [String]
     let selectedIndex: Int?

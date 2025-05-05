@@ -68,6 +68,7 @@ class DiaryCardAnswerViewController: UIViewController {
             if let cell = diaryCardAnswerView.longOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? LongAnswerCell {
                 let answer = cell.getAnswerText()
                 let model = DiaryCardAnswerModel(
+                    questionId: longQuestions[i].questionId,
                     question: longQuestions[i].content,
                     answers: [answer],
                     selectedIndex: nil
@@ -81,6 +82,7 @@ class DiaryCardAnswerViewController: UIViewController {
             if let cell = diaryCardAnswerView.shortOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? ShortAnswerCell {
                 let answer = cell.getAnswerText()
                 let model = DiaryCardAnswerModel(
+                    questionId: shortQuestions[i].questionId,
                     question: shortQuestions[i].content,
                     answers: [answer],
                     selectedIndex: nil
@@ -95,6 +97,7 @@ class DiaryCardAnswerViewController: UIViewController {
                let selectedIndex = cell.getSelectedIndex() {
                 let options = selectQuestions[i].answerOption ?? []
                 let model = DiaryCardAnswerModel(
+                    questionId: selectQuestions[i].questionId,
                     question: selectQuestions[i].content,
                     answers: options,
                     selectedIndex: selectedIndex

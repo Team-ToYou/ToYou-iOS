@@ -41,7 +41,7 @@ class MyDiaryCard: UIView {
         $0.textColor = .black04
     }
     
-    private let lockButton = UIButton().then {
+    public let lockButton = UIButton().then {
         $0.setImage(.unlockIcon, for: .normal)
     }
     

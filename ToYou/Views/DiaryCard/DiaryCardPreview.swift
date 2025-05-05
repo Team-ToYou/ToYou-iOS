@@ -50,7 +50,7 @@ class DiaryCardPreview: UIView {
     
     public let previewCard = MyDiaryCard()
     
-    private let saveEditButton = UIButton().then {
+    public let saveEditButton = UIButton().then {
         $0.setTitle("저장하기", for: .normal)
         $0.titleLabel?.font = UIFont(name: "S-CoreDream-4Regular", size: 16)
         $0.setTitleColor(.black04, for: .normal)
