@@ -28,7 +28,7 @@ class MakeQueryView: UIView {
     }
     
     private lazy var subTitleLabel = UILabel().then {
-        $0.text = "질문 유형을 선택해주세요"
+        $0.text = "질문 내용을 입력해주세요."
         $0.font = UIFont(name: K.Font.s_core_light, size: 12)
         $0.textColor = .black04
     }

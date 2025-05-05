@@ -49,7 +49,7 @@ class ConfirmButton: UIButton {
         self.isEnabled = true
     }
     
-    public func available() {
+public func available() {
         mainLabel.textColor = .black04
         self.backgroundColor = .black01
         self.isEnabled = true

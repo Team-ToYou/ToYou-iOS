@@ -93,7 +93,7 @@ extension FriendsViewController {
                 }
                 self.searchFriendResult = apiResponse.result
             case .failure(let error):
-                self.friendsView.friendSearchResultView.configure(emotion: .normal, nickname: " ", state: .networkError)
+                self.friendsView.friendSearchResultView.configure(emotion: .NROMAL, nickname: " ", state: .networkError)
                 print("\(url) get 요청 실패: \(error.localizedDescription)")
             }
         }

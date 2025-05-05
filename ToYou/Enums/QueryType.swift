@@ -30,6 +30,5 @@ enum QueryType {
         case .long:
             return "(긴 답변을 원해요)"
         }
-
     }
 }

@@ -12,7 +12,7 @@ class SelectQueryViewController: UIViewController {
     private let selectQueryTypeView = SelectQueryTypeView()
     private let makeQueryVC = MakeQueryViewController()
     private var friendInfo: FriendInfo?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = selectQueryTypeView
