@@ -139,5 +139,9 @@ class SelectAnswerCell: UICollectionViewCell {
     public func isOptionSelected() -> Bool {
         return selectedOptionIndex != nil
     }
+    
+    func getSelectedIndex() -> Int? {
+        return selectedOptionIndex
+    }
 
 }

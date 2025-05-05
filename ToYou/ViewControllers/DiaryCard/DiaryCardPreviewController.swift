@@ -10,11 +10,7 @@ import UIKit
 class DiaryCardPreviewController: UIViewController {
     let diaryCardPreview = DiaryCardPreview()
     
-    let questionsAndAnswers: [DiaryCardAnswerModel] = [
-        DiaryCardAnswerModel(question: "요즘 어떻게 지내?", answers: ["그냥 저냥.. 일하고 사랑하고 짜증도 내고.."], selectedIndex: nil),
-        DiaryCardAnswerModel(question: "짜장면 vs 짬뽕", answers: ["짜장면", "짬뽕"], selectedIndex: 0),
-        DiaryCardAnswerModel(question: "오늘 몇시에 잘 거야?", answers: ["12시", "1시", "2시"], selectedIndex: 2)
-    ]
+    var questionsAndAnswers: [DiaryCardAnswerModel] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -61,9 +61,54 @@ class DiaryCardAnswerViewController: UIViewController {
     }
     
     @objc private func nextButtonTapped() {
+        var answerModels: [DiaryCardAnswerModel] = []
+        
+        // 장문형
+        for i in 0..<longQuestions.count {
+            if let cell = diaryCardAnswerView.longOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? LongAnswerCell {
+                let answer = cell.getAnswerText()
+                let model = DiaryCardAnswerModel(
+                    question: longQuestions[i].content,
+                    answers: [answer],
+                    selectedIndex: nil
+                )
+                answerModels.append(model)
+            }
+        }
+
+        // 단답형
+        for i in 0..<shortQuestions.count {
+            if let cell = diaryCardAnswerView.shortOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? ShortAnswerCell {
+                let answer = cell.getAnswerText()
+                let model = DiaryCardAnswerModel(
+                    question: shortQuestions[i].content,
+                    answers: [answer],
+                    selectedIndex: nil
+                )
+                answerModels.append(model)
+            }
+        }
+
+        // 선택형
+        for i in 0..<selectQuestions.count {
+            if let cell = diaryCardAnswerView.selectOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? SelectAnswerCell,
+               let selectedIndex = cell.getSelectedIndex() {
+                let options = selectQuestions[i].answerOption ?? []
+                let model = DiaryCardAnswerModel(
+                    question: selectQuestions[i].content,
+                    answers: options,
+                    selectedIndex: selectedIndex
+                )
+                answerModels.append(model)
+            }
+        }
+        
+        // push + 데이터 전달
         let previewVC = DiaryCardPreviewController()
+        previewVC.questionsAndAnswers = answerModels
         previewVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(previewVC, animated: true)
+
     }
 }
 

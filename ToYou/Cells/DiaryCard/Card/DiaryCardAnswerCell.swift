@@ -30,6 +30,7 @@ class DiaryCardAnswerCell: UITableViewCell {
         $0.text = "질문"
         $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 18)
         $0.textColor = .black04
+        $0.numberOfLines = 2
     }
     
     private let answerStackView = UIStackView().then {
@@ -49,7 +50,7 @@ class DiaryCardAnswerCell: UITableViewCell {
         
         questionLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.left.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview()
         }
         
         answerStackView.snp.makeConstraints {
@@ -70,6 +71,9 @@ class DiaryCardAnswerCell: UITableViewCell {
         
         answerStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         
+        answerStackView.alignment = answers.count == 1 ? .leading : .fill
+        answerStackView.distribution = answers.count == 1 ? .fill : .fillEqually
+        
         for (index, answerText) in answers.enumerated() {
             let backView = UIView().then {
                 $0.backgroundColor = (index == selectedIndex) ? .green01 : .white
@@ -81,13 +85,15 @@ class DiaryCardAnswerCell: UITableViewCell {
                 $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 18)
                 $0.textColor = .black04
                 $0.numberOfLines = 0
-                $0.textAlignment = .center
+                $0.textAlignment = answers.count == 1 ? .left : .center
             }
             
             backView.addSubview(label)
             
             label.snp.makeConstraints {
-                $0.edges.equalToSuperview().inset(10)
+                $0.horizontalEdges.equalToSuperview().inset(17)
+                $0.top.equalToSuperview().offset(4.4)
+                $0.bottom.equalToSuperview().offset(-6.5)
             }
             
             answerStackView.addArrangedSubview(backView)
