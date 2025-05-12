@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class CalendarViewController: UIViewController {
     let calendarView = CalendarView()
@@ -16,6 +17,9 @@ class CalendarViewController: UIViewController {
     private var currentYear = Calendar.current.component(.year, from: Date())
     private var currentMonth = Calendar.current.component(.month, from: Date())
     private var currentIndex: Int = 0
+    
+    // 날짜:감정
+    private var emotionList: [String: String] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +34,14 @@ class CalendarViewController: UIViewController {
             let indexPath = IndexPath(item: self.currentIndex, section: 0)
             self.calendarView.customCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
+        
+        let (year, month) = months[currentIndex]
+        setMyCalendarAPI(year: year, month: month)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let (year, month) = months[currentIndex]
+        setMyCalendarAPI(year: year, month: month)
     }
     
     // MARK: - function
@@ -50,6 +62,33 @@ class CalendarViewController: UIViewController {
                 currentIndex = months.count - 1
             }
         }
+    }
+    
+    private func setMyCalendarAPI(year: Int, month: Int) {
+        let url = K.URLString.baseURL + "/diarycards/mine?year=\(year)&month=\(month)"
+        
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        
+        AF.request(url, method: .get, headers: headers)
+            .validate()
+            .responseDecodable(of: MyDiaryCardResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    self.emotionList = [:]
+                    for card in data.result.cardList {
+                        self.emotionList[card.date] = card.emotion
+                    }
+
+                    let indexPath = IndexPath(item: self.currentIndex, section: 0)
+                    self.calendarView.customCalendar.reloadItems(at: [indexPath])
+                case .failure(let error):
+                    print("My Calendar API Error: \(error)")
+                }
+            }
     }
     
     // MARK: - action
@@ -94,7 +133,7 @@ extension CalendarViewController: UICollectionViewDataSource {
             }
             
             let (year, month) = months[indexPath.item]
-            cell.configure(with: year, month: month, isFriendRecord: isFriendRecord)
+            cell.configure(with: year, month: month, isFriendRecord: isFriendRecord, emotionList: emotionList)
             
             return cell
         } else if collectionView == calendarView.friendRecordList {
@@ -120,6 +159,11 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         guard let visibleCell = calendarView.customCalendar.visibleCells.first,
               let indexPath = calendarView.customCalendar.indexPath(for: visibleCell) else { return }
 
+        currentIndex = indexPath.item
+
+        let (year, month) = months[currentIndex]
+        setMyCalendarAPI(year: year, month: month)
+        
         // 첫 번째 혹은 마지막에 도달하면 추가
         if indexPath.item == 0 {
             prependPreviousMonth()

@@ -20,10 +20,31 @@ class MyRecordDayCell: UICollectionViewCell {
         fatalError()
     }
     
-    func configure(with calendarDate: CalendarDate) {
+    func configure(with calendarDate: CalendarDate, emotionList: [String: String]) {
         dayLabel.text = calendarDate.day == 0 ? "" : "\(calendarDate.day)"
         dayLabel.textColor = calendarDate.isWithinCurrentMonth ? .black04 : .gray
-        emotionImage.image = calendarDate.day == 0 ? .none : .normalStamp
+        
+        guard calendarDate.day != 0 else {
+            emotionImage.image = nil
+            return
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: calendarDate.date)
+        
+        if let emotion = emotionList[dateString] {
+            switch emotion {
+            case "HAPPY": emotionImage.image = .happyStamp
+            case "EXCITED": emotionImage.image = .excitedStamp
+            case "NORMAL": emotionImage.image = .normalStamp
+            case "WORRIED": emotionImage.image = .worriedStamp
+            case "ANGRY": emotionImage.image = .angryStamp
+            default: emotionImage.image = nil
+            }
+        } else {
+            emotionImage.image = nil
+        }
     }
     
     // MARK: - layout

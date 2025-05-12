@@ -13,6 +13,8 @@ class CustomCalendarCell: UICollectionViewCell {
     private let weekDays: [UIImage] = [.mon, .tue, .wed, .thu, .fri, .sat, .sun]
     private var calendarDates: [CalendarDate] = []
     
+    private var emotionList: [String: String] = [:]
+    
     private var isFriendRecord: Bool = false
     
     // MARK: - init
@@ -29,10 +31,11 @@ class CustomCalendarCell: UICollectionViewCell {
         fatalError()
     }
     
-    func configure(with year: Int, month: Int, isFriendRecord: Bool) {
+    func configure(with year: Int, month: Int, isFriendRecord: Bool, emotionList: [String: String]) {
         self.isFriendRecord = isFriendRecord
         calendarDates = CalendarManager.shared.generateDates(for: year, month: month)
         monthLabel.text = "\(month)월"
+        self.emotionList = emotionList
         monthCollectionView.reloadData()
     }
     
@@ -112,7 +115,7 @@ extension CustomCalendarCell: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyRecordDayCell.identifier, for: indexPath) as? MyRecordDayCell else {
                 return UICollectionViewCell()
             }
-            cell.configure(with: calendarDate)
+            cell.configure(with: calendarDate, emotionList: self.emotionList)
             return cell
         }
     }

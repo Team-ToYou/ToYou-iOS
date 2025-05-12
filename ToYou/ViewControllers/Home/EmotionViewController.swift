@@ -69,7 +69,7 @@ extension EmotionViewController: UITableViewDataSource, UITableViewDelegate {
         let item = EmotionStamp.dummy()[indexPath.row]
         
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        
+
         let headers: HTTPHeaders = [
             "Authorization": "Bearer " + accessToken
         ]
