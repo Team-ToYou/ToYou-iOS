@@ -45,6 +45,14 @@ class MakeQueryViewController: UIViewController {
     }
     
     public func setQueryType(as type: QueryType) {
+        switch type {
+        case .selection:
+            makeQueryView.selectionMode()
+        case .short:
+            makeQueryView.shortQueryMode()
+        case .long:
+            makeQueryView.longQueryMode()
+        }
         makeQueryView.setQueryType(queryType: type)
         self.setQueryType = type
     }
@@ -109,7 +117,7 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     
     func isAllFilled() {
         if makeQueryView.textView.text.count > 0 &&
-            makeQueryView.textView.text.count < 51 &&
+            makeQueryView.textView.text.count <= makeQueryView.maxLength &&
             QueryChoiceModel.shared.count < 4 &&
             QueryChoiceModel.shared.count > 1 {
             for text in QueryChoiceModel.shared {
@@ -120,7 +128,14 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
             }
             makeQueryView.confirmButton.available()
         } else {
-            makeQueryView.confirmButton.unavailable()
+            // 경고
+            let vc = MaxLengthWarningPopUpVC()
+            vc.modalPresentationStyle = .overFullScreen
+            vc.modalTransitionStyle = .crossDissolve
+            self.present(vc, animated: false)
+            // 마지막 문자열 제거
+            makeQueryView.textView.text.removeLast()
+            makeQueryView.textCount.text = "\(makeQueryView.maxLength)/\(makeQueryView.maxLength)"
         }
     }
     
@@ -131,7 +146,7 @@ extension MakeQueryViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         if let text = textView.text {
             let count = text.count
-            makeQueryView.textCount.text = "\(count)/50"
+            makeQueryView.textCount.text = "\(count)/\(makeQueryView.maxLength)"
             isAllFilled()
         }
     }

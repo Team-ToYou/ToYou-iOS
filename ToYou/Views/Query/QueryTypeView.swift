@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SelectQueryTypeView: UIView {
+class QueryTypeView: UIView {
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
@@ -173,5 +173,5 @@ class SelectQueryTypeView: UIView {
 
 import SwiftUI
 #Preview {
-    SelectQueryViewController()
+    QueryTypeViewController()
 }

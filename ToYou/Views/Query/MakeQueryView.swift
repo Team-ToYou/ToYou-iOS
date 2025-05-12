@@ -9,6 +9,9 @@ import UIKit
 
 class MakeQueryView: UIView {
     
+    public var queryType: QueryType?
+    public var maxLength: Int = 0
+    
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
         $0.image = .paperTexture
@@ -49,7 +52,7 @@ class MakeQueryView: UIView {
     }
     
     public lazy var textCount = UILabel().then {
-        $0.text = "(0/50)"
+        $0.text = "(0/\(maxLength))"
         $0.font = UIFont(name: K.Font.s_core_extraLight, size: 10)
         $0.textColor = .black00
     }
@@ -93,6 +96,34 @@ class MakeQueryView: UIView {
         self.setEmotionStateBubbleConstraints()
         self.setTextViewBubble()
         self.setChoiceViewConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+ 
+extension MakeQueryView {
+    
+    public func shortQueryMode() {
+        self.maxLength = 50
+        textCount.text = "(0/\(maxLength))"
+        choicesCollection.isHidden = true
+        addQueryChoiceButton.isHidden = true
+    }
+    
+    public func longQueryMode() {
+        self.maxLength = 150
+        textCount.text = "(0/\(maxLength))"
+        choicesCollection.isHidden = true
+        addQueryChoiceButton.isHidden = true
+    }
+    
+    public func selectionMode() {
+        self.maxLength = 50
+        textCount.text = "(0/\(maxLength))"
+        choicesCollection.isHidden = false
+        addQueryChoiceButton.isHidden = false
     }
     
     private func setChoiceViewConstraints() {
@@ -212,9 +243,7 @@ class MakeQueryView: UIView {
         }
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
 }
 
 import SwiftUI
