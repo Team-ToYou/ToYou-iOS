@@ -75,9 +75,9 @@ class QueryTypeView: UIView {
             make.edges.equalToSuperview()
         }
         
-        selectionQueryTypeButton.configure(type: .selection)
-        shortQueryTypeButton.configure(type: .short)
-        longQueryTypeButton.configure(type: .long)
+        selectionQueryTypeButton.configure(type: .OPTIONAL)
+        shortQueryTypeButton.configure(type: .SHORT_ANSWER)
+        longQueryTypeButton.configure(type: .LONG_ANSWER)
         
         selectionFrame.addSubview(selectionQueryTypeButton)
         selectionFrame.addSubview(shortQueryTypeButton)

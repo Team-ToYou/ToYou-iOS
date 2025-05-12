@@ -234,11 +234,11 @@ extension MakeQueryView {
     
     public func setQueryType(queryType: QueryType) {
         switch queryType {
-        case .selection:
+        case .OPTIONAL:
             print("view mode is selection")
-        case .short:
+        case .SHORT_ANSWER:
             print("view mode is short")
-        case .long:
+        case .LONG_ANSWER:
             print("view mode is long")
         }
     }

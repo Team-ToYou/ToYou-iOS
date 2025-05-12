@@ -46,11 +46,11 @@ class MakeQueryViewController: UIViewController {
     
     public func setQueryType(as type: QueryType) {
         switch type {
-        case .selection:
+        case .OPTIONAL:
             makeQueryView.selectionMode()
-        case .short:
+        case .SHORT_ANSWER:
             makeQueryView.shortQueryMode()
-        case .long:
+        case .LONG_ANSWER:
             makeQueryView.longQueryMode()
         }
         makeQueryView.setQueryType(queryType: type)
