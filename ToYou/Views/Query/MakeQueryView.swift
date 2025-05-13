@@ -10,7 +10,7 @@ import UIKit
 class MakeQueryView: UIView {
     
     public var queryType: QueryType?
-    public var maxLength: Int = 0
+    public var maxLength: Int = 50
     
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
@@ -230,17 +230,6 @@ extension MakeQueryView {
 
     public func configure(as emotion: Emotion?) {
         emotionStateBubble.configure(as: emotion)
-    }
-    
-    public func setQueryType(queryType: QueryType) {
-        switch queryType {
-        case .OPTIONAL:
-            print("view mode is selection")
-        case .SHORT_ANSWER:
-            print("view mode is short")
-        case .LONG_ANSWER:
-            print("view mode is long")
-        }
     }
     
     

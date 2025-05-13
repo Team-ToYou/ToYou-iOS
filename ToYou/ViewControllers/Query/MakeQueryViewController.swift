@@ -12,6 +12,7 @@ class MakeQueryViewController: UIViewController {
     private let makeQueryView = MakeQueryView()
     private let sendQueryVC = SendQueryViewController()
     private var setQueryType: QueryType?
+    private let vc = MaxLengthWarningPopUpVC()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,11 @@ class MakeQueryViewController: UIViewController {
         setButtonAction()
         setQueryChoiceButtonActions()
         hideKeyboardWhenTappedAround()
+        if QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 == 3 {
+            makeQueryView.addQueryChoiceButton.isHidden = true
+        }
+        vc.modalPresentationStyle = .overFullScreen
+        vc.modalTransitionStyle = .crossDissolve
     }
     
     private func setButtonAction() {
@@ -53,7 +59,6 @@ class MakeQueryViewController: UIViewController {
         case .LONG_ANSWER:
             makeQueryView.longQueryMode()
         }
-        makeQueryView.setQueryType(queryType: type)
         self.setQueryType = type
     }
     
@@ -67,9 +72,9 @@ extension MakeQueryViewController: UICollectionViewDelegate, UICollectionViewDat
     
     @objc
     private func addQuery() {
-        let count = QueryChoiceModel.shared.count
+        let count = QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0
         if  count < 3 {
-            QueryChoiceModel.shared.append("")
+            QueryApiService.addQueryOption("")
             makeQueryView.choicesCollection.reloadData()
             updateCollectionViewHeight()
             isAllFilled()
@@ -80,7 +85,7 @@ extension MakeQueryViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     private func updateCollectionViewHeight() {
-        let count = QueryChoiceModel.shared.count
+        let count = QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0
         makeQueryView.choicesCollection.snp.updateConstraints { make in
             let newHeight = count * 36 + (count - 1) * 10
             make.height.equalTo(newHeight)
@@ -88,11 +93,11 @@ extension MakeQueryViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return QueryChoiceModel.shared.count
+        return QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let data = QueryChoiceModel.shared[indexPath.row]
+        let data = QueryApiService.shared.queryParamter.answerOptionList?[indexPath.row] ?? ""
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: QueryChoiceCollectionViewCell.identifier,
             for: indexPath) as! QueryChoiceCollectionViewCell
@@ -116,27 +121,43 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     }
     
     func isAllFilled() {
-        if makeQueryView.textView.text.count > 0 &&
-            makeQueryView.textView.text.count <= makeQueryView.maxLength &&
-            QueryChoiceModel.shared.count < 4 &&
-            QueryChoiceModel.shared.count > 1 {
-            for text in QueryChoiceModel.shared {
-                if text == "" || text.count > 31 {
-                    makeQueryView.confirmButton.unavailable()
-                    return
-                }
-            }
-            makeQueryView.confirmButton.available()
-        } else {
+        // 컨텐츠 텍스트 길이 검사
+        if makeQueryView.textView.text.count < 0 ||
+            makeQueryView.textView.text.count > makeQueryView.maxLength {
             // 경고
-            let vc = MaxLengthWarningPopUpVC()
-            vc.modalPresentationStyle = .overFullScreen
-            vc.modalTransitionStyle = .crossDissolve
             self.present(vc, animated: false)
             // 마지막 문자열 제거
             makeQueryView.textView.text.removeLast()
-            makeQueryView.textCount.text = "\(makeQueryView.maxLength)/\(makeQueryView.maxLength)"
+            makeQueryView.textCount.text = "\(makeQueryView.textView.text.count)/\(makeQueryView.maxLength)"
+            // 마지막 문자열을 제거하여 유효한 텍스트 길이를 유지
+            return
         }
+        
+        // 질문 개수 검사
+        if QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 > 4 &&
+            QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 < 1 {
+            makeQueryView.confirmButton.unavailable()
+            return
+        }
+        
+        // 각 질문의 문자 길이 검사
+        for (index, text) in QueryApiService.shared.queryParamter.answerOptionList!.enumerated() {
+            if text.count > 31 {
+                // 경고
+                self.present(vc, animated: false)
+                //마지막 문자열 제거
+                QueryApiService.shared.queryParamter.answerOptionList![index].removeLast()
+                // makeQueryView.confirmButton.unavailable()
+                return
+            }
+            
+            if text.count == 0 {
+                makeQueryView.confirmButton.unavailable()
+                return
+            }
+        }
+        
+        makeQueryView.confirmButton.available()
     }
     
 }
