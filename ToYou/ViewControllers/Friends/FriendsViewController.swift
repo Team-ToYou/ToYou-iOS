@@ -209,7 +209,7 @@ extension FriendsViewController: UICollectionViewDataSource {
 extension FriendsViewController: FriendCollectionViewCellDelegate {
     
     func sendQuery(to friend: FriendInfo) {
-        let selectQueryVC = SelectQueryViewController()
+        let selectQueryVC = QueryTypeViewController()
         selectQueryVC.modalPresentationStyle = .overFullScreen
         selectQueryVC.configure(by: friend)
         present(selectQueryVC, animated: true)

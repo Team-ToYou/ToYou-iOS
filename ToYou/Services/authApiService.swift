@@ -36,6 +36,7 @@ class APIService {
             if let httpResponse = response.response {
                 if let accessToken = httpResponse.headers["access_token"] {
                     let _ = KeychainService.update(key: K.Key.accessToken, value: accessToken)
+                    print("access token : ", accessToken)
                 }
                 if let refreshToken = httpResponse.headers["refresh_token"] {
                     let _ = KeychainService.update(key: K.Key.refreshToken, value: refreshToken)

@@ -9,6 +9,9 @@ import UIKit
 
 class MakeQueryView: UIView {
     
+    public var queryType: QueryType?
+    public var maxLength: Int = 50
+    
     // MARK: Background & NavigationTop
     private lazy var paperBackground = UIImageView().then {
         $0.image = .paperTexture
@@ -28,7 +31,7 @@ class MakeQueryView: UIView {
     }
     
     private lazy var subTitleLabel = UILabel().then {
-        $0.text = "질문 유형을 선택해주세요"
+        $0.text = "질문 내용을 입력해주세요."
         $0.font = UIFont(name: K.Font.s_core_light, size: 12)
         $0.textColor = .black04
     }
@@ -49,7 +52,7 @@ class MakeQueryView: UIView {
     }
     
     public lazy var textCount = UILabel().then {
-        $0.text = "(0/50)"
+        $0.text = "(0/\(maxLength))"
         $0.font = UIFont(name: K.Font.s_core_extraLight, size: 10)
         $0.textColor = .black00
     }
@@ -93,6 +96,32 @@ class MakeQueryView: UIView {
         self.setEmotionStateBubbleConstraints()
         self.setTextViewBubble()
         self.setChoiceViewConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+ 
+extension MakeQueryView {
+    
+    private func configureMode(maxLength: Int, showChoices: Bool) {
+        self.maxLength = maxLength
+        textCount.text = "(0/\(maxLength))"
+        choicesCollection.isHidden = !showChoices
+        addQueryChoiceButton.isHidden = !showChoices
+    }
+    
+    public func shortQueryMode() {
+        configureMode(maxLength: 50, showChoices: false)
+    }
+    
+    public func longQueryMode() {
+        configureMode(maxLength: 150, showChoices: false)
+    }
+    
+    public func selectionMode() {
+        configureMode(maxLength: 50, showChoices: true)
     }
     
     private func setChoiceViewConstraints() {
@@ -201,20 +230,7 @@ class MakeQueryView: UIView {
         emotionStateBubble.configure(as: emotion)
     }
     
-    public func setQueryType(queryType: QueryType) {
-        switch queryType {
-        case .selection:
-            print("view mode is selection")
-        case .short:
-            print("view mode is short")
-        case .long:
-            print("view mode is long")
-        }
-    }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 import SwiftUI

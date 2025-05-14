@@ -11,7 +11,7 @@ import Then
 
 class ConfirmPopupView: UIView {
     
-    private lazy var mainFrame = UIView().then {
+    public lazy var mainFrame = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 26
         $0.clipsToBounds = true
@@ -38,15 +38,13 @@ class ConfirmPopupView: UIView {
     }
     
     private func addComponents() {
-        self.snp.makeConstraints { make in
-            make.height.equalTo(129.52)
-            make.width.equalTo(244.48)
-        }
         
         self.addSubview(mainFrame)
         
         mainFrame.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.height.equalTo(129.52)
+            make.width.equalTo(244.48)
+            make.center.equalToSuperview()
         }
         
         mainFrame.addSubview(mainTitleLabel)
