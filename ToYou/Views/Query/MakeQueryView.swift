@@ -105,25 +105,23 @@ class MakeQueryView: UIView {
  
 extension MakeQueryView {
     
-    public func shortQueryMode() {
-        self.maxLength = 50
+    private func configureMode(maxLength: Int, showChoices: Bool) {
+        self.maxLength = maxLength
         textCount.text = "(0/\(maxLength))"
-        choicesCollection.isHidden = true
-        addQueryChoiceButton.isHidden = true
+        choicesCollection.isHidden = !showChoices
+        addQueryChoiceButton.isHidden = !showChoices
+    }
+    
+    public func shortQueryMode() {
+        configureMode(maxLength: 50, showChoices: false)
     }
     
     public func longQueryMode() {
-        self.maxLength = 150
-        textCount.text = "(0/\(maxLength))"
-        choicesCollection.isHidden = true
-        addQueryChoiceButton.isHidden = true
+        configureMode(maxLength: 150, showChoices: false)
     }
     
     public func selectionMode() {
-        self.maxLength = 50
-        textCount.text = "(0/\(maxLength))"
-        choicesCollection.isHidden = false
-        addQueryChoiceButton.isHidden = false
+        configureMode(maxLength: 50, showChoices: true)
     }
     
     private func setChoiceViewConstraints() {

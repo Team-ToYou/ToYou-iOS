@@ -7,7 +7,7 @@
 
 import Alamofire
 
-struct QueryParamter {
+struct QueryParameter {
     var targetId: Int?
     var content: String?
     var questionType: QueryType.RawValue?
@@ -20,7 +20,7 @@ enum QueryCode: String {
 }
 
 class QueryApiService {
-    var queryParamter = QueryParamter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: ["선택 1", "선택 2", "선택 3"])
+    var queryParamter = QueryParameter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: ["선택 1", "선택 2", "선택 3"])
     static var shared = QueryApiService()
     
     static func setTargetId(_ targetId: Int) {

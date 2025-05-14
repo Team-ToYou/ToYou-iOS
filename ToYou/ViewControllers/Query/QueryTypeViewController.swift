@@ -49,7 +49,7 @@ class QueryTypeViewController: UIViewController {
                        queryTypeView.shortQueryTypeButton,
                        queryTypeView.longQueryTypeButton]
         for button in buttons {
-            if button.isSelected {
+            if button.isSelected() {
                 makeQueryVC.setQueryType(as: button.queryType!)
             }
         }
