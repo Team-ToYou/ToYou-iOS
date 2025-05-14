@@ -41,15 +41,22 @@ class MyDiaryCard: UIView {
         $0.textColor = .black04
     }
     
-    private let lockButton = UIButton().then {
+    public let lockButton = UIButton().then {
         $0.setImage(.unlockIcon, for: .normal)
+    }
+    
+    public let answerTableView = UITableView().then {
+        $0.register(DiaryCardAnswerCell.self, forCellReuseIdentifier: DiaryCardAnswerCell.identifier)
+        $0.separatorStyle = .none
+        $0.backgroundColor = .clear
     }
     
     // MARK: - function
     private func setView() {
         [
             backView, lockButton,
-            emotionStamp, dateLabel, toLabel
+            emotionStamp, dateLabel, toLabel,
+            answerTableView
         ].forEach {
             addSubview($0)
         }
@@ -80,6 +87,12 @@ class MyDiaryCard: UIView {
             $0.left.equalTo(emotionStamp.snp.right).offset(13.25)
             $0.bottom.equalTo(emotionStamp.snp.bottom).offset(-2.28)
         }
+        
+        answerTableView.snp.makeConstraints {
+            $0.top.equalTo(toLabel.snp.bottom).offset(24)
+            $0.horizontalEdges.equalTo(backView).inset(17)
+            $0.bottom.equalTo(backView.snp.bottom).offset(-24)
+        }
     }
 
 }
@@ -87,5 +100,5 @@ class MyDiaryCard: UIView {
 import SwiftUI
 
 #Preview {
-    MyDiaryCard()
+    DiaryCardPreview()
 }

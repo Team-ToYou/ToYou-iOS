@@ -7,21 +7,47 @@
 
 import UIKit
 
+protocol AnswerInputDelegate: AnyObject {
+    func didUpdateAnswerState()
+}
+
 class DiaryCardAnswerViewController: UIViewController {
     let diaryCardAnswerView = DiaryCardAnswerView()
+    
+    var selectedQuestions: [Question] = []
+    
+    private var longQuestions: [Question] = []
+    private var shortQuestions: [Question] = []
+    private var selectQuestions: [Question] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = diaryCardAnswerView
-        
+
+        setCollectionView()
+        setAction()
+        classifyQuestions()
+        hideKeyboardWhenTappedAround()
+    }
+    
+    // MARK: - function
+    private func setCollectionView() {
         diaryCardAnswerView.longOptionCollectionView.dataSource = self
         diaryCardAnswerView.longOptionCollectionView.delegate = self
         diaryCardAnswerView.shortOptionCollectionView.dataSource = self
         diaryCardAnswerView.shortOptionCollectionView.delegate = self
         diaryCardAnswerView.selectOptionCollectionView.dataSource = self
         diaryCardAnswerView.selectOptionCollectionView.delegate = self
+    }
+    
+    private func classifyQuestions() {
+        longQuestions = selectedQuestions.filter { $0.questionType == .long }
+        shortQuestions = selectedQuestions.filter { $0.questionType == .short }
+        selectQuestions = selectedQuestions.filter { $0.questionType == .optional }
         
-        setAction()
+        diaryCardAnswerView.longStack.isHidden = longQuestions.isEmpty
+        diaryCardAnswerView.shortStack.isHidden = shortQuestions.isEmpty
+        diaryCardAnswerView.selectStack.isHidden = selectQuestions.isEmpty
     }
     
     // MARK: - action
@@ -35,9 +61,57 @@ class DiaryCardAnswerViewController: UIViewController {
     }
     
     @objc private func nextButtonTapped() {
+        var answerModels: [DiaryCardAnswerModel] = []
+        
+        // 장문형
+        for i in 0..<longQuestions.count {
+            if let cell = diaryCardAnswerView.longOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? LongAnswerCell {
+                let answer = cell.getAnswerText()
+                let model = DiaryCardAnswerModel(
+                    questionId: longQuestions[i].questionId,
+                    question: longQuestions[i].content,
+                    answers: [answer],
+                    selectedIndex: nil
+                )
+                answerModels.append(model)
+            }
+        }
+
+        // 단답형
+        for i in 0..<shortQuestions.count {
+            if let cell = diaryCardAnswerView.shortOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? ShortAnswerCell {
+                let answer = cell.getAnswerText()
+                let model = DiaryCardAnswerModel(
+                    questionId: shortQuestions[i].questionId,
+                    question: shortQuestions[i].content,
+                    answers: [answer],
+                    selectedIndex: nil
+                )
+                answerModels.append(model)
+            }
+        }
+
+        // 선택형
+        for i in 0..<selectQuestions.count {
+            if let cell = diaryCardAnswerView.selectOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? SelectAnswerCell,
+               let selectedIndex = cell.getSelectedIndex() {
+                let options = selectQuestions[i].answerOption ?? []
+                let model = DiaryCardAnswerModel(
+                    questionId: selectQuestions[i].questionId,
+                    question: selectQuestions[i].content,
+                    answers: options,
+                    selectedIndex: selectedIndex
+                )
+                answerModels.append(model)
+            }
+        }
+        
+        // push + 데이터 전달
         let previewVC = DiaryCardPreviewController()
+        previewVC.questionsAndAnswers = answerModels
         previewVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(previewVC, animated: true)
+
     }
 }
 
@@ -45,11 +119,11 @@ class DiaryCardAnswerViewController: UIViewController {
 extension DiaryCardAnswerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == diaryCardAnswerView.longOptionCollectionView {
-            return 2
+            return longQuestions.count
         } else if collectionView == diaryCardAnswerView.shortOptionCollectionView {
-            return 3
+            return shortQuestions.count
         } else if collectionView == diaryCardAnswerView.selectOptionCollectionView {
-            return 2
+            return selectQuestions.count
         }
         return 0
     }
@@ -59,21 +133,22 @@ extension DiaryCardAnswerViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LongAnswerCell.identifier, for: indexPath) as? LongAnswerCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = longQuestions[indexPath.item]
+            cell.setQuestion(content: question.content, questioner: question.questioner, delegate: self)
             return cell
         } else if collectionView == diaryCardAnswerView.shortOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ShortAnswerCell.identifier, for: indexPath) as? ShortAnswerCell else {
                 return UICollectionViewCell()
             }
-            
+            let question = shortQuestions[indexPath.item]
+            cell.setQuestion(content: question.content, questioner: question.questioner, delegate: self)
             return cell
         } else if collectionView == diaryCardAnswerView.selectOptionCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectAnswerCell.identifier, for: indexPath) as? SelectAnswerCell else {
                 return UICollectionViewCell()
             }
-            
-            cell.optionTableView.dataSource = self
-            
+            let question = selectQuestions[indexPath.item]
+            cell.setQuestion(content: question.content, options: question.answerOption ?? [], questioner: question.questioner, delegate: self)
             return cell
         }
         return UICollectionViewCell()
@@ -94,17 +169,45 @@ extension DiaryCardAnswerViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension DiaryCardAnswerViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+extension DiaryCardAnswerViewController: AnswerInputDelegate {
+    func didUpdateAnswerState() {
+        updateNextButtonState()
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SelectQuestionOptionCell.identifier, for: indexPath) as? SelectQuestionOptionCell else {
-            return UITableViewCell()
+
+    private func updateNextButtonState() {
+        var allLongAnswered = true
+        var allShortAnswered = true
+        var allSelectAnswered = true
+
+        for i in 0..<longQuestions.count {
+            if let cell = diaryCardAnswerView.longOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? LongAnswerCell {
+                if cell.getAnswerText().isEmpty {
+                    allLongAnswered = false
+                    break
+                }
+            }
         }
-        cell.selectionStyle = .none
-        
-        return cell
+
+        for i in 0..<shortQuestions.count {
+            if let cell = diaryCardAnswerView.shortOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? ShortAnswerCell {
+                if cell.getAnswerText().isEmpty {
+                    allShortAnswered = false
+                    break
+                }
+            }
+        }
+
+        for i in 0..<selectQuestions.count {
+            if let cell = diaryCardAnswerView.selectOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? SelectAnswerCell {
+                if !cell.isOptionSelected() {
+                    allSelectAnswered = false
+                    break
+                }
+            }
+        }
+
+        let isValid = allLongAnswered && allShortAnswered && allSelectAnswered
+        diaryCardAnswerView.nextButton.backgroundColor = isValid ? .black01 : .gray00
+        diaryCardAnswerView.nextButton.setTitleColor(isValid ? .black04 : .black01, for: .normal)
     }
 }

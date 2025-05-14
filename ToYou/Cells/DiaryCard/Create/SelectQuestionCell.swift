@@ -9,16 +9,11 @@ import UIKit
 
 class SelectQuestionCell: UICollectionViewCell {
     static let identifier = "SelectQuestionCell"
-    public var optionList: [String] = [] {
-        didSet {
-            optionTableView.reloadData()
-        }
-    }
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setView()
-        optionTableView.dataSource = self
     }
     
     required init?(coder: NSCoder) {
@@ -32,15 +27,15 @@ class SelectQuestionCell: UICollectionViewCell {
         $0.text = "요즘 어떻게 지내?"
         $0.textColor = .black04
         $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
-        $0.textAlignment = .center
+        $0.textAlignment = .left
         $0.numberOfLines = 3
     }
     
-    public let optionTableView = UITableView().then {
-        $0.register(SelectQuestionOptionCell.self, forCellReuseIdentifier: SelectQuestionOptionCell.identifier)
-        $0.separatorStyle = .none
-        $0.isScrollEnabled = false
-        $0.backgroundColor = .clear
+    private let optionStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 8
+        $0.alignment = .fill
+        $0.distribution = .fill
     }
     
     private let fromLabel = UILabel().then {
@@ -52,7 +47,7 @@ class SelectQuestionCell: UICollectionViewCell {
     // MARK: - function
     private func setView() {
         [
-            checkboxButton, questionLabel, optionTableView, fromLabel
+            checkboxButton, questionLabel, optionStackView, fromLabel
         ].forEach {
             addSubview($0)
         }
@@ -69,37 +64,53 @@ class SelectQuestionCell: UICollectionViewCell {
             $0.width.equalTo(172)
         }
         
-        optionTableView.snp.makeConstraints {
+        optionStackView.snp.makeConstraints {
             $0.top.equalTo(questionLabel.snp.bottom).offset(6.3)
             $0.left.equalTo(questionLabel.snp.left).offset(2)
             $0.right.equalToSuperview()
-            $0.height.equalTo(94)
         }
         
         fromLabel.snp.makeConstraints {
-            $0.top.equalTo(optionTableView.snp.bottom).offset(7.5)
+            $0.top.equalTo(optionStackView.snp.bottom).offset(7.5)
             $0.right.equalToSuperview()
         }
     }
     
     func setQuestion(content: String, options: [String], questioner: String) {
         self.questionLabel.text = content
-        self.optionList = options
         self.fromLabel.text = "From. \(questioner)"
+
+        // 기존 옵션 제거
+        optionStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+
+        // 새로운 옵션 추가
+        for option in options {
+            let backView = UIView().then {
+                $0.backgroundColor = .white
+                $0.layer.cornerRadius = 5.3
+                $0.layer.borderColor = UIColor.clear.cgColor
+                $0.layer.borderWidth = 0
+            }
+            
+            let optionLabel = UILabel().then {
+                $0.text = option
+                $0.textColor = .black04
+                $0.font = UIFont(name: "S-CoreDream-3Light", size: 11)
+            }
+            
+            backView.addSubview(optionLabel)
+            optionStackView.addArrangedSubview(backView)
+            
+            backView.snp.makeConstraints {
+                $0.height.equalTo(25.6)
+            }
+            
+            optionLabel.snp.makeConstraints {
+                $0.centerY.equalToSuperview()
+                $0.left.equalToSuperview().offset(7.7)
+            }
+        }
     }
 }
 
-extension SelectQuestionCell: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return optionList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: SelectQuestionOptionCell.identifier, for: indexPath) as? SelectQuestionOptionCell else {
-            return UITableViewCell()
-        }
-        cell.selectionStyle = .none
-        cell.setOptionText(optionList[indexPath.row])
-        return cell
-    }
-}
+extension SelectQuestionCell: QuestionSelectable {}

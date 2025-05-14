@@ -18,7 +18,7 @@ class DiaryCardAnswerView: UIView {
     required init?(coder: NSCoder) {
         fatalError()
     }
-
+    
     // MARK: - layout
     // 배경
     private let paperBackgroundView = UIImageView().then {
@@ -61,6 +61,19 @@ class DiaryCardAnswerView: UIView {
         $0.contentInset = .init(top: 0, left: 30, bottom: 0, right: 30)
     }
     
+    public let longStack = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+    }
+    
+    // 스크롤뷰
+    private let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.alwaysBounceVertical = true
+    }
+    
+    private let contentView = UIView()
+    
     // 단답형
     private let shortOptionTitle = CustomLabelView(text: "단답형", isLight: false)
     
@@ -72,6 +85,11 @@ class DiaryCardAnswerView: UIView {
         $0.backgroundColor = .clear
         $0.showsHorizontalScrollIndicator = false
         $0.contentInset = .init(top: 0, left: 30, bottom: 0, right: 30)
+    }
+    
+    public let shortStack = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
     }
     
     // 선택형
@@ -87,6 +105,19 @@ class DiaryCardAnswerView: UIView {
         $0.contentInset = .init(top: 0, left: 30, bottom: 0, right: 30)
     }
     
+    public let selectStack = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+    }
+    
+    // 질문 전체
+    private let questionStack = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 33
+        $0.alignment = .fill
+        $0.distribution = .fill
+    }
+    
     // 다음 버튼
     public let nextButton = UIButton().then {
         $0.setTitle("다음", for: .normal)
@@ -94,7 +125,7 @@ class DiaryCardAnswerView: UIView {
         $0.titleLabel?.font = UIFont(name: "S-CoreDream-5Medium", size: 15)
         $0.backgroundColor = .gray00
         $0.layer.cornerRadius = 7
-        $0.isEnabled = false
+        $0.isEnabled = true
     }
     
     // MARK: - function
@@ -102,13 +133,14 @@ class DiaryCardAnswerView: UIView {
         [
             paperBackgroundView, backButton,
             titleLabel, subTitleLabel, lineView,
-            longOptionTitle, longOptionCollectionView,
-            shortOptionTitle, shortOptionCollectionView,
-            selectOptionTitle, selectOptionCollectionView,
+            scrollView,
             nextButton
         ].forEach {
             addSubview($0)
         }
+        
+        scrollView.addSubview(contentView)
+        contentView.addSubview(questionStack)
         
         paperBackgroundView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -136,38 +168,22 @@ class DiaryCardAnswerView: UIView {
             $0.height.equalTo(1)
         }
         
-        longOptionTitle.snp.makeConstraints {
+        scrollView.snp.makeConstraints {
             $0.top.equalTo(lineView.snp.bottom).offset(24)
-            $0.left.equalToSuperview().offset(30)
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalTo(nextButton.snp.top).offset(-20)
         }
         
-        longOptionCollectionView.snp.makeConstraints {
-            $0.top.equalTo(longOptionTitle.snp.bottom).offset(16)
-            $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(230)
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
         }
         
-        shortOptionTitle.snp.makeConstraints {
-            $0.top.equalTo(longOptionCollectionView.snp.bottom).offset(5)
-            $0.left.equalTo(longOptionTitle.snp.left)
+        questionStack.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.left.right.bottom.equalToSuperview()
         }
-        
-        shortOptionCollectionView.snp.makeConstraints {
-            $0.top.equalTo(shortOptionTitle.snp.bottom).offset(16)
-            $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(125)
-        }
-        
-        selectOptionTitle.snp.makeConstraints {
-            $0.top.equalTo(shortOptionCollectionView.snp.bottom).offset(5)
-            $0.left.equalTo(longOptionTitle.snp.left)
-        }
-        
-        selectOptionCollectionView.snp.makeConstraints {
-            $0.top.equalTo(selectOptionTitle.snp.bottom).offset(16)
-            $0.horizontalEdges.equalToSuperview()
-            $0.height.equalTo(160)
-        }
+        setQuestionStack()
         
         nextButton.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview().inset(32)
@@ -175,6 +191,55 @@ class DiaryCardAnswerView: UIView {
             $0.height.equalTo(43)
         }
     }
+    
+    private func setQuestionStack() {
+        // 장문형
+        longStack.addSubview(longOptionTitle)
+        longStack.addSubview(longOptionCollectionView)
+        longOptionTitle.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview().offset(30)
+        }
+        longOptionCollectionView.snp.makeConstraints {
+            $0.top.equalTo(longOptionTitle.snp.bottom).offset(11)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(245)
+            $0.bottom.equalToSuperview()
+        }
 
+        // 단답형
+        shortStack.addSubview(shortOptionTitle)
+        shortStack.addSubview(shortOptionCollectionView)
+        shortOptionTitle.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview().offset(30)
+        }
+        shortOptionCollectionView.snp.makeConstraints {
+            $0.top.equalTo(shortOptionTitle.snp.bottom).offset(11)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(125)
+            $0.bottom.equalToSuperview()
+        }
 
+        // 선택형
+        selectStack.addSubview(selectOptionTitle)
+        selectStack.addSubview(selectOptionCollectionView)
+        selectOptionTitle.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.left.equalToSuperview().offset(30)
+        }
+        selectOptionCollectionView.snp.makeConstraints {
+            $0.top.equalTo(selectOptionTitle.snp.bottom).offset(11)
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(160)
+            $0.bottom.equalToSuperview()
+        }
+
+        // 전체 스택에 추가
+        questionStack.addArrangedSubview(longStack)
+        questionStack.addArrangedSubview(shortStack)
+        questionStack.addArrangedSubview(selectStack)
+    }
+
+    
 }

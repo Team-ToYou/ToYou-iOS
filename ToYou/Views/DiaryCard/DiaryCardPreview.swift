@@ -11,6 +11,7 @@ class DiaryCardPreview: UIView {
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .white
         setView()
     }
     
@@ -47,9 +48,9 @@ class DiaryCardPreview: UIView {
         $0.backgroundColor = .black02
     }
     
-    private let previewCard = MyDiaryCard()
+    public let previewCard = MyDiaryCard()
     
-    private let saveEditButton = UIButton().then {
+    public let saveEditButton = UIButton().then {
         $0.setTitle("저장하기", for: .normal)
         $0.titleLabel?.font = UIFont(name: "S-CoreDream-4Regular", size: 16)
         $0.setTitleColor(.black04, for: .normal)

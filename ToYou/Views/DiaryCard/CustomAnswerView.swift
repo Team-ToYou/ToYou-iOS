@@ -11,13 +11,15 @@ class CustomAnswerView: UIView {
     private var isLongAnswer: Bool // 장문형 여부
     private var maxLength: Int { return isLongAnswer ? 200 : 50 } // 글자 수 제한
     
+    weak var delegate: AnswerInputDelegate?
+    
     // MARK: - init
     init(isLongAnswer: Bool) {
         self.isLongAnswer = isLongAnswer
         super.init(frame: .zero)
         setView()
-        textView.delegate = self // delegate 설정
-        updatePlaceholder() // Placeholder 업데이트
+        textView.delegate = self
+        updatePlaceholder()
     }
     
     required init?(coder: NSCoder) {
@@ -48,6 +50,10 @@ class CustomAnswerView: UIView {
         textView.text = "답변을 입력해주세요." // 기본값
         textView.textColor = .lightGray
         countLabel.text = "(0/\(maxLength))"
+    }
+    
+    public func getText() -> String {
+        return textView.text == "답변을 입력해주세요." ? "" : textView.text
     }
     
     private func updateCharacterCount() {

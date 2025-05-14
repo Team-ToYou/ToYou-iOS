@@ -1,5 +1,5 @@
 //
-//  ShortAnswerCell.swift
+//  LongAnswerCell.swift
 //  ToYou
 //
 //  Created by 김미주 on 3/19/25.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-class ShortAnswerCell: UICollectionViewCell {
-    static let identifier = "ShortAnswerCell"
+class LongAnswerCell: UICollectionViewCell {
+    static let identifier = "LongAnswerCell"
     
     // MARK: - init
     override init(frame: CGRect) {
@@ -28,7 +28,7 @@ class ShortAnswerCell: UICollectionViewCell {
         $0.numberOfLines = 3
     }
     
-    private let textField = CustomAnswerView(isLongAnswer: false)
+    private let textField = CustomAnswerView(isLongAnswer: true)
     
     private let fromLabel = UILabel().then {
         $0.text = "From. 미주"
@@ -47,18 +47,30 @@ class ShortAnswerCell: UICollectionViewCell {
         questionLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.left.equalToSuperview()
+            $0.width.equalTo(170)
         }
         
         textField.snp.makeConstraints {
             $0.top.equalTo(questionLabel.snp.bottom).offset(6.3)
             $0.left.equalTo(questionLabel.snp.left).offset(2)
             $0.right.equalToSuperview()
-            $0.height.equalTo(65)
+            $0.height.equalTo(171)
         }
         
         fromLabel.snp.makeConstraints {
             $0.top.equalTo(textField.snp.bottom).offset(4.3)
             $0.right.equalToSuperview()
         }
+    }
+    
+    public func setQuestion(content: String, questioner: String, delegate: AnswerInputDelegate) {
+        questionLabel.text = content
+        fromLabel.text = "From. \(questioner)"
+        textField.delegate = delegate
+    }
+
+    
+    public func getAnswerText() -> String {
+        return textField.getText()
     }
 }

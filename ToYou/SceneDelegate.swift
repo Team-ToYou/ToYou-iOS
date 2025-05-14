@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-        
+
         // 1. 유저의 토큰을 갱신해준다.
             // 토큰이 없는 경우 -> toLogin
             // 토큰이 있는 경우
@@ -47,6 +47,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 RootViewControllerService.toLoginViewController()
             }
         }
+        
+        return
     }
     
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
