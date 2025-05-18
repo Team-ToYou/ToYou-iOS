@@ -31,11 +31,32 @@ class SendQueryViewController: UIViewController {
     @objc
     private func toggleCheckbox(_ sender: CheckBoxButtonVer02) {
         sender.toggle()
+        QueryApiService.setAnonymous(sender.isSelected)
+        // 선택 되었으면 익명, true
     }
     
     @objc
     private func sendQuery() {
         
+        QueryApiService.postQuestion { code in
+            switch code {
+            case .COMMON200:
+                self.sendSuccess()
+            case .AUTH400:
+                break
+            case .USER401:
+                break
+            case .QUESTION400:
+                break
+            case .QUESTION401:
+                break
+            case .ERROR500:
+                break
+            }
+        }
+    }
+    
+    private func sendSuccess() {
         let tempVC = CompleteToSendQueryVC()
         tempVC.modalPresentationStyle = .overFullScreen
         
