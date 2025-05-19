@@ -11,7 +11,7 @@ class MakeQueryViewController: UIViewController {
     
     private let makeQueryView = MakeQueryView()
     private let sendQueryVC = SendQueryViewController()
-    private var setQueryType: QueryType?
+    private var queryType: QueryType?
     private let vc = MaxLengthWarningPopUpVC()
     
     override func viewDidLoad() {
@@ -59,7 +59,7 @@ class MakeQueryViewController: UIViewController {
         case .LONG_ANSWER:
             makeQueryView.longQueryMode()
         }
-        self.setQueryType = type
+        self.queryType = type
     }
     
 }
@@ -121,9 +121,12 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     }
     
     func isAllFilled() {
+        print("isAllFilled called")
         // 컨텐츠 텍스트 길이 검사
+        makeQueryView.confirmButton.available()
         if makeQueryView.textView.text.count < 0 ||
             makeQueryView.textView.text.count > makeQueryView.maxLength {
+            makeQueryView.confirmButton.unavailable()
             // 경고
             self.present(vc, animated: false)
             // 마지막 문자열 제거
@@ -133,9 +136,17 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
             return
         }
         
+        if self.queryType == .OPTIONAL {
+            isAllQuestionFilled()
+        }
+    }
+    
+    func isAllQuestionFilled() {
         // 질문 개수 검사
-        if QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 > 4 &&
-            QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 < 1 {
+        print("isAllQuestionFilled called")
+        print("count \(QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0)")
+        if QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 > 3 ||
+            QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 < 2 {
             makeQueryView.confirmButton.unavailable()
             return
         }
@@ -147,7 +158,6 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
                 self.present(vc, animated: false)
                 //마지막 문자열 제거
                 QueryApiService.shared.queryParamter.answerOptionList![index].removeLast()
-                // makeQueryView.confirmButton.unavailable()
                 return
             }
             
@@ -156,8 +166,6 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
                 return
             }
         }
-        
-        makeQueryView.confirmButton.available()
     }
     
 }

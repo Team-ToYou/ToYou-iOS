@@ -51,6 +51,7 @@ class QueryTypeViewController: UIViewController {
         for button in buttons {
             if button.isSelected() {
                 makeQueryVC.setQueryType(as: button.queryType!)
+                QueryApiService.setQuestionType(button.queryType!)
             }
         }
         makeQueryVC.modalPresentationStyle = .overFullScreen
