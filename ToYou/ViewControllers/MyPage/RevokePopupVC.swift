@@ -28,6 +28,15 @@ class RevokePopupVC: UIViewController {
     
     @objc
     private func revoke() {
+        
+        FCMTokenApiService.delete { code in
+            if code == .COMMON200 { // 삭제 성공
+                
+            } else { // FCM 토큰 삭제 실패
+                return // 함수를 종료하고 실채했다는 메시지를 띄워야 한다
+            }
+        }
+        
         let url = K.URLString.baseURL + "/auth/unlink/apple"
         guard let refreshToken = KeychainService.get(key: K.Key.refreshToken) else { return }
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
@@ -45,8 +54,7 @@ class RevokePopupVC: UIViewController {
             case .success(_):
                 self.dismiss(animated: true, completion: nil)
                 RootViewControllerService.toLoginViewController()
-                let _ = KeychainService.delete(key: K.Key.accessToken)
-                let _ = KeychainService.delete(key: K.Key.refreshToken)
+                let _ = KeychainService.deleteAll()
             case .failure(let error):
                 print("\(url) delete 요청 실패: \(error.localizedDescription)")
             }
