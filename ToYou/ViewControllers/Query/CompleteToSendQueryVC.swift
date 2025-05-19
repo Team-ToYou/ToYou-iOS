@@ -41,7 +41,8 @@ class CompleteToSendQueryVC: UIViewController {
         }
         
         mailImage.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-80)
             make.height.equalTo(100)
         }
         
@@ -52,4 +53,9 @@ class CompleteToSendQueryVC: UIViewController {
     }
     
     
+}
+
+import SwiftUI
+#Preview {
+    CompleteToSendQueryVC()
 }

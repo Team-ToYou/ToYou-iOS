@@ -23,6 +23,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				"ipa/ToYou 2025-05-05 23-29-02/ToYou.ipa",
 			);
 			target = 63236B952D4E17530050C952 /* ToYou */;
 		};

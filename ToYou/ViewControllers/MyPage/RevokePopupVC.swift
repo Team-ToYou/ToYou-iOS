@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class RevokePopupVC: UIViewController {
 
@@ -27,7 +28,29 @@ class RevokePopupVC: UIViewController {
     
     @objc
     private func revoke() {
-        // 회원탈퇴 동작
+        let url = K.URLString.baseURL + "/auth/unlink/apple"
+        guard let refreshToken = KeychainService.get(key: K.Key.refreshToken) else { return }
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "refreshToken": refreshToken,
+            "Authorization": "Bearer " + accessToken,
+        ]
+        AF.request(
+            url,
+            method: .delete,
+            headers: headers
+        ).responseDecodable(of: ToYouResponseWithoutResult.self) { response in
+            switch response.result {
+            case .success(_):
+                self.dismiss(animated: true, completion: nil)
+                RootViewControllerService.toLoginViewController()
+                let _ = KeychainService.delete(key: K.Key.accessToken)
+                let _ = KeychainService.delete(key: K.Key.refreshToken)
+            case .failure(let error):
+                print("\(url) delete 요청 실패: \(error.localizedDescription)")
+            }
+        }
     }
     
     @objc

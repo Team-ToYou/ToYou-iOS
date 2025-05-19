@@ -40,13 +40,13 @@ class UserTypeButton: UIButton {
     
     public func configure(userType: UserType) {
         switch userType {
-        case .student:
+        case .SCHOOL:
             mainLabel.text = "중·고등학생"
-        case .college:
+        case .COLLEGE:
             mainLabel.text = "대학생"
-        case .worker:
+        case .OFFICE:
             mainLabel.text = "직장인"
-        case .ect:
+        case .ETC:
             mainLabel.text = "기타"
         }
         self.userType = userType

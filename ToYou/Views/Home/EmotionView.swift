@@ -89,7 +89,7 @@ class EmotionView: UIView {
         }
         
         backButton.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(19)
+            $0.top.equalToSuperview().offset(65)
             $0.left.equalToSuperview().offset(17)
             $0.width.height.equalTo(19.25)
         }

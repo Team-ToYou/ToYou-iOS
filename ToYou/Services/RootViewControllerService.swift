@@ -10,16 +10,22 @@ import UIKit
 class RootViewControllerService {
     private static let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
     
-    private static let loginViewController = LoginViewController()
     private static let baseViewController = BaseViewController()
     
     static func toBaseViewController() {
         baseViewController.selectedIndex = 0
-        sceneDelegate?.changeRootViewController(baseViewController, animated: false)
+        sceneDelegate?.changeRootViewController(BaseViewController(), animated: false)
     }
     
     static func toLoginViewController() {
-        sceneDelegate?.changeRootViewController(loginViewController, animated: false)
+        sceneDelegate?.changeRootViewController(LoginViewController(), animated: false)
     }
     
+    static func toSignUpViewController() {
+        sceneDelegate?.changeRootViewController(PolicyAgreementViewController(), animated: false)
+    }
+    
+    static func toTutorialViewController() {
+        sceneDelegate?.changeRootViewController(TutorialViewController(), animated: false)
+    }
 }

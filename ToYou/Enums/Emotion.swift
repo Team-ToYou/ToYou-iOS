@@ -7,66 +7,66 @@
 
 import UIKit
 
-enum Emotion: String {
+enum Emotion: String, Codable {
     
-    case angry, worried, excited, happy, normal
+    case ANGRY, WORRIED, EXCITED, HAPPY, NORMAL
     
     func stampImage() -> UIImage {
         switch self {
-        case .angry:
+        case .ANGRY:
             return .angryStamp
-        case .worried:
+        case .WORRIED:
             return .worriedStamp
-        case .excited:
+        case .EXCITED:
             return .excitedStamp
-        case .happy:
+        case .HAPPY:
             return .happyStamp
-        case .normal:
+        case .NORMAL:
             return .normalStamp
         }
     }
     
     func emotionExplanation() -> String {
         switch self {
-        case .angry:
+        case .ANGRY:
             return "부글부글 화가 나요"
-        case .worried:
+        case .WORRIED:
             return "생각이 많아지고 불안해요"
-        case .excited:
+        case .EXCITED:
             return "들뜨고 흥분돼요"
-        case .happy:
+        case .HAPPY:
             return "더없이 행복한 하루였어요"
-        case .normal:
+        case .NORMAL:
             return "평범한 하루였어요"
         }
     }
     
     func faceImage() -> UIImage {
         switch self {
-        case .angry:
+        case .ANGRY:
             return .angryFace
-        case .worried:
+        case .WORRIED:
             return .worriedFace
-        case .excited:
+        case .EXCITED:
             return .excitedFace
-        case .happy:
+        case .HAPPY:
             return .happyFace
-        case .normal:
+        case .NORMAL:
             return .normalFace
         }
     }
     
     func messageBubble() -> UIImage {
         switch self {
-        case .angry:
+        case .ANGRY:
             return .angryStateBubble
-        case .worried:
+        case .WORRIED:
             return .worriedStateBubble
-        case .excited:
+        case .EXCITED:
             return .excitedStateBubble
-        case .happy:
+        case .HAPPY:
             return .happyStateBubble
-        case .normal:
+        case .NORMAL:
             return .normalStateBubble
         }
     }

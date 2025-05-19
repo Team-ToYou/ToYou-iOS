@@ -28,7 +28,7 @@ class BinarySelectionWithMessagePopupView: UIView {
         $0.text = "작성하신 일기카드가 모두\n삭제되며 복구할 수 없어요"
         $0.textAlignment = .center
         $0.font = UIFont(name: K.Font.s_core_light, size: 12)
-        $0.textColor = .black04
+        $0.textColor = .black02
     }
     
     public lazy var buttonStackFrame = UIView()
@@ -36,13 +36,13 @@ class BinarySelectionWithMessagePopupView: UIView {
     public lazy var leftConfirmButton = UIButton().then {
         $0.setTitle("탈퇴하기", for: .normal)
         $0.setTitleColor(.red02, for: .normal)
-        $0.titleLabel?.font = UIFont(name: K.Font.s_core_medium, size: 12.5)
+        $0.titleLabel?.font = UIFont(name: K.Font.s_core_light, size: 13)
     }
     
     public lazy var rightConfirmButton = UIButton().then {
         $0.setTitle("취소", for: .normal)
         $0.setTitleColor(.black04, for: .normal)
-        $0.titleLabel?.font = UIFont(name: K.Font.s_core_medium, size: 12.5)
+        $0.titleLabel?.font = UIFont(name: K.Font.s_core_light, size: 13)
     }
     
     override init(frame: CGRect) {

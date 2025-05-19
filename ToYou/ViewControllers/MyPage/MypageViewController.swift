@@ -6,14 +6,18 @@
 //
 
 import UIKit
+import Alamofire
 
 class MyPageViewController: UIViewController {
+    
+    var myPageInfo: MyPageResult?
     
     let myPageView = MyPageView()
     
     let sendFeedbackWebVC = SendFeedbackWebVC()
     let sendQueryWebVC = SendQueryWebVC()
     let policyLinkWebVC = PrivacyPolicyWebVC()
+    let editProfileViewController = EditProfileViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,14 +30,42 @@ class MyPageViewController: UIViewController {
         policyLinkWebVC.modalPresentationStyle = .popover
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchUserInfo()
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        myPageView.configure()
+        myPageView.setConstraints()
     }
     
 }
 
-extension MyPageViewController: UIScrollViewDelegate {
+extension MyPageViewController {
+    
+    private func fetchUserInfo() {
+        let url = K.URLString.baseURL + "/users/mypage"
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = [
+            "accept" : " ",
+            "Authorization": "Bearer " + accessToken,
+        ]
+        AF.request(
+            url,
+            method: .get,
+            headers: headers
+        ).responseDecodable(of: ToYouResponse<MyPageResult>.self) { response in
+            switch response.result {
+            case .success(let APIResponse):
+                guard let result = APIResponse.result else { return }
+                self.myPageInfo = result
+                self.myPageView.configure(myPageInfo: result)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
     
 }
 
@@ -51,7 +83,10 @@ extension MyPageViewController {
     
     @objc
     private func goToEditProfile() {
-        let editProfileViewController = EditProfileViewController()
+        self.editProfileViewController.configure(myPageInfo: self.myPageInfo!)
+        editProfileViewController.refreshMyPage = { [weak self] data in
+            self?.myPageView.nicknameLabel.text = data
+        }
         editProfileViewController.modalPresentationStyle = .overFullScreen
         present(editProfileViewController, animated: false)
     }
@@ -93,6 +128,10 @@ extension MyPageViewController {
         logoutVC.modalTransitionStyle = .crossDissolve
         present(logoutVC, animated: false, completion: nil)
     }
+    
+}
+
+extension MyPageViewController: UIScrollViewDelegate {
     
 }
 
