@@ -51,15 +51,17 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
                 let identityToken = appleIDCredential.identityToken,
                 let authCodeString = String(data: authorizationCode, encoding: .utf8),
                 let _ = String(data: identityToken, encoding: .utf8) {
-                APIService.loginWithApple(authorizationCode: authCodeString) { result in
+                AuthAPIService.loginWithApple(authorizationCode: authCodeString) { result in
                     switch result {
                     case true:
-                        APIService.isUserFinishedSignUp() { code in
+                        AuthAPIService.isUserFinishedSignUp() { code in
                             switch code {
-                            case true:
+                            case .finished:
                                 RootViewControllerService.toBaseViewController()
-                            case false:
+                            case .notFinished:
                                 RootViewControllerService.toSignUpViewController()
+                            case .expired:
+                                RootViewControllerService.toLoginViewController()
                             }
                         }
                     case false:

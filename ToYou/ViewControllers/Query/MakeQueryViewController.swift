@@ -23,7 +23,7 @@ class MakeQueryViewController: UIViewController {
         setButtonAction()
         setQueryChoiceButtonActions()
         hideKeyboardWhenTappedAround()
-        if QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 == 3 {
+        if QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0 == 3 {
             makeQueryView.addQueryChoiceButton.isHidden = true
         }
         vc.modalPresentationStyle = .overFullScreen
@@ -72,9 +72,9 @@ extension MakeQueryViewController: UICollectionViewDelegate, UICollectionViewDat
     
     @objc
     private func addQuery() {
-        let count = QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0
+        let count = QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0
         if  count < 3 {
-            QueryApiService.addQueryOption("")
+            QueryAPIService.addQueryOption("")
             makeQueryView.choicesCollection.reloadData()
             updateCollectionViewHeight()
             isAllFilled()
@@ -85,7 +85,7 @@ extension MakeQueryViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     private func updateCollectionViewHeight() {
-        let count = QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0
+        let count = QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0
         makeQueryView.choicesCollection.snp.updateConstraints { make in
             let newHeight = count * 36 + (count - 1) * 10
             make.height.equalTo(newHeight)
@@ -93,11 +93,11 @@ extension MakeQueryViewController: UICollectionViewDelegate, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0
+        return QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let data = QueryApiService.shared.queryParamter.answerOptionList?[indexPath.row] ?? ""
+        let data = QueryAPIService.shared.queryParamter.answerOptionList?[indexPath.row] ?? ""
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: QueryChoiceCollectionViewCell.identifier,
             for: indexPath) as! QueryChoiceCollectionViewCell
@@ -144,20 +144,20 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     func isAllQuestionFilled() {
         // 질문 개수 검사
         print("isAllQuestionFilled called")
-        print("count \(QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0)")
-        if QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 > 3 ||
-            QueryApiService.shared.queryParamter.answerOptionList?.count ?? 0 < 2 {
+        print("count \(QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0)")
+        if QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0 > 3 ||
+            QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0 < 2 {
             makeQueryView.confirmButton.unavailable()
             return
         }
         
         // 각 질문의 문자 길이 검사
-        for (index, text) in QueryApiService.shared.queryParamter.answerOptionList!.enumerated() {
+        for (index, text) in QueryAPIService.shared.queryParamter.answerOptionList!.enumerated() {
             if text.count > 31 {
                 // 경고
                 self.present(vc, animated: false)
                 //마지막 문자열 제거
-                QueryApiService.shared.queryParamter.answerOptionList![index].removeLast()
+                QueryAPIService.shared.queryParamter.answerOptionList![index].removeLast()
                 return
             }
             

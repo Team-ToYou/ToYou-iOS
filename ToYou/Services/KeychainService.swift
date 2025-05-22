@@ -7,7 +7,7 @@
 
 import Foundation
 
-class KeychainService {
+final class KeychainService {
     
     let shared = KeychainService()
     

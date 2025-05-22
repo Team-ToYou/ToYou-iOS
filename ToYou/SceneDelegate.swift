@@ -32,17 +32,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         
-        APIService.reissueRefreshToken { code in
+        AuthAPIService.isUserFinishedSignUp { code in
             switch code {
-            case .success:
-                APIService.isUserFinishedSignUp { isFinished in
-                    if isFinished {
-                        RootViewControllerService.toBaseViewController()
-                    } else {
-                        RootViewControllerService.toSignUpViewController()
-                    }
-                }
-            case .error, .expired:
+            case .finished:
+                RootViewControllerService.toBaseViewController()
+            case .notFinished:
+                RootViewControllerService.toSignUpViewController()
+            case .expired:
                 RootViewControllerService.toLoginViewController()
             }
         }

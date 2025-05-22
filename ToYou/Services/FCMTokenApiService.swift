@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class FCMTokenApiService {
+final class FCMTokenApiService {
     
     static func uploadFCMTokenToServer(mode: HTTPMethod , _ token: String, completion: @escaping (FCMCode) -> Void) {
         let tail = "/fcm/token"

@@ -212,7 +212,7 @@ extension FriendsViewController: FriendCollectionViewCellDelegate {
         let selectQueryVC = QueryTypeViewController()
         selectQueryVC.modalPresentationStyle = .overFullScreen
         selectQueryVC.configure(by: friend)
-        QueryApiService.setTargetId(friend.userId)
+        QueryAPIService.setTargetId(friend.userId)
         present(selectQueryVC, animated: true)
     }
     
