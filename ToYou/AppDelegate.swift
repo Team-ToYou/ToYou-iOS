@@ -78,6 +78,8 @@ extension AppDelegate : MessagingDelegate {
                 switch code {
                 case .COMMON200: // FCM 토큰 로컬에 저장
                     let _ = KeychainService.add(key: K.Key.fcmToken, value: fcmToken)
+                case .JWT400:
+                    RootViewControllerService.toLoginViewController()
                 case .FCM400: // 유효하지 않은 FCM 토큰 => 진짜 어떻게 대응하냐...
                     break
                 case .FCM401: // 해당 토큰 정보가 존재하지 않는다.

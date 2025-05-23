@@ -150,11 +150,12 @@ final class FCMTokenApiService {
     static func sendFCMMessage(to token: String, requestType: FCMRequestType) {
         var title = ""
         var body = ""
+        var userName = ""
         // 사용자 이름 저장해둔 곳
         switch requestType {
         case .FriendRequest:
             title = "친구 요청"
-            body = "content"
+            body = "\(userName)님이 친구 요청을 보냈습니다."
         case .FriendRequestAccepted:
             title = "친구 요청 승인"
             body = "content"
@@ -178,7 +179,8 @@ final class FCMTokenApiService {
         ]
         AF.request(url,
            method: .get,
-           encoding: JSONEncoding.default,
+           parameters: parameters,
+           encoding : JSONEncoding.default,
            headers: headers)
         .responseDecodable(of: FCMTokenResult.self) { response in
             switch response.result {
@@ -190,6 +192,24 @@ final class FCMTokenApiService {
         }
     }
     
+    static func sendFCMMessage(to userId: Int, requestType: FCMRequestType, completion: @escaping (FCMCode) -> Void) {
+        self.getUserFCMToken(userId: userId) { code, list in
+            switch code {
+            case .COMMON200:
+                if let list {
+                    for fcmToken in list {
+                        sendFCMMessage(to: fcmToken, requestType: requestType)
+                    }
+                } else { // fcm token이 없는 경우
+                    
+                }
+            case .JWT400:
+                RootViewControllerService.toLoginViewController()
+            default :
+                print("#sendFCMMessage Failed Code \(code)")
+            }
+        }
+    }
     
 }
 
@@ -199,6 +219,7 @@ enum FCMRequestType {
 
 enum FCMCode: String {
     case COMMON200
+    case JWT400
     case FCM400 // 유효하지 않은 토큰인 경우
     case FCM401 // 해당 토큰 정보가 존재하지 않는 경우
     case FCM402 // 해당 유저의 토큰이 아닌 경우
