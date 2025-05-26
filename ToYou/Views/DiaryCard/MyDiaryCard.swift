@@ -26,7 +26,7 @@ class MyDiaryCard: UIView {
     }
     
     private let emotionStamp = UIImageView().then {
-        $0.image = UIImage(resource: .worriedStamp)
+        $0.image = UIImage(resource: .nervousStamp)
     }
     
     private let dateLabel = UILabel().then {
