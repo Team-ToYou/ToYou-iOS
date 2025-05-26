@@ -83,6 +83,7 @@ final class QueryAPIService {
             "anonymous": QueryAPIService.shared.queryParamter.anonymous ?? false,
             "answerOptionList": QueryAPIService.shared.queryParamter.answerOptionList
         ]
+        print(parameters)
         AF.request(
             url,
             method: .post,

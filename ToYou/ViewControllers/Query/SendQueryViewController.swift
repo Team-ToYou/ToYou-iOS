@@ -31,8 +31,7 @@ class SendQueryViewController: UIViewController {
     @objc
     private func toggleCheckbox(_ sender: CheckBoxButtonVer02) {
         sender.toggle()
-        print(sender.isChecked)
-        QueryAPIService.setAnonymous(sender.isSelected)
+        QueryAPIService.setAnonymous(sender.isChecked)
         // 선택 되었으면 익명, true
     }
     
