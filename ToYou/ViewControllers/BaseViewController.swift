@@ -18,11 +18,8 @@ class CustomTabBar: UITabBar {
 class BaseViewController: UITabBarController {
     
     let homeVC = UINavigationController(rootViewController: HomeViewController())
-    
     let friendsVC = FriendsViewController()
-    
     let calendarVC = CalendarViewController()
-
     let myPageVC = MyPageViewController()
     
     override func viewDidLoad() {
@@ -30,7 +27,7 @@ class BaseViewController: UITabBarController {
         setupTabBarItems()
         setupTabBar()
         self.viewControllers = [homeVC, friendsVC, calendarVC, myPageVC]
-        
+        UsersAPIService.fetchUserInfo { _ in } // 사용자 정보를 불러오고 Subscriber에게 값의 변경을 알림
     }
     
     override func loadView() {
