@@ -9,14 +9,14 @@ import UIKit
 
 enum Emotion: String, Codable {
     
-    case ANGRY, WORRIED, EXCITED, HAPPY, NORMAL
+    case ANGRY, NERVOUS, EXCITED, HAPPY, NORMAL
     
     func stampImage() -> UIImage {
         switch self {
         case .ANGRY:
             return .angryStamp
-        case .WORRIED:
-            return .worriedStamp
+        case .NERVOUS:
+            return .nervousStamp
         case .EXCITED:
             return .excitedStamp
         case .HAPPY:
@@ -30,7 +30,7 @@ enum Emotion: String, Codable {
         switch self {
         case .ANGRY:
             return "부글부글 화가 나요"
-        case .WORRIED:
+        case .NERVOUS:
             return "생각이 많아지고 불안해요"
         case .EXCITED:
             return "들뜨고 흥분돼요"
@@ -45,8 +45,8 @@ enum Emotion: String, Codable {
         switch self {
         case .ANGRY:
             return .angryFace
-        case .WORRIED:
-            return .worriedFace
+        case .NERVOUS:
+            return .nervousFace
         case .EXCITED:
             return .excitedFace
         case .HAPPY:
@@ -60,8 +60,8 @@ enum Emotion: String, Codable {
         switch self {
         case .ANGRY:
             return .angryStateBubble
-        case .WORRIED:
-            return .worriedStateBubble
+        case .NERVOUS:
+            return .nervousStateBubble
         case .EXCITED:
             return .excitedStateBubble
         case .HAPPY:

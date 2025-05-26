@@ -28,11 +28,13 @@ class MyPageViewController: UIViewController {
         sendFeedbackWebVC.modalPresentationStyle = .popover
         sendQueryWebVC.modalPresentationStyle = .popover
         policyLinkWebVC.modalPresentationStyle = .popover
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(userInfoFetched), name: NSNotification.Name("UserInfoFetched"), object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchUserInfo()
+        UsersAPIService.fetchUserInfo { _ in }
     }
     
     override func viewDidLayoutSubviews() {
@@ -44,27 +46,9 @@ class MyPageViewController: UIViewController {
 
 extension MyPageViewController {
     
-    private func fetchUserInfo() {
-        let url = K.URLString.baseURL + "/users/mypage"
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        let headers: HTTPHeaders = [
-            "accept" : " ",
-            "Authorization": "Bearer " + accessToken,
-        ]
-        AF.request(
-            url,
-            method: .get,
-            headers: headers
-        ).responseDecodable(of: ToYouResponse<MyPageResult>.self) { response in
-            switch response.result {
-            case .success(let APIResponse):
-                guard let result = APIResponse.result else { return }
-                self.myPageInfo = result
-                self.myPageView.configure(myPageInfo: result)
-            case .failure(let error):
-                print(error)
-            }
-        }
+    @objc
+    private func userInfoFetched() {
+        myPageView.configure(myPageInfo: UsersAPIService.myPageInfo!)
     }
     
 }
@@ -83,7 +67,7 @@ extension MyPageViewController {
     
     @objc
     private func goToEditProfile() {
-        self.editProfileViewController.configure(myPageInfo: self.myPageInfo!)
+        self.editProfileViewController.configure(myPageInfo: UsersAPIService.myPageInfo!)
         editProfileViewController.refreshMyPage = { [weak self] data in
             self?.myPageView.nicknameLabel.text = data
         }

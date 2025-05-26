@@ -10,10 +10,7 @@ import UIKit
 class RootViewControllerService {
     private static let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
     
-    private static let baseViewController = BaseViewController()
-    
     static func toBaseViewController() {
-        baseViewController.selectedIndex = 0
         sceneDelegate?.changeRootViewController(BaseViewController(), animated: false)
     }
     

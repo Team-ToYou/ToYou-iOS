@@ -23,47 +23,47 @@ struct QueryPostResult: Codable {
     let myName: String?
 }
 
-class QueryApiService {
+final class QueryAPIService {
     var queryParamter = QueryParameter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: nil)
-    static var shared = QueryApiService()
+    static var shared = QueryAPIService()
     
     static func setTargetId(_ targetId: Int) {
-        QueryApiService.shared.queryParamter.targetId = targetId
+        QueryAPIService.shared.queryParamter.targetId = targetId
     }
     
     static func setContent(_ content: String) {
-        QueryApiService.shared.queryParamter.content = content
+        QueryAPIService.shared.queryParamter.content = content
     }
     
     static func setQuestionType(_ type: QueryType) {
-        QueryApiService.shared.queryParamter.questionType = type.rawValue
+        QueryAPIService.shared.queryParamter.questionType = type.rawValue
         switch type {
         case .OPTIONAL:
-            QueryApiService.shared.queryParamter.answerOptionList = ["1번 선택지", "2번 선택지"]
+            QueryAPIService.shared.queryParamter.answerOptionList = ["1번 선택지", "2번 선택지"]
         case .SHORT_ANSWER, .LONG_ANSWER:
-            QueryApiService.shared.queryParamter.answerOptionList = nil
+            QueryAPIService.shared.queryParamter.answerOptionList = nil
         }
     }
     
     static func setAnonymous(_ anonymous: Bool) {
-        QueryApiService.shared.queryParamter.anonymous = anonymous
+        QueryAPIService.shared.queryParamter.anonymous = anonymous
     }
     
     static func updateQueryOptionList(at: Int, to: String) {
-        if let _ = QueryApiService.shared.queryParamter.answerOptionList {
-            QueryApiService.shared.queryParamter.answerOptionList![at] = to
+        if let _ = QueryAPIService.shared.queryParamter.answerOptionList {
+            QueryAPIService.shared.queryParamter.answerOptionList![at] = to
         }
     }
     
     static func removeQueryOption(at: Int) {
-        QueryApiService.shared.queryParamter.answerOptionList?.remove(at: at)
+        QueryAPIService.shared.queryParamter.answerOptionList?.remove(at: at)
     }
     
     static func addQueryOption(_ option: String) {
-        if let _ = QueryApiService.shared.queryParamter.answerOptionList {
-            QueryApiService.shared.queryParamter.answerOptionList!.append(option)
+        if let _ = QueryAPIService.shared.queryParamter.answerOptionList {
+            QueryAPIService.shared.queryParamter.answerOptionList!.append(option)
         } else {
-            QueryApiService.shared.queryParamter.answerOptionList = [option]
+            QueryAPIService.shared.queryParamter.answerOptionList = [option]
         }
     }
     
@@ -77,12 +77,13 @@ class QueryApiService {
             "Content-Type": "application/json"
         ]
         let parameters: [String: Any] = [
-            "targetId": QueryApiService.shared.queryParamter.targetId ?? -1,
-            "content": QueryApiService.shared.queryParamter.content ?? "",
-            "questionType": QueryApiService.shared.queryParamter.questionType ?? QueryType.SHORT_ANSWER.rawValue,
-            "anonymous": QueryApiService.shared.queryParamter.anonymous ?? false,
-            "answerOptionList": QueryApiService.shared.queryParamter.answerOptionList
+            "targetId": QueryAPIService.shared.queryParamter.targetId ?? -1,
+            "content": QueryAPIService.shared.queryParamter.content ?? "",
+            "questionType": QueryAPIService.shared.queryParamter.questionType ?? QueryType.SHORT_ANSWER.rawValue,
+            "anonymous": QueryAPIService.shared.queryParamter.anonymous ?? false,
+            "answerOptionList": QueryAPIService.shared.queryParamter.answerOptionList
         ]
+        print(parameters)
         AF.request(
             url,
             method: .post,
@@ -114,8 +115,6 @@ class QueryApiService {
                     completion(.ERROR500)
             }
         }
-        
-        QueryApiService.shared.queryParamter = QueryParameter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: nil)
     }
     
 }

@@ -31,17 +31,26 @@ class SendQueryViewController: UIViewController {
     @objc
     private func toggleCheckbox(_ sender: CheckBoxButtonVer02) {
         sender.toggle()
-        QueryApiService.setAnonymous(sender.isSelected)
+        QueryAPIService.setAnonymous(sender.isChecked)
         // 선택 되었으면 익명, true
     }
     
     @objc
     private func sendQuery() {
-        
-        QueryApiService.postQuestion { code in
+        QueryAPIService.postQuestion { code in
             switch code {
             case .COMMON200:
                 self.sendSuccess()
+                FCMTokenApiService.sendFCMMessage(to: QueryAPIService.shared.queryParamter.targetId!, requestType: .Query) { code in
+                    switch code {
+                    case .COMMON200:
+                        print("#SendQueryViewController #sendQuery Message Sent Successfully")
+                    default :
+                        print("#SendQueryViewController sendQuery Message Send Failed Code : \(code)")
+                        break
+                    }
+                }
+                QueryAPIService.shared.queryParamter = QueryParameter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: nil)
             case .AUTH400:
                 break
             case .USER401:
