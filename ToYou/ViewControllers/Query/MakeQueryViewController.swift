@@ -173,7 +173,7 @@ extension MakeQueryViewController: UITextViewDelegate {
         if let text = textView.text {
             let count = text.count
             makeQueryView.textCount.text = "\(count)/\(makeQueryView.maxLength)"
-            QueryApiService.shared.queryParamter.content = text
+            QueryAPIService.shared.queryParamter.content = text
             isAllFilled()
         }
     }
