@@ -9,8 +9,16 @@ import Foundation
 
 struct CalendarDate {
     let date: Date
+    let year: Int
+    let month: Int
     let day: Int
     let isWithinCurrentMonth: Bool
+}
+
+extension CalendarDate {
+    var fullDateString: String {
+        return String(format: "%04d-%02d-%02d", year, month, day)
+    }
 }
 
 class CalendarManager {
@@ -25,10 +33,10 @@ class CalendarManager {
             return []
         }
         
-        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth) - 1 // 0 기반 인덱스 조정
+        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth) - 1
         let totalDays = range.count
-        let totalCells = ((firstWeekday + totalDays) <= 35) ? 35 : 42 // 6주 보장
-
+        let totalCells = ((firstWeekday + totalDays) <= 35) ? 35 : 42
+        
         for i in 0..<totalCells {
             let offset = i - firstWeekday
             let date = calendar.date(byAdding: .day, value: offset, to: firstDayOfMonth)!
@@ -36,7 +44,11 @@ class CalendarManager {
             let isWithinCurrentMonth = offset >= 0 && offset < totalDays
             let day = isWithinCurrentMonth ? offset + 1 : 0
             
-            dates.append(CalendarDate(date: date, day: day, isWithinCurrentMonth: isWithinCurrentMonth))
+            let components = calendar.dateComponents([.year, .month], from: date)
+            let y = components.year ?? year
+            let m = components.month ?? month
+
+            dates.append(CalendarDate(date: date, year: y, month: m, day: day, isWithinCurrentMonth: isWithinCurrentMonth))
         }
         
         return dates

@@ -106,6 +106,10 @@ class DiaryCardPreviewController: UIViewController {
                 case .success(let result):
                     print("일기카드 생성 성공: \(result.result.cardId)")
                     
+                    DispatchQueue.main.async {
+                        self.navigationController?.popToRootViewController(animated: true)
+                    }
+                    
                 case .failure(let error):
                     print("일기카드 생성 실패: \(error)")
                     if let data = response.data,

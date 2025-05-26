@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class CalendarViewController: UIViewController {
     let calendarView = CalendarView()
@@ -16,6 +17,13 @@ class CalendarViewController: UIViewController {
     private var currentYear = Calendar.current.component(.year, from: Date())
     private var currentMonth = Calendar.current.component(.month, from: Date())
     private var currentIndex: Int = 0
+    
+    // 날짜:감정
+    private var emotionList: [String: String] = [:]
+    
+    // 친구 기록
+    private var friendCountPerDay: [String: Int] = [:]
+    private var friendRecords: [FriendDiaryCard] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +38,14 @@ class CalendarViewController: UIViewController {
             let indexPath = IndexPath(item: self.currentIndex, section: 0)
             self.calendarView.customCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
+        
+        let (year, month) = months[currentIndex]
+        setMyCalendarAPI(year: year, month: month)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let (year, month) = months[currentIndex]
+        setMyCalendarAPI(year: year, month: month)
     }
     
     // MARK: - function
@@ -51,26 +67,100 @@ class CalendarViewController: UIViewController {
             }
         }
     }
+
+    private func setMyCalendarAPI(year: Int, month: Int) {
+        let url = "\(K.URLString.baseURL)/diarycards/mine?year=\(year)&month=\(month)"
+
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken)"]
+
+        AF.request(url, method: .get, headers: headers)
+            .validate()
+            .responseDecodable(of: MyDiaryCardResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    self.emotionList = [:]
+                    for card in data.result.cardList {
+                        self.emotionList[card.date] = card.emotion
+                    }
+                    let indexPath = IndexPath(item: self.currentIndex, section: 0)
+                    self.calendarView.customCalendar.reloadData()
+                case .failure(let error):
+                    print("My Calendar API Error: \(error)")
+                }
+            }
+    }
+    
+    private func setFriendCalendarAPI(year: Int, month: Int) {
+        let url = "\(K.URLString.baseURL)/diarycards/friends?year=\(year)&month=\(month)"
+        
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(accessToken)"
+        ]
+        
+        AF.request(url, method: .get, headers: headers)
+            .validate()
+            .responseDecodable(of: FriendDiaryCardResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    print("✅ 친구 기록 응답: \(data)")
+                    
+                    self.friendRecords = data.result.cardList
+                    self.calendarView.friendRecordList.reloadData()
+                    
+                case .failure(let error):
+                    print("❌ Friend Calendar API Error: \(error)")
+                }
+            }
+    }
+    
+    private func setFriendCalendarCountAPI(year: Int, month: Int) {
+        let url = "\(K.URLString.baseURL)/diarycards/friends?year=\(year)&month=\(month)"
+
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken)"]
+
+        AF.request(url, method: .get, headers: headers)
+            .validate()
+            .responseDecodable(of: FriendCardCountResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    self.friendCountPerDay = [:]
+                    for item in data.result.cardList {
+                        self.friendCountPerDay[item.date] = item.cardNum
+                    }
+                    let indexPath = IndexPath(item: self.currentIndex, section: 0)
+                    self.calendarView.customCalendar.reloadItems(at: [indexPath])
+                case .failure(let error):
+                    print("❌ 날짜별 친구 수 API Error: \(error)")
+                }
+            }
+    }
     
     // MARK: - action
     private func setAction() {
         calendarView.segmentControl.addTarget(self, action: #selector(segmentControlChanged(_:)), for: .valueChanged)
     }
-    
+
     @objc private func segmentControlChanged(_ segment: UISegmentedControl) {
         calendarView.updateUnderLinePosition(index: segment.selectedSegmentIndex)
         isFriendRecord = segment.selectedSegmentIndex == 1
-        
+
+        calendarView.friendDateLabel.isHidden = !isFriendRecord
+        calendarView.friendLabel.isHidden = !isFriendRecord
+        calendarView.friendRecordList.isHidden = !isFriendRecord
+
+        let (year, month) = months[currentIndex]
+
         if isFriendRecord {
-            calendarView.friendDateLabel.isHidden = false
-            calendarView.friendLabel.isHidden = false
-            calendarView.friendRecordList.isHidden = false
+            setFriendCalendarCountAPI(year: year, month: month)
         } else {
-            calendarView.friendDateLabel.isHidden = true
-            calendarView.friendLabel.isHidden = true
-            calendarView.friendRecordList.isHidden = true
+            setMyCalendarAPI(year: year, month: month)
         }
-        
+
         calendarView.customCalendar.reloadData()
     }
     
@@ -81,7 +171,7 @@ extension CalendarViewController: UICollectionViewDataSource {
         if collectionView == calendarView.customCalendar {
             return months.count
         } else if collectionView == calendarView.friendRecordList {
-            return 7
+            return friendRecords.count
         }
         
         return 0
@@ -94,13 +184,16 @@ extension CalendarViewController: UICollectionViewDataSource {
             }
             
             let (year, month) = months[indexPath.item]
-            cell.configure(with: year, month: month, isFriendRecord: isFriendRecord)
+            cell.configure(with: year, month: month, isFriendRecord: isFriendRecord, emotionList: emotionList, friendCountPerDay: friendCountPerDay)
             
             return cell
         } else if collectionView == calendarView.friendRecordList {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendRecordListCell.identifier, for: indexPath) as? FriendRecordListCell else {
                 return UICollectionViewCell()
             }
+            
+            let record = friendRecords[indexPath.item]
+            cell.configure(nickname: record.nickname, emotion: record.emotion)
             
             return cell
         }
@@ -120,6 +213,11 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         guard let visibleCell = calendarView.customCalendar.visibleCells.first,
               let indexPath = calendarView.customCalendar.indexPath(for: visibleCell) else { return }
 
+        currentIndex = indexPath.item
+
+        let (year, month) = months[currentIndex]
+        setMyCalendarAPI(year: year, month: month)
+        
         // 첫 번째 혹은 마지막에 도달하면 추가
         if indexPath.item == 0 {
             prependPreviousMonth()

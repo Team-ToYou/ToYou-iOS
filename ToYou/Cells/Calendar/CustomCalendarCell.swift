@@ -13,6 +13,9 @@ class CustomCalendarCell: UICollectionViewCell {
     private let weekDays: [UIImage] = [.mon, .tue, .wed, .thu, .fri, .sat, .sun]
     private var calendarDates: [CalendarDate] = []
     
+    private var emotionList: [String: String] = [:]
+    private var friendCountPerDay: [String: Int] = [:]
+
     private var isFriendRecord: Bool = false
     
     // MARK: - init
@@ -29,11 +32,13 @@ class CustomCalendarCell: UICollectionViewCell {
         fatalError()
     }
     
-    func configure(with year: Int, month: Int, isFriendRecord: Bool) {
+    func configure(with year: Int, month: Int, isFriendRecord: Bool, emotionList: [String: String], friendCountPerDay: [String: Int] = [:]) {
         self.isFriendRecord = isFriendRecord
-        calendarDates = CalendarManager.shared.generateDates(for: year, month: month)
-        monthLabel.text = "\(month)월"
-        monthCollectionView.reloadData()
+        self.emotionList = emotionList
+        self.friendCountPerDay = friendCountPerDay
+        self.calendarDates = CalendarManager.shared.generateDates(for: year, month: month)
+        self.monthLabel.text = "\(month)월"
+        self.monthCollectionView.reloadData()
     }
     
     // MARK: - layout
@@ -106,13 +111,16 @@ extension CustomCalendarCell: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendRecordDayCell.identifier, for: indexPath) as? FriendRecordDayCell else {
                 return UICollectionViewCell()
             }
-            cell.configure(with: calendarDate)
+            let dateString = calendarDate.fullDateString
+            let count = friendCountPerDay[dateString] ?? 0
+            cell.configure(with: calendarDate, friendCount: count)
+
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MyRecordDayCell.identifier, for: indexPath) as? MyRecordDayCell else {
                 return UICollectionViewCell()
             }
-            cell.configure(with: calendarDate)
+            cell.configure(with: calendarDate, emotionList: self.emotionList)
             return cell
         }
     }
