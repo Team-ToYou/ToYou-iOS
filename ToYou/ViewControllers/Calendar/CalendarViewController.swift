@@ -84,7 +84,7 @@ class CalendarViewController: UIViewController {
                     for card in data.result.cardList {
                         self.emotionList[card.date] = card.emotion
                     }
-                    let indexPath = IndexPath(item: self.currentIndex, section: 0)
+                    _ = IndexPath(item: self.currentIndex, section: 0)
                     self.calendarView.customCalendar.reloadData()
                 case .failure(let error):
                     print("My Calendar API Error: \(error)")
@@ -93,31 +93,6 @@ class CalendarViewController: UIViewController {
     }
     
     private func setFriendCalendarAPI(year: Int, month: Int) {
-        let url = "\(K.URLString.baseURL)/diarycards/friends?year=\(year)&month=\(month)"
-        
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "Bearer \(accessToken)"
-        ]
-        
-        AF.request(url, method: .get, headers: headers)
-            .validate()
-            .responseDecodable(of: FriendDiaryCardResponse.self) { response in
-                switch response.result {
-                case .success(let data):
-                    print("✅ 친구 기록 응답: \(data)")
-                    
-                    self.friendRecords = data.result.cardList
-                    self.calendarView.friendRecordList.reloadData()
-                    
-                case .failure(let error):
-                    print("❌ Friend Calendar API Error: \(error)")
-                }
-            }
-    }
-    
-    private func setFriendCalendarCountAPI(year: Int, month: Int) {
         let url = "\(K.URLString.baseURL)/diarycards/friends?year=\(year)&month=\(month)"
 
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
@@ -132,10 +107,12 @@ class CalendarViewController: UIViewController {
                     for item in data.result.cardList {
                         self.friendCountPerDay[item.date] = item.cardNum
                     }
+
                     let indexPath = IndexPath(item: self.currentIndex, section: 0)
                     self.calendarView.customCalendar.reloadItems(at: [indexPath])
+
                 case .failure(let error):
-                    print("❌ 날짜별 친구 수 API Error: \(error)")
+                    print("친구 카드 수 API Error: \(error)")
                 }
             }
     }
@@ -156,7 +133,7 @@ class CalendarViewController: UIViewController {
         let (year, month) = months[currentIndex]
 
         if isFriendRecord {
-            setFriendCalendarCountAPI(year: year, month: month)
+            setFriendCalendarAPI(year: year, month: month)
         } else {
             setMyCalendarAPI(year: year, month: month)
         }
@@ -267,4 +244,9 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         months.append((year, month))
         calendarView.customCalendar.reloadData()
     }
+}
+
+// MARK: - protocol
+protocol CustomCalendarCellDelegate: AnyObject {
+    func didSelectDate(_ date: CalendarDate)
 }

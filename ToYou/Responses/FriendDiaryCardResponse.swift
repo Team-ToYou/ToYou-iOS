@@ -7,6 +7,7 @@
 
 import Foundation
 
+// year - month
 struct FriendCardCountResponse: Decodable {
     let isSuccess: Bool
     let code: String
@@ -23,6 +24,7 @@ struct FriendCardCount: Decodable {
     let date: String // "yyyy-MM-dd"
 }
 
+// year - month - day
 struct FriendDiaryCardResponse: Decodable {
     let isSuccess: Bool
     let code: String
@@ -38,5 +40,5 @@ struct FriendDiaryCard: Decodable {
     let cardId: Int
     let nickname: String
     let emotion: String
-    let date: String? // day 응답용
+    let date: String?
 }

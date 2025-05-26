@@ -14,9 +14,10 @@ class CustomCalendarCell: UICollectionViewCell {
     private var calendarDates: [CalendarDate] = []
     
     private var emotionList: [String: String] = [:]
+    
     private var friendCountPerDay: [String: Int] = [:]
-
     private var isFriendRecord: Bool = false
+    weak var delegate: CustomCalendarCellDelegate?
     
     // MARK: - init
     override init(frame: CGRect) {
