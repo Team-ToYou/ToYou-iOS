@@ -50,6 +50,7 @@ class SendQueryViewController: UIViewController {
                         break
                     }
                 }
+                QueryAPIService.shared.queryParamter = QueryParameter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: nil)
             case .AUTH400:
                 break
             case .USER401:

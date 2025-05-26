@@ -114,8 +114,6 @@ final class QueryAPIService {
                     completion(.ERROR500)
             }
         }
-        
-        QueryAPIService.shared.queryParamter = QueryParameter(targetId: nil, content: nil, questionType: nil, anonymous: nil, answerOptionList: nil)
     }
     
 }

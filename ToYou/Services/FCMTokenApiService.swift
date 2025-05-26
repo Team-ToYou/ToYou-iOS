@@ -123,7 +123,7 @@ final class FCMTokenApiService {
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
-                    let _ = KeychainService.delete(key: K.Key.fcmToken)
+                    print("#getUserFCMToken \(tail) get token from userId \(userId) 요청 성공")
                     completion(.COMMON200, apiResponse.result?.token)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400, nil)
@@ -137,17 +137,17 @@ final class FCMTokenApiService {
                     completion(.COMMON500, nil)
                 }
                 if code != FCMCode.COMMON200.rawValue {
-                    print("\(tail) get token from userId \(userId) 요청 실패: \(apiResponse.code) - \(apiResponse.message)")
+                    print("#getUserFCMToken \(tail) get token from userId \(userId) 요청 실패: \(apiResponse.code) - \(apiResponse.message)")
                 }
             case .failure(let error):
-                print("\(tail) get token from userId \(userId) API 오류: \(error.localizedDescription)")
+                print("#getUserFCMToken \(tail) get token from userId \(userId) API 오류: \(error.localizedDescription)")
                 completion(.COMMON500, nil)
             }
         }
         
     }
     
-    static func sendFCMMessage(to token: String, requestType: FCMRequestType) {
+    static func sendSingleFCMMessage(to token: String, requestType: FCMRequestType) {
         var title = ""
         var body = ""
         guard let userInfo = UsersAPIService.myPageInfo else {
@@ -186,7 +186,7 @@ final class FCMTokenApiService {
             "body" : body
         ]
         AF.request(url,
-           method: .get,
+           method: .post,
            parameters: parameters,
            encoding : JSONEncoding.default,
            headers: headers)
@@ -196,6 +196,7 @@ final class FCMTokenApiService {
                 print(value)
             case .failure(let error):
                 print(error)
+                print("#sendSingleFCMMessage Failed")
             }
         }
     }
@@ -206,7 +207,7 @@ final class FCMTokenApiService {
             case .COMMON200:
                 if let list {
                     for fcmToken in list {
-                        sendFCMMessage(to: fcmToken, requestType: requestType)
+                        sendSingleFCMMessage(to: fcmToken, requestType: requestType)
                     }
                 } else { // fcm token이 없는 경우
                     
