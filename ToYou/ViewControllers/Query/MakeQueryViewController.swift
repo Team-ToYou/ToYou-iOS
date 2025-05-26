@@ -121,7 +121,6 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     }
     
     func isAllFilled() {
-        print("isAllFilled called")
         // 컨텐츠 텍스트 길이 검사
         makeQueryView.confirmButton.available()
         if makeQueryView.textView.text.count < 0 ||
@@ -143,8 +142,6 @@ extension MakeQueryViewController: QueryChoiceCollectionViewCellDelegate {
     
     func isAllQuestionFilled() {
         // 질문 개수 검사
-        print("isAllQuestionFilled called")
-        print("count \(QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0)")
         if QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0 > 3 ||
             QueryAPIService.shared.queryParamter.answerOptionList?.count ?? 0 < 2 {
             makeQueryView.confirmButton.unavailable()
@@ -176,6 +173,7 @@ extension MakeQueryViewController: UITextViewDelegate {
         if let text = textView.text {
             let count = text.count
             makeQueryView.textCount.text = "\(count)/\(makeQueryView.maxLength)"
+            QueryAPIService.setContent(textView.text)
             isAllFilled()
         }
     }
