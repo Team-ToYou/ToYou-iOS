@@ -44,22 +44,25 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        //로그인 성공
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             if  let authorizationCode = appleIDCredential.authorizationCode,
                 let identityToken = appleIDCredential.identityToken,
                 let authCodeString = String(data: authorizationCode, encoding: .utf8),
                 let _ = String(data: identityToken, encoding: .utf8) {
-                APIService.loginWithApple(authorizationCode: authCodeString) { result in
+                AuthAPIService.loginWithApple(authorizationCode: authCodeString) { result in
                     switch result {
                     case true:
-                        APIService.isUserFinishedSignUp() { code in
+                        AuthAPIService.isUserFinishedSignUp() { code in
                             switch code {
-                            case true:
+                            case .finished:
+                                //로그인 성공
+                                
                                 RootViewControllerService.toBaseViewController()
-                            case false:
+                            case .notFinished:
                                 RootViewControllerService.toSignUpViewController()
+                            case .expired:
+                                RootViewControllerService.toLoginViewController()
                             }
                         }
                     case false:

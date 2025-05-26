@@ -95,5 +95,5 @@ class QueryTypeButton: UIButton {
 
 import SwiftUI
 #Preview {
-    SelectQueryViewController()
+    QueryTypeViewController()
 }

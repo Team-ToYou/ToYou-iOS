@@ -78,13 +78,13 @@ extension QueryChoiceCollectionViewCell {
     
     @objc
     private func deleteButtonPressed() {
-        QueryChoiceModel.shared.remove(at: self.index!)
+        QueryAPIService.removeQueryOption(at: self.index!)
         delegate?.deleteChoice()
     }
     
     @objc
     private func editTextField() {
-        QueryChoiceModel.update(at: index!, to: textField.text!)
+        QueryAPIService.updateQueryOptionList(at: index!, to: textField.text!)
         delegate?.editTextField()
     }
     

@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // 파이어베이스 Meesaging 설정
         Messaging.messaging().delegate = self
+        
         return true
     }
     
@@ -64,94 +65,35 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
-extension AppDelegate: MessagingDelegate {
-    
+extension AppDelegate : MessagingDelegate {
     // 토큰의 갱신이 일어났을 때, 호출되는 함수
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         if let fcmToken = fcmToken {
-            if let savedToken = KeychainService.get(key: K.Key.fcmToken),  savedToken != fcmToken { // 저장되어있는 것과 달라야 한다.
-                updateTokenToServer(fcmToken)
-            } else {
-                if KeychainService.add(key: K.Key.fcmToken, value: fcmToken) {
-                    // print("FCMToken saved successfully in Keychain")
+            print("fcm token ", fcmToken)
+            var method:  HTTPMethod = .post
+            if let _ = KeychainService.get(key: K.Key.fcmToken) { // FCM 토큰이 저장 되어 있는 경우
+                method = .patch
+            }
+            FCMTokenApiService.uploadFCMTokenToServer(mode: method, fcmToken) { code in
+                switch code {
+                case .COMMON200: // FCM 토큰 로컬에 저장
+                    let _ = KeychainService.add(key: K.Key.fcmToken, value: fcmToken)
+                case .JWT400:
+                    RootViewControllerService.toLoginViewController()
+                case .FCM400: // 유효하지 않은 FCM 토큰 => 진짜 어떻게 대응하냐...
+                    break
+                case .FCM401: // 해당 토큰 정보가 존재하지 않는다.
+                    // 토큰 재발급을 받아야 한다
+                    break
+                case .FCM402: // 해당 유저의 토큰이 아닌 경우 (한 기기에서 A 유저가 로그아웃 하고 B 유저가 로그인 한 경우)
+                    // 로그아웃, 회원탈퇴 시, 반드시 서버에서 FCM 토큰을 삭제해주어야 한다.
+                    break
+                case .FCM403: //
+                    break
+                case .COMMON500: // 서버에러, 네트워크 에러 발생, 앱을 여는 순간에 어떤 피드백을 보여줄 것인가?
+                    break
                 }
-                sendTokenToServer(fcmToken)
             }
         }
     }
-    
-    // 1. 토큰을 서버에 전송 => 성공 시, 로컬에도 저장
-    func sendTokenToServer(_ token: String) {
-        let tail = "/fcm/token"
-        let url = K.URLString.baseURL + tail
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else {
-            return
-        }
-        let headers: HTTPHeaders = [
-            "accept": "*/*",
-            "Authorization": "Bearer \(accessToken)",
-            "Content-Type": "application/json"
-        ]
-        print("token : ", token)
-        let parameters = ["token": token]
-        
-        // JSONEncoding 사용하기
-        AF.request(url,
-                   method: .post,
-                   parameters: parameters,
-                   encoding: JSONEncoding.default,
-                   headers: headers)
-        .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
-            switch response.result {
-            case .success(let apiResponse):
-                if apiResponse.isSuccess {
-                    
-                } else {
-                    print("\(tail) send API 오류: \(apiResponse.code) - \(apiResponse.message)")
-                }
-            case .failure(let error):
-                print("\(tail) send 요청 실패: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    // 2. 토큰 값을 갱신
-    func updateTokenToServer(_ token: String) {
-        // guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        let tail = "/fcm/token"
-        let url = K.URLString.baseURL + tail
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else {
-            return
-        }
-        let headers: HTTPHeaders = [
-                "accept": "*/*",
-                "Authorization": accessToken,
-                "Content-Type": "application/json"
-            ]
-        let parameters = ["token" : token]
-        AF.request(url,
-                   method: .patch,
-                   parameters: parameters,
-                   encoding: JSONEncoding.default,
-                   headers: headers)
-        .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
-            // 서버 응답 상태 코드 확인
-            if let statusCode = response.response?.statusCode {
-                print("상태 코드: \(statusCode)")
-            }
-            switch response.result {
-            case .success(let apiResponse):
-                if apiResponse.isSuccess {
-                    if KeychainService.update(key: K.Key.fcmToken, value: token) {
-                        // print("FCMToken updated successfully in Keychain")
-                    }
-                } else {
-                    print("\(tail) patch API 오류: \(apiResponse.code) - \(apiResponse.message)")
-                }
-            case .failure(let error):
-                print("\(tail) patch 요청 실패: \(error.localizedDescription)")
-            }
-        }
-    }
-    
 }

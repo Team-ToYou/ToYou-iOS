@@ -7,7 +7,7 @@
 
 import Foundation
 
-class KeychainService {
+final class KeychainService {
     
     let shared = KeychainService()
     
@@ -75,6 +75,13 @@ class KeychainService {
         
         print("KeychainService DeleteItem Error : \(status.description)")
         return false
+    }
+    
+    static func deleteAll() -> Bool {
+        return KeychainService.delete(key: K.Key.accessToken) &&
+                KeychainService.delete(key: K.Key.refreshToken) &&
+                KeychainService.delete(key: K.Key.fcmToken)
+        
     }
     
 }

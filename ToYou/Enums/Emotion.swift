@@ -16,7 +16,7 @@ enum Emotion: String, Codable {
         case .ANGRY:
             return .angryStamp
         case .NERVOUS:
-            return .worriedStamp
+            return .nervousStamp
         case .EXCITED:
             return .excitedStamp
         case .HAPPY:
@@ -46,7 +46,7 @@ enum Emotion: String, Codable {
         case .ANGRY:
             return .angryFace
         case .NERVOUS:
-            return .worriedFace
+            return .nervousFace
         case .EXCITED:
             return .excitedFace
         case .HAPPY:
@@ -61,7 +61,7 @@ enum Emotion: String, Codable {
         case .ANGRY:
             return .angryStateBubble
         case .NERVOUS:
-            return .worriedStateBubble
+            return .nervousStateBubble
         case .EXCITED:
             return .excitedStateBubble
         case .HAPPY:
