@@ -150,7 +150,15 @@ final class FCMTokenApiService {
     static func sendFCMMessage(to token: String, requestType: FCMRequestType) {
         var title = ""
         var body = ""
-        var userName = ""
+        guard let userInfo = UsersAPIService.myPageInfo else {
+            print("#sendFCMMessage 사용자 정보 조회 실패")
+            RootViewControllerService.toLoginViewController()
+            return
+        }
+        guard let userName = userInfo.nickname else {
+            print("#sendFCMMessage 사용자 정보 안의 내용에서 nil 발견")
+            return
+        }
         // 사용자 이름 저장해둔 곳
         switch requestType {
         case .FriendRequest:
@@ -158,10 +166,10 @@ final class FCMTokenApiService {
             body = "\(userName)님이 친구 요청을 보냈습니다."
         case .FriendRequestAccepted:
             title = "친구 요청 승인"
-            body = "content"
+            body = "\(userName)님이 친구 요청을 승인하셨습니다."
         case .Query:
             title = "질문 생성"
-            body = "content"
+            body = "\(userName)님이 질문을 보냈습니다."
         }
         
         let tail = "/fcm/token"

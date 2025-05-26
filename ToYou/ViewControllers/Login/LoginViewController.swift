@@ -44,7 +44,6 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        //로그인 성공
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             if  let authorizationCode = appleIDCredential.authorizationCode,
@@ -57,6 +56,8 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
                         AuthAPIService.isUserFinishedSignUp() { code in
                             switch code {
                             case .finished:
+                                //로그인 성공
+                                
                                 RootViewControllerService.toBaseViewController()
                             case .notFinished:
                                 RootViewControllerService.toSignUpViewController()

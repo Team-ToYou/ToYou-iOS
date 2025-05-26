@@ -37,11 +37,19 @@ class SendQueryViewController: UIViewController {
     
     @objc
     private func sendQuery() {
-        
         QueryAPIService.postQuestion { code in
             switch code {
             case .COMMON200:
                 self.sendSuccess()
+                FCMTokenApiService.sendFCMMessage(to: QueryAPIService.shared.queryParamter.targetId!, requestType: .Query) { code in
+                    switch code {
+                    case .COMMON200:
+                        print("#SendQueryViewController #sendQuery Message Sent Successfully")
+                    default :
+                        print("#SendQueryViewController sendQuery Message Send Failed Code : \(code)")
+                        break
+                    }
+                }
             case .AUTH400:
                 break
             case .USER401:

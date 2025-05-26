@@ -151,6 +151,15 @@ extension FriendsViewController {
                 case .NOT_FRIEND: // 요청하기가 완료
                     self.searchFriendResult?.friendStatus = .REQUEST_SENT
                     self.friendsView.friendSearchResultView.afterRequestSucceeded()
+                    FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequest) { code in
+                        switch code {
+                        case .COMMON200:
+                            print("#FriendsViewController #requestFriend Message Sent Successfully")
+                        default :
+                            print("#FriendsViewController requestFriend Message Send Failed Code : \(code)")
+                            break
+                        }
+                    }
                 case .REQUEST_SENT:
                     self.searchFriendResult?.friendStatus = .NOT_FRIEND
                     self.friendsView.friendSearchResultView.afterRequestCanceledOrDenied()
@@ -160,6 +169,15 @@ extension FriendsViewController {
                         case .COMMON200:
                             self.friendsView.friendSearchResultView.afterAcceptRequest()
                             self.friendsView.friendsCollectionView.reloadData()
+                            FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequestAccepted) { code in
+                                switch code {
+                                case .COMMON200:
+                                    print("#FriendsViewController #acceptFriend Message Sent Successfully")
+                                default :
+                                    print("#FriendsViewController acceptFriend Message Send Failed Code : \(code)")
+                                    break
+                                }
+                            }
                         case .JWT400:
                             RootViewControllerService.toLoginViewController()
                         case .ERROR500, .FRIEND401:
