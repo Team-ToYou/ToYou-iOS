@@ -38,7 +38,7 @@ class MyRecordDayCell: UICollectionViewCell {
             case "HAPPY": emotionImage.image = .happyStamp
             case "EXCITED": emotionImage.image = .excitedStamp
             case "NORMAL": emotionImage.image = .normalStamp
-            case "WORRIED": emotionImage.image = .worriedStamp
+            case "NERVOUS": emotionImage.image = .nervousStamp
             case "ANGRY": emotionImage.image = .angryStamp
             default: emotionImage.image = nil
             }
