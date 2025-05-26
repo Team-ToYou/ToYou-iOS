@@ -20,11 +20,12 @@ class FriendRecordDayCell: UICollectionViewCell {
         fatalError()
     }
     
-    func configure(with calendarDate: CalendarDate) {
+    func configure(with calendarDate: CalendarDate, friendCount: Int) {
         dayLabel.text = calendarDate.day == 0 ? "" : "\(calendarDate.day)"
         dayLabel.textColor = calendarDate.isWithinCurrentMonth ? .black04 : .gray
-        stampImage.isHidden = calendarDate.day == 0 ? true : false
-        friendCount.isHidden = calendarDate.day == 0 ? true : false
+        stampImage.isHidden = (calendarDate.day == 0 || friendCount == 0)
+        self.friendCount.text = "\(friendCount)"
+        self.friendCount.isHidden = (calendarDate.day == 0 || friendCount == 0)
     }
     
     // MARK: - layout

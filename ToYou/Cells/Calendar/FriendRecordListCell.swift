@@ -46,4 +46,23 @@ class FriendRecordListCell: UICollectionViewCell {
             $0.top.equalTo(emotionImage.snp.bottom).offset(5)
         }
     }
+    
+    func configure(nickname: String, emotion: String) {
+        nameLabel.text = nickname
+        
+        switch emotion {
+        case "HAPPY":
+            emotionImage.image = .happyStamp
+        case "EXCITED":
+            emotionImage.image = .excitedStamp
+        case "NORMAL":
+            emotionImage.image = .normalStamp
+        case "WORRIED":
+            emotionImage.image = .worriedStamp
+        case "ANGRY":
+            emotionImage.image = .angryStamp
+        default:
+            emotionImage.image = nil
+        }
+    }
 }
