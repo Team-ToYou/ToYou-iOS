@@ -121,6 +121,7 @@ extension EditProfileViewController {
                 self.editProfileView.resetUserType()
                 self.editProfileView.completeButton.unavailable()
                 self.editProfileView.updateNewUserType()
+                UsersAPIService.fetchUserInfo { _ in } // 변경된 사용자 정보 불러오기
             case .failure(let error):
                 print("\(url) patch 요청 실패: \(error.localizedDescription)")
             }
