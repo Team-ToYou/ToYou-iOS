@@ -134,4 +134,18 @@ extension CustomCalendarCell: UICollectionViewDelegate, UICollectionViewDelegate
         let height = width
         return CGSize(width: width, height: height)
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedDate = calendarDates[indexPath.item]
+
+        if isFriendRecord {
+            print("날짜: \(selectedDate)")
+            delegate?.didSelectFriendDate(selectedDate)
+        }
+    }
+}
+
+// MARK: - Protocol
+protocol CustomCalendarCellDelegate: AnyObject {
+    func didSelectFriendDate(_ date: CalendarDate)
 }

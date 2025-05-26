@@ -44,8 +44,18 @@ class CalendarViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         let (year, month) = months[currentIndex]
+        let today = Date()
+        let todayComponents = Calendar.current.dateComponents([.year, .month, .day], from: today)
+        
+        let day = (todayComponents.year == year && todayComponents.month == month)
+            ? todayComponents.day ?? 1
+            : 1
+
         setMyCalendarAPI(year: year, month: month)
+        setFrinedCalendarListAPI(year: year, month: month, day: day)
     }
     
     // MARK: - function
@@ -117,6 +127,29 @@ class CalendarViewController: UIViewController {
             }
     }
     
+    public func setFrinedCalendarListAPI(year: Int, month: Int, day: Int) {
+        let url = "\(K.URLString.baseURL)/diarycards/friends?year=\(year)&month=\(month)&day=\(day)"
+
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken)"]
+        
+        AF.request(url, method: .get, headers: headers)
+            .validate()
+            .responseDecodable(of: FriendDiaryCardResponse.self) { response in
+                switch response.result {
+                case .success(let data):
+                    self.friendRecords = data.result.cardList
+                    self.calendarView.friendRecordList.reloadData()
+                    
+                    let dateString = String(format: "%02d%02d%02d", year % 100, month, day)
+                    self.calendarView.friendDateLabel.text = dateString
+                    
+                case .failure(let error):
+                    print("친구 기록 리스트 API Error: \(error)")
+                }
+            }
+    }
+    
     // MARK: - action
     private func setAction() {
         calendarView.segmentControl.addTarget(self, action: #selector(segmentControlChanged(_:)), for: .valueChanged)
@@ -162,6 +195,7 @@ extension CalendarViewController: UICollectionViewDataSource {
             
             let (year, month) = months[indexPath.item]
             cell.configure(with: year, month: month, isFriendRecord: isFriendRecord, emotionList: emotionList, friendCountPerDay: friendCountPerDay)
+            cell.delegate = self
             
             return cell
         } else if collectionView == calendarView.friendRecordList {
@@ -177,8 +211,6 @@ extension CalendarViewController: UICollectionViewDataSource {
 
         return UICollectionViewCell()
     }
-    
-    
 }
 
 extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
@@ -246,7 +278,11 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
     }
 }
 
-// MARK: - protocol
-protocol CustomCalendarCellDelegate: AnyObject {
-    func didSelectDate(_ date: CalendarDate)
+extension CalendarViewController: CustomCalendarCellDelegate {
+    func didSelectFriendDate(_ date: CalendarDate) {
+        let year = date.year
+        let month = date.month
+        let day = date.day
+        setFrinedCalendarListAPI(year: year, month: month, day: day)
+    }
 }
