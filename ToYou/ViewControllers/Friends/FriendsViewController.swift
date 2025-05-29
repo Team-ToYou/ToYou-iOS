@@ -271,8 +271,3 @@ extension FriendsViewController: UICollectionViewDelegateFlowLayout {
         return UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
     }
 }
-
-import SwiftUI
-#Preview {
-    FriendsViewController()
-}
