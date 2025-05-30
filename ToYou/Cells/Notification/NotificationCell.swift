@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NotificationCell: UICollectionViewCell {
+class NotificationCell: UITableViewCell {
     
     static let identifier = "NotificationCell"
     public var data: NotificationData?
@@ -22,20 +22,32 @@ class NotificationCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFit
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
-        self.addSubview(titleLabel)
-        self.backgroundColor = .white
+        self.contentView.addSubview(titleLabel)
+        self.backgroundColor = .clear
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(17)
         }
     }
         
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5.5, left: 0, bottom: 5.5, right: 0))
+        contentView.layer.cornerRadius = 10
+        contentView.backgroundColor = .white
+    }
+    
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
     }
     
     func configure(_ data: NotificationData) {
@@ -43,7 +55,7 @@ class NotificationCell: UICollectionViewCell {
         titleLabel.text = data.content
         
         if data.alarmType == .NEW_QUESTION {
-            self.addSubview(detailImage)
+            self.contentView.addSubview(detailImage)
             detailImage.snp.makeConstraints { make in
                 make.centerY.equalToSuperview()
                 make.trailing.equalToSuperview().inset(24)

@@ -13,40 +13,93 @@ class NotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        notificationView.notificationCollectionView.delegate = self
-        notificationView.notificationCollectionView.dataSource = self
+        notificationView.notificationTableView.delegate = self
+        notificationView.notificationTableView.dataSource = self
+        notificationView.friendTableView.delegate = self
+        notificationView.friendTableView.dataSource = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("100")
         notificationView.setConstraints()
         self.view = notificationView
     }
     
 }
 
-extension NotificationViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == notificationView.notificationCollectionView { // CollectionVeiw가 두 개
+extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tableView == notificationView.notificationTableView { // CollectionVeiw가 두 개
+            let count = NotificationAPIService.shared.notificationData.count
+            if count > 0 {
+                notificationView.hasNotificationMode()
+            } else {
+                notificationView.noNotificationMode()
+            }
             return NotificationAPIService.shared.notificationData.count
-        } else {
+        } else if tableView == notificationView.friendTableView {
+            let count = NotificationAPIService.shared.friendRequestData.count
+            if count > 0 {
+                notificationView.hasFriendRequestMode()
+            } else {
+                notificationView.noFriendRequestMode()
+            }
+            return NotificationAPIService.shared.friendRequestData.count
+        }
+        else {
             return 0
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == notificationView.notificationCollectionView {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if tableView == notificationView.notificationTableView {
             let data = NotificationAPIService.shared.notificationData[indexPath.row]
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NotificationCell.identifier, for: indexPath) as! NotificationCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: NotificationCell.identifier, for: indexPath) as! NotificationCell
             cell.configure(data)
+            cell.selectionStyle = .none // 선택 시, 회색배경화면 제거
             return cell
-        } else {
-            return UICollectionViewCell()
+        } else if tableView == notificationView.friendTableView {
+            let data = NotificationAPIService.shared.friendRequestData[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: FriendRequestCell.identifier, for: indexPath) as! FriendRequestCell
+            cell.configure(data)
+            cell.selectionStyle = .none // 선택 시, 회색배경화면 제거
+            return cell
+        }
+        else {
+            return UITableViewCell()
         }
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 64 + 11 }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableView == notificationView.notificationTableView {
+            // 질문을 받은 뷰컨으로 넘기기
+            print("질문받음")
+        }
+    }
     
+    // Swipe Action
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // 액션 생성 및 설정
+        let transparentAction = UIContextualAction(style: .normal, title: nil) { (_, _, completionHandler) in
+            // 액션 수행 코드
+            if tableView == self.notificationView.notificationTableView {
+                NotificationAPIService.shared.notificationData.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                completionHandler(true)
+            } else if tableView == self.notificationView.friendTableView {
+                // 친구 요청 거절 API 요청
+                
+                completionHandler(true)
+            }
+            completionHandler(false) // 작업 완료 알림
+        }
+        
+        transparentAction.image = .trashcan
+        transparentAction.backgroundColor = UIColor(white: 1, alpha: 0) // 배경색을 투명하게 설정
+        return UISwipeActionsConfiguration(actions: [transparentAction])
+    }
 }
 
 import SwiftUI

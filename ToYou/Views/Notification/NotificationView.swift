@@ -31,26 +31,47 @@ class NotificationView: UIView {
     private lazy var friendRequestLabel = getTitleLabel("친구 요청")
     private lazy var noFriendRequestView = getNothingMessage("새로운 친구 요청이 없어요")
     
+    public lazy var friendTableView = UITableView().then {
+        $0.rowHeight = UITableView.automaticDimension
+        $0.estimatedRowHeight = 64 //Minimum height
+        $0.separatorStyle = .none
+        $0.backgroundColor = .clear
+        $0.isScrollEnabled = false
+        $0.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.identifier)
+    }
+    
     private lazy var notificationLabel = getTitleLabel("전체 알림")
     private lazy var noNotificationView = getNothingMessage("새로운 알림이 없어요")
     
-    public lazy var notificationCollectionView = getCollectionView()
+    public lazy var notificationTableView = UITableView().then {
+        $0.rowHeight = UITableView.automaticDimension
+        $0.estimatedRowHeight = 84 //Minimum height
+        $0.separatorStyle = .none
+        $0.backgroundColor = .clear
+        $0.isScrollEnabled = false
+        $0.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.identifier)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.backgroundColor = .white
         setConstraints()
-    }
-    
-    public func configure() {
-        
     }
     
     public func noFriendRequestMode() {
         noFriendRequestView.isHidden = false
     }
     
+    public func hasFriendRequestMode() {
+        noFriendRequestView.isHidden = true
+    }
+    
     public func noNotificationMode() {
         noNotificationView.isHidden = false
+    }
+    
+    public func hasNotificationMode() {
+        noNotificationView.isHidden = true
     }
         
     public func setConstraints() {
@@ -63,6 +84,7 @@ class NotificationView: UIView {
     private func setFriendRequestComponents() {
         self.addSubview(friendRequestLabel)
         self.addSubview(noFriendRequestView)
+        self.addSubview(friendTableView)
         
         friendRequestLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(23)
@@ -73,12 +95,18 @@ class NotificationView: UIView {
             make.top.equalTo(friendRequestLabel.snp.bottom).offset(11)
             make.leading.trailing.equalToSuperview().inset(36)
         }
+        
+        friendTableView.snp.makeConstraints { make in
+            make.top.equalTo(friendRequestLabel.snp.bottom).offset(11)
+            make.leading.trailing.equalToSuperview().inset(36)
+            make.height.equalTo(64)
+        }
     }
     
     private func setNotificationComponents() {
         self.addSubview(notificationLabel)
         self.addSubview(noNotificationView)
-        self.addSubview(notificationCollectionView)
+        self.addSubview(notificationTableView)
         
         notificationLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(23)
@@ -90,7 +118,7 @@ class NotificationView: UIView {
             make.leading.trailing.equalToSuperview().inset(36)
         }
         
-        notificationCollectionView.snp.makeConstraints { make in
+        notificationTableView.snp.makeConstraints { make in
             make.top.equalTo(notificationLabel.snp.bottom).offset(11)
             make.leading.trailing.equalToSuperview().inset(36)
             make.bottom.equalTo(self.safeAreaLayoutGuide.snp.bottom)

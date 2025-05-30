@@ -13,11 +13,14 @@ final class NotificationAPIService {
     static let shared = NotificationAPIService()
     
     var notificationData: [NotificationData] = [
-        NotificationData(alarmId: 0, content: "준환 친구요청 알림", nickname: "준환", alarmType: .FRIEND_REQUEST_ACCEPTED),
-        NotificationData(alarmId: 1, content: "승원 친구요청 알림", nickname: "승원", alarmType: .FRIEND_REQUEST_ACCEPTED),
+        NotificationData(alarmId: 0, content: "승원님이 친구 요청을 수락했습니다", nickname: "승원", alarmType: .FRIEND_REQUEST_ACCEPTED),
+        NotificationData(alarmId: 1, content: "준환님이 친구 요청을 수락했습니다", nickname: "준환", alarmType: .FRIEND_REQUEST_ACCEPTED),
         NotificationData(alarmId: 2, content: "미주가 질문을 보냄", nickname: "미주", alarmType: .NEW_QUESTION),
     ]
-    var friendRequestData: [FriendRequestData] = []
+    var friendRequestData: [FriendRequestData] = [
+        FriendRequestData(userId: 0, nickname: "태연"),
+        FriendRequestData(userId: 1, nickname: "정모"),
+    ]
     
     static func getNotificationList(completion: @escaping(NotificationCode) -> Void) {
         let url = K.URLString.baseURL + "/alarms"
