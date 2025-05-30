@@ -71,11 +71,17 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 64 + 11 }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if tableView == notificationView.notificationTableView {
+            return 64 + 11
+        } else {
+            return 64
+        }
+    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == notificationView.notificationTableView {
             // 질문을 받은 뷰컨으로 넘기기
-            print("질문받음")
+            
         }
     }
     
@@ -85,14 +91,15 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         let transparentAction = UIContextualAction(style: .normal, title: nil) { (_, _, completionHandler) in
             // 액션 수행 코드
             if tableView == self.notificationView.notificationTableView {
-                NotificationAPIService.shared.notificationData.remove(at: indexPath.row)
-                tableView.deleteRows(at: [indexPath], with: .automatic)
+                // 알림 삭제 API 연동
+                
                 completionHandler(true)
             } else if tableView == self.notificationView.friendTableView {
                 // 친구 요청 거절 API 요청
                 
                 completionHandler(true)
             }
+            tableView.deleteRows(at: [indexPath], with: .automatic)
             completionHandler(false) // 작업 완료 알림
         }
         

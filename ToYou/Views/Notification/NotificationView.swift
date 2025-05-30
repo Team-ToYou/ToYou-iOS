@@ -37,7 +37,7 @@ class NotificationView: UIView {
         $0.separatorStyle = .none
         $0.backgroundColor = .clear
         $0.isScrollEnabled = false
-        $0.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.identifier)
+        $0.register(FriendRequestCell.self, forCellReuseIdentifier: FriendRequestCell.identifier)
     }
     
     private lazy var notificationLabel = getTitleLabel("전체 알림")

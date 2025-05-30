@@ -17,7 +17,7 @@ class FriendRequestCell: UITableViewCell {
         $0.textColor = .black
     }
     
-    private lazy var friendRequestButton = FriendStateButton()
+    public lazy var friendRequestButton = FriendStateButton()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,7 +28,7 @@ class FriendRequestCell: UITableViewCell {
         
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
-        self.backgroundColor = .clear
+        self.backgroundColor = .white
         
         self.addSubview(titleLabel)
         self.addSubview(friendRequestButton)
@@ -36,9 +36,12 @@ class FriendRequestCell: UITableViewCell {
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(17)
         }
+        friendRequestButton.configure(state: .sentRequestToMe)
         friendRequestButton.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-22)
+            make.trailing.equalToSuperview().inset(19.94)
+            make.height.equalTo(19.25)
+            make.width.equalTo(47.06)
         }
         
     }
@@ -53,7 +56,6 @@ class FriendRequestCell: UITableViewCell {
             titleLabel.text = "찾을 수 없는 유저로부터의 친구요청"
             return
         }
-        
         titleLabel.text = nickname + "님이 친구요청을 보냈습니다."
     }
     
