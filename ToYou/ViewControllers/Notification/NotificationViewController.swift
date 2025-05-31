@@ -41,7 +41,9 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
             if count > 0 {
                 notificationView.hasNotificationMode()
             } else {
-                notificationView.noNotificationMode()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.notificationView.noNotificationMode()
+                }
             }
             return NotificationAPIService.shared.notificationData.count
         } else if tableView == notificationView.friendTableView {
@@ -49,7 +51,9 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
             if count > 0 {
                 notificationView.hasFriendRequestMode()
             } else {
-                notificationView.noFriendRequestMode()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.notificationView.noFriendRequestMode()
+                }
             }
             return NotificationAPIService.shared.friendRequestData.count
         }
@@ -125,6 +129,8 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                     case .COMMON200:
                         NotificationAPIService.shared.friendRequestData.remove(at: indexPath.row)
                         tableView.deleteRows(at: [indexPath], with: .automatic)
+                    case .FRIEND401:
+                        // 요청 정보가 존재하지 않다고 POP-UP
                     default :
                         print("""
                               #NotificationViewController.swift
