@@ -22,19 +22,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
         
-        window?.rootViewController = NotificationViewController()
-//        AuthAPIService.isUserFinishedSignUp { code in
-//            print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-//            print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
-//            switch code {
-//            case .finished:
-//                RootViewControllerService.toBaseViewController()
-//            case .notFinished:
-//                RootViewControllerService.toSignUpViewController()
-//            case .expired:
-//                RootViewControllerService.toLoginViewController()
-//            }
-//        }
+        AuthAPIService.isUserFinishedSignUp { code in
+            print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
+            print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
+            switch code {
+            case .finished:
+                RootViewControllerService.toBaseViewController()
+            case .notFinished:
+                RootViewControllerService.toSignUpViewController()
+            case .expired:
+                RootViewControllerService.toLoginViewController()
+            }
+        }
         
         return
     }

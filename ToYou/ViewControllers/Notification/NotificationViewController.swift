@@ -21,8 +21,14 @@ class NotificationViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        fetchNotificationData()
         notificationView.setConstraints()
         self.view = notificationView
+    }
+    
+    private func fetchNotificationData() {
+        NotificationAPIService.getNotificationList { _ in }
+        NotificationAPIService.getFriendRequestList { _ in }
     }
     
 }
@@ -95,8 +101,13 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                 NotificationAPIService.removeNotification(index: indexPath.row) { code in
                     switch code {
                     case .COMMON200:
-                        self.notificationView.notificationTableView.reloadData()
-                    case .JWT400:
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                    default :
+                        print("""
+                              #NotificationViewController.swift
+                              func removeNotification
+                              \(code) 발생
+                              """)
                         break
                     }
                 }
@@ -107,13 +118,17 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                     print("NotificationAPIService.shared.friendRequestData[\(indexPath.row)]에서 nil값이 발견됨")
                     return
                 }
+                NotificationAPIService.shared.friendRequestData.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
                 FriendsAPIService.deleteFriend(friendId: id) { code in
                     switch code {
                     case .COMMON200:
-                        self.notificationView.friendTableView.reloadData()
+                        NotificationAPIService.shared.friendRequestData.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
                     default :
                         print("""
                               #NotificationViewController.swift
+                              func deleteFriend
                               \(code) 발생
                               """)
                         break
