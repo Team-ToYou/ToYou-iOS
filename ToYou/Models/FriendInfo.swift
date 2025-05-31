@@ -23,7 +23,7 @@ enum FriendCode: String {
     case COMMON200, JWT400, ERROR500, FRIEND401
 }
 
-class FriendsList {
+class FriendsAPIService {
     static var data: [FriendInfo] = []
     
     static func fetchList(completion: @escaping (FriendCode) -> Void) {
@@ -88,6 +88,7 @@ class FriendsList {
                 case FriendCode.COMMON200.rawValue:
                     completion(.COMMON200)
                 case FriendCode.JWT400.rawValue:
+                    RootViewControllerService.toLoginViewController()
                     completion(.JWT400)
                 case FriendCode.ERROR500.rawValue:
                     completion(.ERROR500)

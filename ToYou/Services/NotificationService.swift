@@ -55,6 +55,34 @@ final class NotificationAPIService {
         }
     }
     
+    static func removeNotification(index: Int, completion: @escaping(NotificationCode) -> Void) {
+        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService.shared.notificationData[index])"
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = [
+            "accept" : " ",
+            "Authorization": "Bearer " + accessToken,
+        ]
+        AF.request(
+            url,
+            method: .delete,
+            headers: headers
+        ).responseDecodable(of: ToYouResponseWithoutResult.self) { response in
+            switch response.result {
+            case .success(let value) :
+                switch value.code {
+                case NotificationCode.COMMON200.rawValue:
+                    completion(.COMMON200)
+                case NotificationCode.JWT400.rawValue:
+                    RootViewControllerService.toLoginViewController()
+                default:
+                    break
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
 }
 
 struct NotificationResult: Codable {
@@ -69,7 +97,7 @@ struct NotificationData: Codable {
 }
 
 enum NotificationCode: String {
-    case COMMON200, JWT401
+    case COMMON200, JWT400
 }
 
 struct FriendRequestResult: Codable {

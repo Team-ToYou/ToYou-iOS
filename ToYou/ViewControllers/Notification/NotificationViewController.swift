@@ -92,18 +92,39 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
             // 액션 수행 코드
             if tableView == self.notificationView.notificationTableView {
                 // 알림 삭제 API 연동
-                
+                NotificationAPIService.removeNotification(index: indexPath.row) { code in
+                    switch code {
+                    case .COMMON200:
+                        self.notificationView.notificationTableView.reloadData()
+                    case .JWT400:
+                        break
+                    }
+                }
                 completionHandler(true)
             } else if tableView == self.notificationView.friendTableView {
                 // 친구 요청 거절 API 요청
-                
+                guard let id = NotificationAPIService.shared.friendRequestData[indexPath.row].userId else {
+                    print("NotificationAPIService.shared.friendRequestData[\(indexPath.row)]에서 nil값이 발견됨")
+                    return
+                }
+                FriendsAPIService.deleteFriend(friendId: id) { code in
+                    switch code {
+                    case .COMMON200:
+                        self.notificationView.friendTableView.reloadData()
+                    default :
+                        print("""
+                              #NotificationViewController.swift
+                              \(code) 발생
+                              """)
+                        break
+                    }
+                }
                 completionHandler(true)
             }
-            tableView.deleteRows(at: [indexPath], with: .automatic)
             completionHandler(false) // 작업 완료 알림
         }
         
-        transparentAction.image = .trashcan
+        transparentAction.image = .trashcan35X38
         transparentAction.backgroundColor = UIColor(white: 1, alpha: 0) // 배경색을 투명하게 설정
         return UISwipeActionsConfiguration(actions: [transparentAction])
     }
