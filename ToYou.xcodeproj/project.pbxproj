@@ -29,7 +29,6 @@
 				"ipa/ToYou 2025-05-14 19-08-03.plist/DistributionSummary.plist",
 				"ipa/ToYou 2025-05-14 19-08-03.plist/ExportOptions.plist",
 				"ipa/ToYou 2025-05-14 19-08-03.plist/Packaging.log",
-				"ipa/ToYou 2025-05-14 19-08-03.plist/ToYou.ipa",
 			);
 			target = 63236B952D4E17530050C952 /* ToYou */;
 		};

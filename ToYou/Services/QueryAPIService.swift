@@ -39,7 +39,7 @@ final class QueryAPIService {
         QueryAPIService.shared.queryParamter.questionType = type.rawValue
         switch type {
         case .OPTIONAL:
-            QueryAPIService.shared.queryParamter.answerOptionList = ["1번 선택지", "2번 선택지"]
+            QueryAPIService.shared.queryParamter.answerOptionList = ["", ""]
         case .SHORT_ANSWER, .LONG_ANSWER:
             QueryAPIService.shared.queryParamter.answerOptionList = nil
         }

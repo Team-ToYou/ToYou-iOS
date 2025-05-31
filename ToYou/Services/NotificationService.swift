@@ -69,7 +69,7 @@ final class NotificationAPIService {
             url,
             method: .delete,
             headers: headers
-        ).responseDecodable(of: ToYouResponseWithoutResult.self) { response in
+        ).responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
             switch response.result {
             case .success(let value) :
                 switch value.code {
@@ -81,7 +81,10 @@ final class NotificationAPIService {
                     break
                 }
             case .failure(let error):
-                print(error)
+                print("""
+                      #NotificationAPIService.swift removeNotification error: 
+                      \(error)
+                      """)
             }
         }
     }
