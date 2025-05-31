@@ -9,6 +9,7 @@ import UIKit
 import Alamofire
 
 class HomeViewController: UIViewController {
+    var homeEmotionString = ""
     let homeView = HomeView()
     
     override func viewDidLoad() {
@@ -26,15 +27,13 @@ class HomeViewController: UIViewController {
     }
     
     // MARK: - function
-    private func setView(emotion: String) {
-        let item = Home.dummy().first { $0.emotion == emotion }
+    private func setView(emotionString: String) {
+        guard let emotion = Emotion(rawValue: emotionString) else { return }
         
-        if let item = item {
-            homeView.commentLabel.text = item.comment
-            homeView.dateBackView.backgroundColor = item.color
-            homeView.emotionImage.image = item.bubble
-            homeView.backgroundColor = item.color
-        }
+        homeView.commentLabel.text = emotion.emotionExplanation()
+        homeView.dateBackView.backgroundColor = emotion.pointColor()
+        homeView.emotionImage.image = emotion.emotionBubble()
+        homeView.backgroundColor = emotion.pointColor()
     }
     
     private func getAPI() {
@@ -52,9 +51,10 @@ class HomeViewController: UIViewController {
                 case .success(let value):
                     print(value)
                     
+                    self.homeEmotionString = value.result.emotion
                     let emotion = value.result.emotion
-                    self.setView(emotion: emotion)
-                    
+                    self.setView(emotionString: emotion)
+
                 case .failure(let error):
                     print(error)
                 }
@@ -79,6 +79,7 @@ class HomeViewController: UIViewController {
     @objc
     private func diaryCardSelect(sender: UITapGestureRecognizer) {
         let diaryVC = DiaryCardSelectViewController()
+        diaryVC.emotion = Emotion(rawValue: homeEmotionString) ?? .NORMAL
         diaryVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(diaryVC, animated: true)
     }

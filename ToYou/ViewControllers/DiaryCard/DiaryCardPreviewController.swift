@@ -9,14 +9,18 @@ import UIKit
 import Alamofire
 
 class DiaryCardPreviewController: UIViewController {
-    let diaryCardPreview = DiaryCardPreview()
-    
+    var emotion: Emotion = .NORMAL
+    private var diaryCardPreview: DiaryCardPreview!
+
     var questionsAndAnswers: [DiaryCardAnswerModel] = []
     private var isLocked = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        diaryCardPreview = DiaryCardPreview(emotion: emotion)
         self.view = diaryCardPreview
+        
         setAction()
         setDelegate()
     }
@@ -133,7 +137,7 @@ extension DiaryCardPreviewController: UITableViewDataSource {
         cell.selectionStyle = .none
         
         let item = questionsAndAnswers[indexPath.row]
-        cell.configure(question: item.question, answers: item.answers, selectedIndex: item.selectedIndex)
+        cell.configure(question: item.question, answers: item.answers, selectedIndex: item.selectedIndex, emotion: emotion)
 
         return cell
     }

@@ -9,9 +9,10 @@ import UIKit
 
 class DiaryCardPreview: UIView {
     // MARK: - init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .white
+    init(emotion: Emotion) {
+        super.init(frame: .zero)
+        self.backgroundColor = .white
+        self.previewCard = MyDiaryCard(frame: .zero, emotion: emotion)
         setView()
     }
     
@@ -48,7 +49,7 @@ class DiaryCardPreview: UIView {
         $0.backgroundColor = .black02
     }
     
-    public let previewCard = MyDiaryCard()
+    public var previewCard = MyDiaryCard(frame: .zero, emotion: .ANGRY)
     
     public let saveEditButton = UIButton().then {
         $0.setTitle("저장하기", for: .normal)
@@ -104,8 +105,4 @@ class DiaryCardPreview: UIView {
         }
     }
 
-}
-
-#Preview {
-    DiaryCardPreview()
 }
