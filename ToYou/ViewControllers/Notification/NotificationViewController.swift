@@ -33,6 +33,31 @@ class NotificationViewController: UIViewController {
     
 }
 
+extension NotificationViewController: FriendRequestDelegate {
+    func acceptFriendRequest(friend: FriendRequestData) {
+        FriendsAPIService.acceptRequest(friendId: friend.userId!) { code in
+            switch code {
+            case .COMMON200:
+                NotificationAPIService.shared.friendRequestData.removeFirst() // 첫 요청을 삭제
+                self.notificationView.notificationTableView.reloadData()
+                FCMTokenApiService.sendFCMMessage(to: friend.userId!, requestType: .FriendRequestAccepted) { code in
+                    switch code {
+                    case .COMMON200:
+                        print("#FriendsViewController #acceptFriend Message Sent Successfully")
+                    default :
+                        print("#FriendsViewController acceptFriend Message Send Failed Code : \(code)")
+                        break
+                    }
+                }
+            case .FRIEND401:
+                
+            default :
+                break
+            }
+        }
+    }
+}
+
 extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -72,7 +97,7 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         } else if tableView == notificationView.friendTableView {
             let data = NotificationAPIService.shared.friendRequestData[indexPath.row]
             let cell = tableView.dequeueReusableCell(withIdentifier: FriendRequestCell.identifier, for: indexPath) as! FriendRequestCell
-            cell.configure(data)
+            cell.configure(data, delegate: self)
             cell.selectionStyle = .none // 선택 시, 회색배경화면 제거
             return cell
         }

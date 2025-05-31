@@ -7,10 +7,15 @@
 
 import UIKit
 
+protocol FriendRequestDelegate {
+    func acceptFriendRequest( friend: FriendRequestData )
+}
+
 class FriendRequestCell: UITableViewCell {
     
     static let identifier = "FriendRequestCell"
     public var data: FriendRequestData?
+    public var delegate: FriendRequestDelegate?
     
     private lazy var titleLabel = UILabel().then {
         $0.font = UIFont(name: K.Font.s_core_regular, size: 11)
@@ -43,14 +48,15 @@ class FriendRequestCell: UITableViewCell {
             make.height.equalTo(19.25)
             make.width.equalTo(47.06)
         }
-        
+        self.friendRequestButton.addTarget(self, action: #selector(handleAcceptRequest), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    func configure(_ data: FriendRequestData) {
+    func configure(_ data: FriendRequestData, delegate: FriendRequestDelegate) {
+        self.delegate = delegate
         self.data = data
         guard let nickname = data.nickname else {
             titleLabel.text = "찾을 수 없는 유저로부터의 친구요청"
@@ -61,3 +67,10 @@ class FriendRequestCell: UITableViewCell {
     
 }
 
+extension FriendRequestCell {
+    
+    @objc
+    private func handleAcceptRequest() {
+        delegate?.acceptFriendRequest(friend: data!)
+    }
+}

@@ -154,7 +154,7 @@ extension FriendsViewController {
                     FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequest) { code in
                         switch code {
                         case .COMMON200:
-                            print("#FriendsViewController #requestFriend Message Sent Successfully")
+                            break
                         default :
                             print("#FriendsViewController requestFriend Message Send Failed Code : \(code)")
                             break
@@ -172,7 +172,7 @@ extension FriendsViewController {
                             FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequestAccepted) { code in
                                 switch code {
                                 case .COMMON200:
-                                    print("#FriendsViewController #acceptFriend Message Sent Successfully")
+                                    break
                                 default :
                                     print("#FriendsViewController acceptFriend Message Send Failed Code : \(code)")
                                     break

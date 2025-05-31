@@ -64,6 +64,45 @@ class FriendsAPIService {
         }
     }
     
+    static func acceptRequest(friendId: Int, completion: @escaping (FriendCode) -> Void) {
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let url = K.URLString.baseURL + "/friends/requests/approve"
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)",
+            "Content-Type": "application/json"
+        ]
+        let parameters: [String: Any] = [
+            "userId": friendId
+        ]
+        AF.request(
+            url,
+            method: .patch,
+            parameters: parameters,
+            encoding: JSONEncoding.default,
+            headers: headers,
+        ).responseDecodable(of: ToYouResponse<RequestFriendResult>.self) { response in
+            switch response.result {
+            case .success(let apiResponse):
+                switch apiResponse.code {
+                case "COMMON200":
+                    completion(.COMMON200)
+                case "JWT400":
+                    RootViewControllerService.toLoginViewController()
+                    completion(.JWT400)
+                default:
+                    print("""
+                          Exception Code \(apiResponse.code)
+                          \(apiResponse)
+                          """)
+                    break
+                }
+            case .failure(let error):
+                print("Error: \(error)")
+            }
+        }
+    }
+    
     static func deleteFriend(friendId: Int, completion: @escaping (FriendCode) -> Void) {
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let tail = "/friends"
