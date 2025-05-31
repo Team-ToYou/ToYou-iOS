@@ -211,5 +211,6 @@ extension DiaryCardAnswerViewController: AnswerInputDelegate {
         let isValid = allLongAnswered && allShortAnswered && allSelectAnswered
         diaryCardAnswerView.nextButton.backgroundColor = isValid ? .black01 : .gray00
         diaryCardAnswerView.nextButton.setTitleColor(isValid ? .black04 : .black01, for: .normal)
+        diaryCardAnswerView.nextButton.isEnabled = isValid
     }
 }

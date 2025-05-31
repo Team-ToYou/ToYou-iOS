@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import SnapKit
 
 class DiaryCardPreview: UIView {
+    private var titleCenterYConstraint: Constraint?
+    
     // MARK: - init
     init(emotion: Emotion) {
         super.init(frame: .zero)
@@ -43,10 +46,12 @@ class DiaryCardPreview: UIView {
         $0.text = "미리보기"
         $0.textColor = .black04
         $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+        $0.isHidden = false
     }
     
     private let lineView = UIView().then {
         $0.backgroundColor = .black02
+        $0.isHidden = false
     }
     
     public var previewCard = MyDiaryCard(frame: .zero, emotion: .ANGRY)
@@ -58,6 +63,20 @@ class DiaryCardPreview: UIView {
     }
     
     // MARK: - function
+    public var isSaved: Bool = false {
+        didSet {
+            updateSaveStateUI()
+        }
+    }
+    
+    private func updateSaveStateUI() {
+        subTitleLabel.isHidden = isSaved
+        lineView.isHidden = isSaved
+        let buttonTitle = isSaved ? "수정하기" : "저장하기"
+        saveEditButton.setTitle(buttonTitle, for: .normal)
+        titleCenterYConstraint?.update(offset: isSaved ? 17 : 0)
+    }
+    
     private func setView() {
         [
             paperBackgroundView, backButton,
@@ -80,7 +99,7 @@ class DiaryCardPreview: UIView {
         
         titleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
-            $0.centerY.equalTo(backButton)
+            self.titleCenterYConstraint = $0.centerY.equalTo(backButton).constraint
         }
         
         subTitleLabel.snp.makeConstraints {
@@ -95,7 +114,7 @@ class DiaryCardPreview: UIView {
         }
         
         previewCard.snp.makeConstraints {
-            $0.top.equalTo(lineView.snp.bottom).offset(24.3)
+            $0.top.equalTo(backButton.snp.bottom).offset(57.75)
             $0.horizontalEdges.equalToSuperview().inset(21)
         }
         
