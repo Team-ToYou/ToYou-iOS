@@ -26,7 +26,7 @@ class FriendsViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        FriendsList.fetchList { code in
+        FriendsAPIService.fetchList { code in
             switch code {
             case .COMMON200:
                 self.friendsView.friendsCollectionView.reloadData()
@@ -154,7 +154,7 @@ extension FriendsViewController {
                     FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequest) { code in
                         switch code {
                         case .COMMON200:
-                            print("#FriendsViewController #requestFriend Message Sent Successfully")
+                            break
                         default :
                             print("#FriendsViewController requestFriend Message Send Failed Code : \(code)")
                             break
@@ -164,7 +164,7 @@ extension FriendsViewController {
                     self.searchFriendResult?.friendStatus = .NOT_FRIEND
                     self.friendsView.friendSearchResultView.afterRequestCanceledOrDenied()
                 case .REQUEST_RECEIVED: // 요청 수락
-                    FriendsList.fetchList { code in // 리스트 업데이트
+                    FriendsAPIService.fetchList { code in // 리스트 업데이트
                         switch code {
                         case .COMMON200:
                             self.friendsView.friendSearchResultView.afterAcceptRequest()
@@ -172,7 +172,7 @@ extension FriendsViewController {
                             FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequestAccepted) { code in
                                 switch code {
                                 case .COMMON200:
-                                    print("#FriendsViewController #acceptFriend Message Sent Successfully")
+                                    break
                                 default :
                                     print("#FriendsViewController acceptFriend Message Send Failed Code : \(code)")
                                     break
@@ -213,11 +213,11 @@ enum FriendStatusEnum: String, Codable {
 extension FriendsViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return FriendsList.data.count
+        return FriendsAPIService.data.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let data = FriendsList.data[indexPath.row]
+        let data = FriendsAPIService.data[indexPath.row]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendsCollectionViewCell.identifier, for: indexPath) as! FriendsCollectionViewCell
         cell.configure(friend: data, delegate: self)
         return cell
@@ -239,10 +239,10 @@ extension FriendsViewController: FriendCollectionViewCellDelegate {
         
         disconnectPopupVC.completionHandler = { data in
             if data {
-                FriendsList.deleteFriend(friendId: friend.userId) { code in
+                FriendsAPIService.deleteFriend(friendId: friend.userId) { code in
                     switch code {
                     case .COMMON200:
-                        FriendsList.fetchList { code in
+                        FriendsAPIService.fetchList { code in
                             if code == .COMMON200 {
                                 self.friendsView.friendsCollectionView.reloadData()
                             }
@@ -270,9 +270,4 @@ extension FriendsViewController: UICollectionViewDelegateFlowLayout {
                       insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
     }
-}
-
-import SwiftUI
-#Preview {
-    FriendsViewController()
 }

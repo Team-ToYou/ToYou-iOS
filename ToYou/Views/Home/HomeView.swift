@@ -20,7 +20,7 @@ class HomeView: UIView {
         $0.textColor = .black04
     }
     
-    private let alertButton = UIButton().then {
+    public let alertButton = UIButton().then {
         $0.setImage(.alertIcon, for: .normal)
     }
     

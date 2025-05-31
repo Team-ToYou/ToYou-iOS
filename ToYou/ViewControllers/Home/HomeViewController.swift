@@ -65,6 +65,7 @@ class HomeViewController: UIViewController {
     private func setAction() {
         homeView.emotionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(emotionSelect)))
         homeView.mailBoxImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(diaryCardSelect)))
+        homeView.alertButton.addTarget(self, action: #selector(alertSelect), for: .touchUpInside)
         homeView.emotionImage.isUserInteractionEnabled = true
         homeView.mailBoxImage.isUserInteractionEnabled = true
     }
@@ -82,6 +83,11 @@ class HomeViewController: UIViewController {
         diaryVC.emotion = Emotion(rawValue: homeEmotionString) ?? .NORMAL
         diaryVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(diaryVC, animated: true)
+    }
+    
+    @objc
+    private func alertSelect() {
+        self.navigationController?.pushViewController(NotificationViewController(), animated: true)
     }
     
 }
