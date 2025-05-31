@@ -125,7 +125,7 @@ class DiaryCardAnswerView: UIView {
         $0.titleLabel?.font = UIFont(name: "S-CoreDream-5Medium", size: 15)
         $0.backgroundColor = .gray00
         $0.layer.cornerRadius = 7
-        $0.isEnabled = true
+        $0.isEnabled = false
     }
     
     // MARK: - function

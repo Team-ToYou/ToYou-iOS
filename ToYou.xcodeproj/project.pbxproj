@@ -25,7 +25,6 @@
 				Info.plist,
 				"ipa/ToYou 2025-05-05 23-29-02/ExportOptions.plist",
 				"ipa/ToYou 2025-05-05 23-29-02/Packaging.log",
-				"ipa/ToYou 2025-05-05 23-29-02/ToYou.ipa",
 				"ipa/ToYou 2025-05-14 19-08-03.plist/DistributionSummary.plist",
 				"ipa/ToYou 2025-05-14 19-08-03.plist/Packaging.log",
 			);

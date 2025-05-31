@@ -12,6 +12,7 @@ protocol AnswerInputDelegate: AnyObject {
 }
 
 class DiaryCardAnswerViewController: UIViewController {
+    var emotion: Emotion = .NORMAL
     let diaryCardAnswerView = DiaryCardAnswerView()
     
     var selectedQuestions: [Question] = []
@@ -108,6 +109,7 @@ class DiaryCardAnswerViewController: UIViewController {
         
         // push + 데이터 전달
         let previewVC = DiaryCardPreviewController()
+        previewVC.emotion = self.emotion
         previewVC.questionsAndAnswers = answerModels
         previewVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(previewVC, animated: true)
@@ -209,5 +211,6 @@ extension DiaryCardAnswerViewController: AnswerInputDelegate {
         let isValid = allLongAnswered && allShortAnswered && allSelectAnswered
         diaryCardAnswerView.nextButton.backgroundColor = isValid ? .black01 : .gray00
         diaryCardAnswerView.nextButton.setTitleColor(isValid ? .black04 : .black01, for: .normal)
+        diaryCardAnswerView.nextButton.isEnabled = isValid
     }
 }

@@ -66,7 +66,7 @@ class DiaryCardAnswerCell: UITableViewCell {
         }
     }
     
-    func configure(question: String, answers: [String], selectedIndex: Int?) {
+    func configure(question: String, answers: [String], selectedIndex: Int?, emotion: Emotion) {
         questionLabel.text = question
         
         answerStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
@@ -76,7 +76,7 @@ class DiaryCardAnswerCell: UITableViewCell {
         
         for (index, answerText) in answers.enumerated() {
             let backView = UIView().then {
-                $0.backgroundColor = (index == selectedIndex) ? .green01 : .white
+                $0.backgroundColor = (index == selectedIndex) ? emotion.pointColor() : .white
                 $0.layer.cornerRadius = 5.33
             }
             
@@ -99,10 +99,4 @@ class DiaryCardAnswerCell: UITableViewCell {
             answerStackView.addArrangedSubview(backView)
         }
     }
-}
-
-import SwiftUI
-
-#Preview {
-    DiaryCardPreview()
 }
