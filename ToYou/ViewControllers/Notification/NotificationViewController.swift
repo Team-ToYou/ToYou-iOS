@@ -13,10 +13,16 @@ class NotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view = notificationView
+        
+        addActions()
         notificationView.notificationTableView.delegate = self
         notificationView.notificationTableView.dataSource = self
         notificationView.friendTableView.delegate = self
         notificationView.friendTableView.dataSource = self
+        
+        notificationView.setConstraints()
+        fetchNotificationData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -28,12 +34,38 @@ class NotificationViewController: UIViewController {
     
     private func fetchNotificationData() {
         NotificationAPIService.getNotificationList { _ in
-            self.notificationView.notificationTableView.reloadData()
+            DispatchQueue.main.async {
+                self.notificationView.notificationTableView.reloadData()
+                self.updateNotificationUI()
+            }
         }
+        
         NotificationAPIService.getFriendRequestList { _ in
-            self.notificationView.friendTableView.reloadData()
+            DispatchQueue.main.async {
+                self.notificationView.friendTableView.reloadData()
+                self.updateFriendRequestUI()
+            }
         }
     }
+
+    private func updateNotificationUI() {
+        let count = NotificationAPIService.shared.notificationData.count
+        if count > 0 {
+            notificationView.hasNotificationMode()
+        } else {
+            notificationView.noNotificationMode()
+        }
+    }
+
+    private func updateFriendRequestUI() {
+        let count = NotificationAPIService.shared.friendRequestData.count
+        if count > 0 {
+            notificationView.hasFriendRequestMode()
+        } else {
+            notificationView.noFriendRequestMode()
+        }
+    }
+
     
 }
 
@@ -53,12 +85,24 @@ extension NotificationViewController: FriendRequestDelegate {
                         break
                     }
                 }
+                // QA2. Noti3. FriendViewController로 이동
             case .FRIEND401:
                 break
             default :
                 break
             }
         }
+    }
+}
+
+extension NotificationViewController {
+    func addActions() {
+        self.notificationView.popUpViewButton.addTarget(self, action: #selector(popUpViewButtonDidTap), for: .touchUpInside)
+    }
+    
+    @objc
+    private func popUpViewButtonDidTap() {
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -117,6 +161,7 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
             return 64
         }
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == notificationView.notificationTableView {
             // 질문을 받은 뷰컨으로 넘기기
