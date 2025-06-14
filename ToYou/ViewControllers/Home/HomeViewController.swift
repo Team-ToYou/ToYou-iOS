@@ -51,10 +51,15 @@ class HomeViewController: UIViewController {
                 case .success(let value):
                     print(value)
                     
-                    self.homeEmotionString = value.result.emotion
-                    let emotion = value.result.emotion
-                    self.setView(emotionString: emotion)
-
+                    if value.result.emotion == nil {
+                        self.homeView.mailBoxImage.isUserInteractionEnabled = false
+                    } else {
+                        self.homeView.mailBoxImage.isUserInteractionEnabled = true
+                        self.homeEmotionString = value.result.emotion!
+                        let emotion = value.result.emotion
+                        self.setView(emotionString: emotion!)
+                    }
+                    
                 case .failure(let error):
                     print(error)
                 }
@@ -64,7 +69,7 @@ class HomeViewController: UIViewController {
     // MARK: - action
     private func setAction() {
         homeView.emotionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(emotionSelect)))
-        homeView.mailBoxImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(diaryCardSelect)))
+        homeView.mailBoxImage.addTarget(self, action: #selector(diaryCardSelect), for: .touchUpInside)
         homeView.alertButton.addTarget(self, action: #selector(alertSelect), for: .touchUpInside)
         homeView.emotionImage.isUserInteractionEnabled = true
         homeView.mailBoxImage.isUserInteractionEnabled = true

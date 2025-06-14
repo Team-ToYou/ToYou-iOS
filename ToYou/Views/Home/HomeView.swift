@@ -44,9 +44,9 @@ class HomeView: UIView {
         $0.image = .defaultBubble
     }
     
-    public let mailBoxImage = UIImageView().then {
-        $0.image = .mailboxEmpty
-        $0.contentMode = .scaleAspectFit
+    public let mailBoxImage = UIButton().then {
+        $0.setImage(.mailboxEmpty, for: .normal)
+        $0.imageView?.contentMode = .scaleAspectFit
     }
     
     // MARK: - init
