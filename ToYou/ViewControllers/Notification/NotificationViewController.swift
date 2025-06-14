@@ -7,9 +7,14 @@
 
 import UIKit
 
+protocol NotificationViewControllerDelegate: AnyObject {
+    func friendRequestAccepted()
+}
+
 class NotificationViewController: UIViewController {
     
     let notificationView = NotificationView()
+    var delegate: NotificationViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,7 +70,10 @@ class NotificationViewController: UIViewController {
             notificationView.noFriendRequestMode()
         }
     }
-
+    
+    func configure(delegate: NotificationViewControllerDelegate) {
+        self.delegate = delegate
+    }
     
 }
 
@@ -86,6 +94,7 @@ extension NotificationViewController: FriendRequestDelegate {
                     }
                 }
                 // QA2. Noti3. FriendViewController로 이동
+                if let _ = self.delegate { self.delegate!.friendRequestAccepted() }
             case .FRIEND401:
                 break
             default :

@@ -12,6 +12,8 @@ class HomeViewController: UIViewController {
     let homeView = HomeView()
     let notificationVC = NotificationViewController()
     
+    var delegate: NotificationViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeView
@@ -88,6 +90,7 @@ class HomeViewController: UIViewController {
     
     @objc
     private func alertSelect() {
+        notificationVC.configure(delegate: self)
         self.navigationController?.pushViewController(notificationVC, animated: true)
     }
     
@@ -96,4 +99,18 @@ class HomeViewController: UIViewController {
         NotificationAPIService.getFriendRequestList { _ in }
     }
     
+}
+
+extension HomeViewController: NotificationViewControllerDelegate {
+    
+    func friendRequestAccepted() {
+        if let _ = delegate {
+            self.delegate?.friendRequestAccepted()
+        }
+    }
+    
+    func configure(delegate: NotificationViewControllerDelegate) {
+        self.delegate = delegate
+    }
+        
 }
