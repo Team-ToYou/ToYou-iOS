@@ -27,8 +27,12 @@ class NotificationViewController: UIViewController {
     }
     
     private func fetchNotificationData() {
-        NotificationAPIService.getNotificationList { _ in }
-        NotificationAPIService.getFriendRequestList { _ in }
+        NotificationAPIService.getNotificationList { _ in
+            self.notificationView.notificationTableView.reloadData()
+        }
+        NotificationAPIService.getFriendRequestList { _ in
+            self.notificationView.friendTableView.reloadData()
+        }
     }
     
 }
@@ -50,7 +54,7 @@ extension NotificationViewController: FriendRequestDelegate {
                     }
                 }
             case .FRIEND401:
-                
+                break
             default :
                 break
             }
@@ -131,6 +135,7 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                     switch code {
                     case .COMMON200:
                         tableView.deleteRows(at: [indexPath], with: .automatic)
+                        tableView.reloadData()
                     default :
                         print("""
                               #NotificationViewController.swift
@@ -156,6 +161,7 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                         tableView.deleteRows(at: [indexPath], with: .automatic)
                     case .FRIEND401:
                         // 요청 정보가 존재하지 않다고 POP-UP
+                        break
                     default :
                         print("""
                               #NotificationViewController.swift
