@@ -23,7 +23,7 @@ class CheckButton: UIButton {
     private func addComponents() {
         self.addSubview(mainLabel)
         
-        self.backgroundColor = .background
+        self.backgroundColor = .white
         self.clipsToBounds = true
         self.layer.cornerRadius = 6
         self.snp.makeConstraints { make in
@@ -44,7 +44,7 @@ class CheckButton: UIButton {
     
     public func unavailable() {
         mainLabel.textColor = .black01
-        self.backgroundColor = .background
+        self.backgroundColor = .white
         self.isEnabled = false
     }
     
