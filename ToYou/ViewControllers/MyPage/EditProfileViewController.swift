@@ -89,6 +89,7 @@ extension EditProfileViewController {
                 self.editProfileView.updatedNickname()
                 self.editProfileView.resetNickname()
                 self.editProfileView.completeButton.unavailable()
+                self.dismiss(animated: false, completion: nil)
             case .failure(let error):
                 print("\(url) patch 요청 실패: \(error.localizedDescription)")
             }
