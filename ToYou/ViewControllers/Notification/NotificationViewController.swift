@@ -7,16 +7,27 @@
 
 import UIKit
 
+protocol NotificationViewControllerDelegate: AnyObject {
+    func friendRequestAccepted()
+}
+
 class NotificationViewController: UIViewController {
     
     let notificationView = NotificationView()
+    var delegate: NotificationViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view = notificationView
+        
+        addActions()
         notificationView.notificationTableView.delegate = self
         notificationView.notificationTableView.dataSource = self
         notificationView.friendTableView.delegate = self
         notificationView.friendTableView.dataSource = self
+        
+        notificationView.setConstraints()
+        fetchNotificationData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -27,8 +38,41 @@ class NotificationViewController: UIViewController {
     }
     
     private func fetchNotificationData() {
-        NotificationAPIService.getNotificationList { _ in }
-        NotificationAPIService.getFriendRequestList { _ in }
+        NotificationAPIService.getNotificationList { _ in
+            DispatchQueue.main.async {
+                self.notificationView.notificationTableView.reloadData()
+                self.updateNotificationUI()
+            }
+        }
+        
+        NotificationAPIService.getFriendRequestList { _ in
+            DispatchQueue.main.async {
+                self.notificationView.friendTableView.reloadData()
+                self.updateFriendRequestUI()
+            }
+        }
+    }
+
+    private func updateNotificationUI() {
+        let count = NotificationAPIService.shared.notificationData.count
+        if count > 0 {
+            notificationView.hasNotificationMode()
+        } else {
+            notificationView.noNotificationMode()
+        }
+    }
+
+    private func updateFriendRequestUI() {
+        let count = NotificationAPIService.shared.friendRequestData.count
+        if count > 0 {
+            notificationView.hasFriendRequestMode()
+        } else {
+            notificationView.noFriendRequestMode()
+        }
+    }
+    
+    func configure(delegate: NotificationViewControllerDelegate) {
+        self.delegate = delegate
     }
     
 }
@@ -49,12 +93,25 @@ extension NotificationViewController: FriendRequestDelegate {
                         break
                     }
                 }
+                // QA2. Noti3. FriendViewController로 이동
+                if let _ = self.delegate { self.delegate!.friendRequestAccepted() }
             case .FRIEND401:
                 break
             default :
                 break
             }
         }
+    }
+}
+
+extension NotificationViewController {
+    func addActions() {
+        self.notificationView.popUpViewButton.addTarget(self, action: #selector(popUpViewButtonDidTap), for: .touchUpInside)
+    }
+    
+    @objc
+    private func popUpViewButtonDidTap() {
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -141,6 +198,7 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                     switch code {
                     case .COMMON200:
                         tableView.deleteRows(at: [indexPath], with: .automatic)
+                        tableView.reloadData()
                     default :
                         print("""
                               #NotificationViewController.swift

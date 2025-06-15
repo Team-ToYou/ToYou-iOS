@@ -11,14 +11,18 @@ import Alamofire
 class HomeViewController: UIViewController {
     var homeEmotionString = ""
     let homeView = HomeView()
+    let notificationVC = NotificationViewController()
+    
+    var delegate: NotificationViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeView
         navigationController?.navigationBar.isHidden = true
-        
+
         setAction()
         getAPI()
+        getNotifications() // 알림 정보 가져오기
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -87,7 +91,27 @@ class HomeViewController: UIViewController {
     
     @objc
     private func alertSelect() {
-        self.navigationController?.pushViewController(NotificationViewController(), animated: true)
+        notificationVC.configure(delegate: self)
+        self.navigationController?.pushViewController(notificationVC, animated: true)
     }
     
+    private func getNotifications() {
+        NotificationAPIService.getNotificationList { _ in }
+        NotificationAPIService.getFriendRequestList { _ in }
+    }
+    
+}
+
+extension HomeViewController: NotificationViewControllerDelegate {
+    
+    func friendRequestAccepted() {
+        if let _ = delegate {
+            self.delegate?.friendRequestAccepted()
+        }
+    }
+    
+    func configure(delegate: NotificationViewControllerDelegate) {
+        self.delegate = delegate
+    }
+        
 }

@@ -16,8 +16,7 @@ class CustomTabBar: UITabBar {
 }
 
 class BaseViewController: UITabBarController {
-    
-    let homeVC = UINavigationController(rootViewController: HomeViewController())
+    var homeVC = HomeViewController()
     let friendsVC = FriendsViewController()
     let calendarVC = CalendarViewController()
     let myPageVC = MyPageViewController()
@@ -26,7 +25,9 @@ class BaseViewController: UITabBarController {
         super.viewDidLoad()
         setupTabBarItems()
         setupTabBar()
-        self.viewControllers = [homeVC, friendsVC, calendarVC, myPageVC]
+        homeVC.configure(delegate: self)
+        let navigatedHomeVC = UINavigationController(rootViewController: homeVC)
+        self.viewControllers = [navigatedHomeVC, friendsVC, calendarVC, myPageVC]
         UsersAPIService.fetchUserInfo { _ in } // 사용자 정보를 불러오고 Subscriber에게 값의 변경을 알림
     }
     
@@ -72,6 +73,12 @@ class BaseViewController: UITabBarController {
         tabBar.layer.borderColor = UIColor.background.cgColor
     }
     
+}
+
+extension BaseViewController: NotificationViewControllerDelegate {
+    func friendRequestAccepted() {
+        self.selectedIndex = 1
+    }
 }
 
 extension UIImage {
