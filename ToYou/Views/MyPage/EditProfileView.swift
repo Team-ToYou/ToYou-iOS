@@ -110,7 +110,7 @@ class EditProfileView: UIView {
         self.setupBackground()
         self.signUpTopTitleComponents()
         self.addLeftViewInTextField(self.nicknameTextField)
-        self.overlappedCheck
+        self.overlappedCheck.unavailable()
     }
     
     public func checkAnyInfoChanged() {
