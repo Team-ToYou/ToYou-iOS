@@ -43,7 +43,7 @@ class SetNotificationView: UIView {
     
     private lazy var subLabel = UILabel().then {
         $0.text = "알림은 매일 23시에 전송됩니다."
-        $0.font = UIFont(name: K.Font.s_core_light, size: 10)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 11)
         $0.textColor = .black01
     }
 
@@ -113,7 +113,7 @@ extension SetNotificationView {
         
         subLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview()
-            make.top.equalTo(mainLabel.snp.bottom)
+            make.top.equalTo(mainLabel.snp.bottom).offset(5)
         }
         
         toggle.snp.makeConstraints { make in
