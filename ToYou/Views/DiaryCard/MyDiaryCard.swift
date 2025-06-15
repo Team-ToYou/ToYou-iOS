@@ -8,8 +8,11 @@
 import UIKit
 
 class MyDiaryCard: UIView {
+    private let emotion: Emotion
+
     // MARK: - init
-    override init(frame: CGRect) {
+    init(frame: CGRect, emotion: Emotion) {
+        self.emotion = emotion
         super.init(frame: frame)
         
         setView()
@@ -21,16 +24,12 @@ class MyDiaryCard: UIView {
     
     // MARK: - layout
     private let backView = UIView().then {
-        $0.backgroundColor = .green00
         $0.layer.cornerRadius = 5.3
     }
     
-    private let emotionStamp = UIImageView().then {
-        $0.image = UIImage(resource: .nervousStamp)
-    }
+    private let emotionStamp = UIImageView()
     
     private let dateLabel = UILabel().then {
-        $0.text = "20240504"
         $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
         $0.textColor = .black04
     }
@@ -53,6 +52,14 @@ class MyDiaryCard: UIView {
     
     // MARK: - function
     private func setView() {
+        backView.backgroundColor = emotion.mainColor()
+        emotionStamp.image = emotion.stampImage()
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd"
+        let todayString = dateFormatter.string(from: Date())
+        dateLabel.text = todayString
+        
         [
             backView, lockButton,
             emotionStamp, dateLabel, toLabel,
@@ -95,10 +102,4 @@ class MyDiaryCard: UIView {
         }
     }
 
-}
-
-import SwiftUI
-
-#Preview {
-    DiaryCardPreview()
 }

@@ -17,7 +17,6 @@ class MyPageViewController: UIViewController {
     let sendFeedbackWebVC = SendFeedbackWebVC()
     let sendQueryWebVC = SendQueryWebVC()
     let policyLinkWebVC = PrivacyPolicyWebVC()
-    let editProfileViewController = EditProfileViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,7 +66,8 @@ extension MyPageViewController {
     
     @objc
     private func goToEditProfile() {
-        self.editProfileViewController.configure(myPageInfo: UsersAPIService.myPageInfo!)
+        let editProfileViewController = EditProfileViewController()
+        editProfileViewController.configure(myPageInfo: UsersAPIService.myPageInfo!)
         editProfileViewController.refreshMyPage = { [weak self] data in
             self?.myPageView.nicknameLabel.text = data
         }

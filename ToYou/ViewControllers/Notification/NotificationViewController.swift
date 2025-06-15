@@ -174,7 +174,16 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == notificationView.notificationTableView {
             // 질문을 받은 뷰컨으로 넘기기
-            
+            let data = NotificationAPIService.shared.notificationData[indexPath.row]
+            switch data.alarmType! {
+            case .FRIEND_REQUEST_ACCEPTED:
+                // BaseViewController의 인덱스 조절
+                // 현재 NotificationViewController pop
+                break
+            case .NEW_QUESTION:
+                // 미주야 너 파트야
+                break
+            }
         }
     }
     

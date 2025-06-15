@@ -13,6 +13,7 @@ protocol QuestionSelectable {
 }
 
 class DiaryCardSelectViewController: UIViewController {
+    var emotion: Emotion = .NORMAL
     let diaryCardSelectView = DiaryCardSelectView()
     
     private var selectedItemsCount: Int = 0
@@ -53,6 +54,7 @@ class DiaryCardSelectViewController: UIViewController {
     
     @objc private func nextButtonTapped() {
         let answerVC = DiaryCardAnswerViewController()
+        answerVC.emotion = self.emotion
         answerVC.hidesBottomBarWhenPushed = true
         answerVC.selectedQuestions = selectedQuestions
         self.navigationController?.pushViewController(answerVC, animated: true)

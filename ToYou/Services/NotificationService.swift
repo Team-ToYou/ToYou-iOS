@@ -82,7 +82,10 @@ final class NotificationAPIService {
                     break
                 }
             case .failure(let error):
-                print(error)
+                print("""
+                      #NotificationAPIService.swift removeNotification error: 
+                      \(error)
+                      """)
             }
         }
     }

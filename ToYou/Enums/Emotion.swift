@@ -71,6 +71,51 @@ enum Emotion: String, Codable {
         }
     }
     
+    func emotionBubble() -> UIImage {
+        switch self {
+        case .ANGRY:
+            return .angryBubble
+        case .NERVOUS:
+            return .nervousBubble
+        case .EXCITED:
+            return .excitedBubble
+        case .HAPPY:
+            return .happyBubble
+        case .NORMAL:
+            return .normalBubble
+        }
+    }
+    
+    func mainColor() -> UIColor {
+        switch self {
+        case .ANGRY:
+            return .red00
+        case .NERVOUS:
+            return .green00
+        case .EXCITED:
+            return .blue00
+        case .HAPPY:
+            return .yellow00
+        case .NORMAL:
+            return .purple00
+        }
+    }
+    
+    func pointColor() -> UIColor {
+        switch self {
+        case .ANGRY:
+            return .red01
+        case .NERVOUS:
+            return .green01
+        case .EXCITED:
+            return .blue01
+        case .HAPPY:
+            return .yellow01
+        case .NORMAL:
+            return .purple01
+        }
+    }
+    
 }
 
 
