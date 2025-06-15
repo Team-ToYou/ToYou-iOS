@@ -167,8 +167,8 @@ extension FriendSearchResultView {
     }
     
     public func afterRequestSucceeded() {
-        mainFrame.bringSubviewToFront(friendResultFrame)
-        stateButton.configure(state: .cancelRequire)
+        friendResultFrame.isHidden = true
+        warningFrame.isHidden = true
     }
     
     public func afterRequestCanceledOrDenied() {
@@ -180,9 +180,4 @@ extension FriendSearchResultView {
         mainFrame.bringSubviewToFront(friendResultFrame)
         stateButton.configure(state: .alreadyFriend)
     }
-}
-
-import SwiftUI
-#Preview {
-    FriendsViewController()
 }
