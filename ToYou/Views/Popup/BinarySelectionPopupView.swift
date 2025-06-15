@@ -58,7 +58,7 @@ class BinarySelectionPopupView: UIView {
         
         mainTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(22)
+            make.centerY.equalToSuperview().offset(-20)
         }
         
         buttonStackFrame.snp.makeConstraints { make in
