@@ -126,7 +126,6 @@ extension EditProfileViewController {
                 print("\(url) patch 요청 실패: \(error.localizedDescription)")
             }
         }
-
     }
     
 }

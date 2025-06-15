@@ -109,6 +109,7 @@ class EditProfileView: UIView {
         self.backgroundColor = .background
         self.setupBackground()
         self.signUpTopTitleComponents()
+        self.addLeftViewInTextField(self.nicknameTextField)
     }
     
     public func checkAnyInfoChanged() {
@@ -137,6 +138,7 @@ class EditProfileView: UIView {
 
 // MARK: 사용자 정보를 불러온 후, 뷰를 구성
 extension EditProfileView {
+    
     public func configure( result: MyPageResult) {
         nicknameTextField.text = result.nickname
         originalUserType = result.status
@@ -377,9 +379,4 @@ extension EditProfileView {
         }
     }
     
-}
-
-import SwiftUI
-#Preview {
-    EditProfileViewController()
 }

@@ -73,7 +73,7 @@ class NicknameView: UIView {
         self.signUpTopTitleComponents()
         self.addComponents()
         self.setUpNextButton()
-        self.addLeftViewInTextField()
+        self.addLeftViewInTextField(self.nicknameTextField)
         overlappedCheck.unavailable()
     }
     
@@ -201,12 +201,12 @@ extension NicknameView {
 
 }
 
-extension NicknameView {
+extension UIView {
     
-    private func addLeftViewInTextField() {
+    func addLeftViewInTextField(_ textField: UITextField) {
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 7, height: 33))
-        nicknameTextField.leftView = paddingView
-        nicknameTextField.leftViewMode = .always
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
     }
     
 }
