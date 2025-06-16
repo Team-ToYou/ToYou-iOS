@@ -110,7 +110,9 @@ class DiaryCardAnswerViewController: UIViewController {
         
         // push + 데이터 전달
         let previewVC = DiaryCardPreviewController()
-        previewVC.setCardId(cardId!)
+        if let cardId = self.cardId {
+            previewVC.setCardId(cardId)
+        }
         previewVC.emotion = self.emotion
         previewVC.questionsAndAnswers = answerModels
         previewVC.hidesBottomBarWhenPushed = true
