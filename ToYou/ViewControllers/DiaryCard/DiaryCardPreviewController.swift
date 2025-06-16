@@ -11,55 +11,90 @@ import Alamofire
 class DiaryCardPreviewController: UIViewController {
     var emotion: Emotion = .NORMAL
     private var diaryCardPreview: DiaryCardPreview!
-
+    
     var questionsAndAnswers: [DiaryCardAnswerModel] = []
-    private var isLocked = false
+    private var isLocked: Bool = false
+    public var isEditMode: Bool = false
     private var cardId: Int?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         diaryCardPreview = DiaryCardPreview(emotion: emotion)
         self.view = diaryCardPreview
         
-        if let name = UsersAPIService.myPageInfo?.nickname {
-            diaryCardPreview.previewCard.updateToLabel(name: name)
-        }
+        let buttonTitle = isEditMode ? "수정하기" : "저장하기"
+        diaryCardPreview.saveEditButton.setTitle(buttonTitle, for: .normal)
         
         setAction()
         setDelegate()
+        
+        if !questionsAndAnswers.isEmpty {
+            let name = UsersAPIService.myPageInfo?.nickname ?? "000"
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyyMMdd"
+            let dateString = dateFormatter.string(from: Date())
+            
+            diaryCardPreview.previewCard.configurePreview(nickname: name, date: dateString, emotion: emotion)
+            diaryCardPreview.previewCard.answerTableView.reloadData()
+            return
+        }
+        
+        if let id = cardId {
+            fetchDiaryCardDetail(id: id)
+        }
     }
     
     // MARK: - function
-    private func getTodayCardId(year: Int, month: Int, completion: @escaping (Int?) -> Void) {
-        let url = "\(K.URLString.baseURL)/diarycards/mine?year=\(year)&month=\(month)"
-
+    public func setCardId(_ id: Int) {
+        self.cardId = id
+    }
+    
+    private func fetchDiaryCardDetail(id: Int) {
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-
+        let url = "\(K.URLString.baseURL)/diarycards/\(id)"
         let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken)"]
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = Locale(identifier: "ko_KR")
 
         AF.request(url, method: .get, headers: headers)
             .validate()
-            .responseDecodable(of: MyDiaryCardResponse.self) { response in
+            .responseDecodable(of: DiaryCardDetailResponse.self) { response in
                 switch response.result {
-                case .success(let data):
-                    let todayString = formatter.string(from: Date())
-                    if let todayCard = data.result.cardList.first(where: { $0.date == todayString }) {
-                        print("오늘 카드 ID: \(todayCard.cardId)")
-                        self.cardId = todayCard.cardId
-                        completion(todayCard.cardId)
+                case .success(let result):
+                    if result.isSuccess {
+                        self.updateViewWithDetail(result.result)
                     } else {
-                        completion(nil)
+                        print("API 실패: \(result.message)")
                     }
                 case .failure(let error):
-                    print("오늘 카드 ID 조회 실패: \(error)")
+                    print("네트워크 에러: \(error.localizedDescription)")
                 }
             }
     }
+
+    private func updateViewWithDetail(_ detail: DiaryCardDetailResult) {
+        diaryCardPreview.previewCard.configure(detail: detail)
+        
+        isLocked = !detail.exposure
+        let icon = isLocked ? UIImage.lockIcon : UIImage.unlockIcon
+        diaryCardPreview.previewCard.lockButton.setImage(icon, for: .normal)
+        
+        questionsAndAnswers = detail.questionList.map { question in
+            let selectedIndex = question.questionType == "OPTIONAL"
+                ? question.answerOption.firstIndex(of: question.answer)
+                : nil
+            
+            return DiaryCardAnswerModel(
+                questionId: question.questionId,
+                question: question.content,
+                answers: question.questionType == "OPTIONAL" ? question.answerOption : [question.answer],
+                selectedIndex: selectedIndex
+            )
+        }
+        
+        diaryCardPreview.previewCard.answerTableView.reloadData()
+    }
+
     
     // MARK: - action
     private func setDelegate() {
@@ -84,23 +119,17 @@ class DiaryCardPreviewController: UIViewController {
     
     @objc private func saveButtonTapped() {
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        
-        let headers: HTTPHeaders = [
-            "Authorization": "Bearer " + accessToken
-        ]
-        
+        let headers: HTTPHeaders = ["Authorization": "Bearer " + accessToken]
         
         var questionList: [[String: Any]] = []
-
         for item in questionsAndAnswers {
-            var answer: String
-
+            let answer: String
             if let selectedIndex = item.selectedIndex, selectedIndex < item.answers.count {
                 answer = item.answers[selectedIndex]
             } else {
                 answer = item.answers.first ?? ""
             }
-
+            
             questionList.append([
                 "questionId": item.questionId,
                 "answer": answer
@@ -112,75 +141,38 @@ class DiaryCardPreviewController: UIViewController {
             "questionList": questionList
         ]
         
-        if diaryCardPreview.isSaved {
-            if let nav = self.navigationController {
-                for vc in nav.viewControllers {
-                    if vc is DiaryCardSelectViewController {
-                        nav.popToViewController(vc, animated: true)
-                        return
-                    }
-                }
-            }
+        let currentTitle = diaryCardPreview.saveEditButton.title(for: .normal)
+        
+        if isEditMode && currentTitle == "수정하기" {
+            let selectVC = DiaryCardSelectViewController()
+            selectVC.emotion = self.emotion
+            selectVC.hidesBottomBarWhenPushed = true
+            selectVC.cardId = self.cardId
+            self.navigationController?.pushViewController(selectVC, animated: true)
+            return
         }
         
-        let url = K.URLString.baseURL + "/diarycards"
+        let url = K.URLString.baseURL + (cardId != nil ? "/diarycards/\(cardId!)" : "/diarycards")
+        let method: HTTPMethod = cardId != nil ? .patch : .post
         
-        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: headers)
+        AF.request(url, method: method, parameters: body, encoding: JSONEncoding.default, headers: headers)
             .validate()
             .responseDecodable(of: CreateDiaryCardResponse.self) { response in
                 switch response.result {
                 case .success(let result):
-                    print("일기카드 생성 성공: \(result.result.cardId)")
-                    
+                    print("일기카드 \(method == .post ? "생성" : "수정") 성공: \(result.result?.cardId)")
                     DispatchQueue.main.async {
-                        self.cardId = result.result.cardId
+                        self.cardId = result.result?.cardId
                         self.diaryCardPreview.isSaved = true
                         
                         let homeVC = HomeViewController()
                         self.navigationController?.setViewControllers([homeVC], animated: true)
                     }
-                    
                 case .failure(let error):
+                    print("일기카드 저장 실패: \(error)")
                     if let data = response.data,
-                       let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                       let code = json["code"] as? String, code == "CARD400" {
-                        let today = Date()
-                        let calendar = Calendar.current
-                        let year = calendar.component(.year, from: today)
-                        let month = calendar.component(.month, from: today)
-                        
-                        self.getTodayCardId(year: year, month: month) { fetchedCardId in
-                            guard let cardId = fetchedCardId else {
-                                print("cardId 없음 (completion)")
-                                return
-                            }
-
-                            let patchURL = K.URLString.baseURL + "/diarycards/\(cardId)"
-
-                            AF.request(patchURL, method: .patch, parameters: body, encoding: JSONEncoding.default, headers: headers)
-                                .validate()
-                                .response { patchResponse in
-                                    switch patchResponse.result {
-                                    case .success:
-                                        print("일기카드 수정 성공")
-                                        DispatchQueue.main.async {
-                                            self.cardId = cardId
-                                            self.diaryCardPreview.isSaved = true
-                                            
-                                            let homeVC = HomeViewController()
-                                            self.navigationController?.setViewControllers([homeVC], animated: true)
-                                        }
-                                    case .failure(let patchError):
-                                        print("일기카드 수정 실패: \(patchError)")
-                                    }
-                                }
-                        }
-                    } else {
-                        print("일기카드 생성 실패: \(error)")
-                        if let data = response.data,
-                           let message = String(data: data, encoding: .utf8) {
-                            print("서버 메시지: \(message)")
-                        }
+                       let message = String(data: data, encoding: .utf8) {
+                        print("서버 메시지: \(message)")
                     }
                 }
             }
@@ -200,7 +192,7 @@ extension DiaryCardPreviewController: UITableViewDataSource {
         
         let item = questionsAndAnswers[indexPath.row]
         cell.configure(question: item.question, answers: item.answers, selectedIndex: item.selectedIndex, emotion: emotion)
-
+        
         return cell
     }
 }

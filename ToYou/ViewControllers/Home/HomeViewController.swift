@@ -10,6 +10,7 @@ import Alamofire
 
 class HomeViewController: UIViewController {
     var homeEmotionString = ""
+    var cardId: Int?
     let homeView = HomeView()
     
     override func viewDidLoad() {
@@ -51,13 +52,13 @@ class HomeViewController: UIViewController {
                 case .success(let value):
                     print(value)
                     
-                    if value.result.emotion == nil {
-                        self.homeView.mailBoxImage.isUserInteractionEnabled = false
-                    } else {
+                    if let emotion = value.result.emotion {
                         self.homeView.mailBoxImage.isUserInteractionEnabled = true
-                        self.homeEmotionString = value.result.emotion!
-                        let emotion = value.result.emotion
-                        self.setView(emotionString: emotion!)
+                        self.homeEmotionString = emotion
+                        self.cardId = value.result.cardId
+                        self.setView(emotionString: emotion)
+                    } else {
+                        self.homeView.mailBoxImage.isUserInteractionEnabled = false
                     }
                     
                 case .failure(let error):
@@ -84,10 +85,19 @@ class HomeViewController: UIViewController {
     
     @objc
     private func diaryCardSelect(sender: UITapGestureRecognizer) {
-        let diaryVC = DiaryCardSelectViewController()
-        diaryVC.emotion = Emotion(rawValue: homeEmotionString) ?? .NORMAL
-        diaryVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(diaryVC, animated: true)
+        if let id = cardId {
+            let previewVC = DiaryCardPreviewController()
+            previewVC.emotion = Emotion(rawValue: homeEmotionString) ?? .NORMAL
+            previewVC.hidesBottomBarWhenPushed = true
+            previewVC.setCardId(id)
+            previewVC.isEditMode = true
+            self.navigationController?.pushViewController(previewVC, animated: true)
+        } else {
+            let diaryVC = DiaryCardSelectViewController()
+            diaryVC.emotion = Emotion(rawValue: homeEmotionString) ?? .NORMAL
+            diaryVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(diaryVC, animated: true)
+        }
     }
     
     @objc

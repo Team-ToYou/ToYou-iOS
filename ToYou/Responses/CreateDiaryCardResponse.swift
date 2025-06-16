@@ -9,7 +9,7 @@ struct CreateDiaryCardResponse: Decodable {
     let isSuccess: Bool
     let code: String
     let message: String
-    let result: DiaryCardResult
+    let result: DiaryCardResult?
 }
 
 struct DiaryCardResult: Decodable {
