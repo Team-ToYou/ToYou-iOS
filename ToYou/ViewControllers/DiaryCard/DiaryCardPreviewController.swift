@@ -135,6 +135,9 @@ class DiaryCardPreviewController: UIViewController {
                     DispatchQueue.main.async {
                         self.cardId = result.result.cardId
                         self.diaryCardPreview.isSaved = true
+                        
+                        let homeVC = HomeViewController()
+                        self.navigationController?.setViewControllers([homeVC], animated: true)
                     }
                     
                 case .failure(let error):
@@ -163,6 +166,9 @@ class DiaryCardPreviewController: UIViewController {
                                         DispatchQueue.main.async {
                                             self.cardId = cardId
                                             self.diaryCardPreview.isSaved = true
+                                            
+                                            let homeVC = HomeViewController()
+                                            self.navigationController?.setViewControllers([homeVC], animated: true)
                                         }
                                     case .failure(let patchError):
                                         print("일기카드 수정 실패: \(patchError)")
