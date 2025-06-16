@@ -11,7 +11,6 @@ import Alamofire
 class MyPageViewController: UIViewController {
     
     var myPageInfo: MyPageResult?
-    
     let myPageView = MyPageView()
     
     let sendFeedbackWebVC = SendFeedbackWebVC()

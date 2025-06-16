@@ -59,7 +59,7 @@ final class NotificationAPIService {
     }
     
     static func removeNotification(index: Int, completion: @escaping(NotificationCode) -> Void) {
-        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService.shared.notificationData[index])"
+        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService.shared.notificationData[index].alarmId!)"
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let headers: HTTPHeaders = [
             "accept" : " ",
@@ -74,6 +74,7 @@ final class NotificationAPIService {
             case .success(let value) :
                 switch value.code {
                 case NotificationCode.COMMON200.rawValue:
+                    NotificationAPIService.shared.notificationData.remove(at: index)
                     completion(.COMMON200)
                 case NotificationCode.JWT400.rawValue:
                     RootViewControllerService.toLoginViewController()
