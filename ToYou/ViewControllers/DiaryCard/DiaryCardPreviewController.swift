@@ -22,6 +22,10 @@ class DiaryCardPreviewController: UIViewController {
         diaryCardPreview = DiaryCardPreview(emotion: emotion)
         self.view = diaryCardPreview
         
+        if let name = UsersAPIService.myPageInfo?.nickname {
+            diaryCardPreview.previewCard.updateToLabel(name: name)
+        }
+        
         setAction()
         setDelegate()
     }

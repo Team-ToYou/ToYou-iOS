@@ -51,6 +51,10 @@ class MyDiaryCard: UIView {
     }
     
     // MARK: - function
+    public func updateToLabel(name: String) {
+        toLabel.text = "To.\(name)"
+    }
+    
     private func setView() {
         backView.backgroundColor = emotion.mainColor()
         emotionStamp.image = emotion.stampImage()
