@@ -16,7 +16,7 @@ struct HomeResponse: Decodable {
 
 struct HomeResult: Decodable {
     let nickname: String?
-    let emotion: String
+    let emotion: String?
     let questionNum: Int
     let cardId: Int?
     let uncheckedAlarm: Bool

@@ -13,9 +13,9 @@ class DiaryCardPreview: UIView {
     
     // MARK: - init
     init(emotion: Emotion) {
+        self.previewCard = MyDiaryCard(frame: .zero, emotion: emotion)
         super.init(frame: .zero)
         self.backgroundColor = .white
-        self.previewCard = MyDiaryCard(frame: .zero, emotion: emotion)
         setView()
     }
     
@@ -54,8 +54,8 @@ class DiaryCardPreview: UIView {
         $0.isHidden = false
     }
     
-    public var previewCard = MyDiaryCard(frame: .zero, emotion: .ANGRY)
-    
+    public var previewCard: MyDiaryCard
+
     public let saveEditButton = UIButton().then {
         $0.setTitle("저장하기", for: .normal)
         $0.titleLabel?.font = UIFont(name: "S-CoreDream-4Regular", size: 16)

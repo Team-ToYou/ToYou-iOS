@@ -51,15 +51,28 @@ class MyDiaryCard: UIView {
     }
     
     // MARK: - function
-    private func setView() {
-        backView.backgroundColor = emotion.mainColor()
-        emotionStamp.image = emotion.stampImage()
+    public func configure(detail: DiaryCardDetailResult) {
+        toLabel.text = "To.\(detail.receiver)"
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd"
         let todayString = dateFormatter.string(from: Date())
         dateLabel.text = todayString
         
+        if let emotion = Emotion(rawValue: detail.emotion) {
+            backView.backgroundColor = emotion.mainColor()
+            emotionStamp.image = emotion.stampImage()
+        }
+    }
+    
+    func configurePreview(nickname: String, date: String, emotion: Emotion) {
+        toLabel.text = "To.\(nickname)"
+        dateLabel.text = date
+        emotionStamp.image = emotion.stampImage()
+        backView.backgroundColor = emotion.mainColor()
+    }
+    
+    private func setView() {
         [
             backView, lockButton,
             emotionStamp, dateLabel, toLabel,

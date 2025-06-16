@@ -21,7 +21,9 @@ class SelectQuestionCell: UICollectionViewCell {
     }
     
     // MARK: - layout
-    public let checkboxButton = CheckBoxButtonVer02()
+    public let checkboxButton = CheckBoxButtonVer02().then {
+        $0.isUserInteractionEnabled = false
+    }
     
     private let questionLabel = UILabel().then {
         $0.text = "요즘 어떻게 지내?"
