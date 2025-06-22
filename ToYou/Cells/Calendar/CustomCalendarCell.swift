@@ -38,16 +38,24 @@ class CustomCalendarCell: UICollectionViewCell {
         self.emotionList = emotionList
         self.friendCountPerDay = friendCountPerDay
         self.calendarDates = CalendarManager.shared.generateDates(for: year, month: month)
-        self.monthLabel.text = "\(month)월"
+        self.monthLabel.text = "\(year)년 \(month)월"
         self.monthCollectionView.reloadData()
     }
     
     // MARK: - layout
+    public let leftButton = UIButton().then {
+        $0.setImage(.calendarLeftIcon, for: .normal)
+    }
+    
     private let monthLabel = UILabel().then {
         $0.text = "0월"
         $0.textColor = .black04
         $0.font = UIFont(name: "S-CoreDream-5Medium", size: 14.63)
         $0.textAlignment = .center
+    }
+    
+    public let rightButton = UIButton().then {
+        $0.setImage(.calendarRightIcon, for: .normal)
     }
     
     private lazy var weekDayImages: [UIImageView] = weekDays.map {
@@ -77,13 +85,24 @@ class CustomCalendarCell: UICollectionViewCell {
     
     // MARK: - function
     private func setView() {
-        addSubview(monthLabel)
-        addSubview(weekDayStackView)
-        addSubview(monthCollectionView)
+        [ leftButton, monthLabel, rightButton,
+          weekDayStackView,
+          monthCollectionView
+        ].forEach { addSubview($0) }
         
         monthLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
             $0.centerX.equalToSuperview()
+        }
+        
+        leftButton.snp.makeConstraints {
+            $0.centerY.equalTo(monthLabel)
+            $0.left.equalToSuperview().offset(15)
+        }
+        
+        rightButton.snp.makeConstraints {
+            $0.centerY.equalTo(monthLabel)
+            $0.right.equalToSuperview().offset(-15)
         }
         
         weekDayStackView.snp.makeConstraints {
@@ -148,4 +167,9 @@ extension CustomCalendarCell: UICollectionViewDelegate, UICollectionViewDelegate
 // MARK: - Protocol
 protocol CustomCalendarCellDelegate: AnyObject {
     func didSelectFriendDate(_ date: CalendarDate)
+}
+
+import SwiftUI
+#Preview {
+    CalendarViewController()
 }

@@ -174,6 +174,43 @@ class CalendarViewController: UIViewController {
         calendarView.customCalendar.reloadData()
     }
     
+    @objc private func didTapLeftMonthButton() {
+        if currentIndex == 0 {
+            prependPreviousMonth()
+        }
+
+        if currentIndex > 0 {
+            currentIndex -= 1
+            scrollToCurrentMonth()
+        }
+    }
+
+    @objc private func didTapRightMonthButton() {
+        if currentIndex == months.count - 1 {
+            appendNextMonth()
+        }
+
+        if currentIndex < months.count - 1 {
+            currentIndex += 1
+            scrollToCurrentMonth()
+        }
+    }
+
+    private func scrollToCurrentMonth() {
+        let indexPath = IndexPath(item: currentIndex, section: 0)
+        calendarView.customCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        updateCalendarData()
+    }
+
+    private func updateCalendarData() {
+        let (year, month) = months[currentIndex]
+        if isFriendRecord {
+            setFriendCalendarAPI(year: year, month: month)
+        } else {
+            setMyCalendarAPI(year: year, month: month)
+        }
+    }
+
 }
 
 extension CalendarViewController: UICollectionViewDataSource {
@@ -196,6 +233,12 @@ extension CalendarViewController: UICollectionViewDataSource {
             let (year, month) = months[indexPath.item]
             cell.configure(with: year, month: month, isFriendRecord: isFriendRecord, emotionList: emotionList, friendCountPerDay: friendCountPerDay)
             cell.delegate = self
+            
+            cell.leftButton.removeTarget(nil, action: nil, for: .allEvents)
+            cell.rightButton.removeTarget(nil, action: nil, for: .allEvents)
+            
+            cell.leftButton.addTarget(self, action: #selector(didTapLeftMonthButton), for: .touchUpInside)
+            cell.rightButton.addTarget(self, action: #selector(didTapRightMonthButton), for: .touchUpInside)
             
             return cell
         } else if collectionView == calendarView.friendRecordList {
