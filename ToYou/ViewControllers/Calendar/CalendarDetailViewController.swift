@@ -10,8 +10,9 @@ import UIKit
 import Alamofire
 
 class CalendarDetailViewController: UIViewController {
-    public var emotion: Emotion = .NORMAL
     private var calendarDetailView: CalendarDetailView!
+    private let deletePopupVC = DiaryCardDeletePopupViewController()
+    public var emotion: Emotion = .NORMAL
     public var cardId: Int!
     
     private var questionsAndAnswers: [DiaryCardAnswerModel] = []
@@ -22,6 +23,7 @@ class CalendarDetailViewController: UIViewController {
         
         calendarDetailView = CalendarDetailView(emotion: emotion)
         self.view = calendarDetailView
+        deletePopupVC.modalPresentationStyle = .overFullScreen
         
         calendarDetailView.diaryCard.answerTableView.dataSource = self
         
@@ -77,33 +79,23 @@ class CalendarDetailViewController: UIViewController {
     // MARK: - action
     private func setAction() {
         calendarDetailView.cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        calendarDetailView.deleteButton.addTarget(self, action: #selector(fetchDeleteAPI), for: .touchUpInside)
+        calendarDetailView.deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
     }
 
     @objc private func cancelButtonTapped() {
         self.navigationController?.popViewController(animated: true)
     }
 
-    @objc private func fetchDeleteAPI() {
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        let url = "\(K.URLString.baseURL)/diarycards/\(cardId!)"
-        let headers: HTTPHeaders = ["Authorization": "Bearer \(accessToken)"]
+    @objc private func deleteButtonTapped() {
+        deletePopupVC.cardId = cardId
         
-        AF.request(url, method: .delete, headers: headers)
-            .validate()
-            .responseDecodable(of: DiaryCardDeleteResponse.self) { response in
-                switch response.result {
-                case .success(let result):
-                    if result.isSuccess {
-                        print("삭제 성공")
-                        self.navigationController?.popViewController(animated: true)
-                    } else {
-                        print("삭제 실패: \(result.message)")
-                    }
-                case .failure(let error):
-                    print("네트워크 에러: \(error.localizedDescription)")
-                }
+        deletePopupVC.completionHandler = { [weak self] isDeleted in
+            if isDeleted {
+                self?.navigationController?.popViewController(animated: true)
             }
+        }
+        
+        self.present(deletePopupVC, animated: false, completion: nil)
     }
 }
 
