@@ -158,8 +158,9 @@ extension CustomCalendarCell: UICollectionViewDelegate, UICollectionViewDelegate
         let selectedDate = calendarDates[indexPath.item]
 
         if isFriendRecord {
-            print("날짜: \(selectedDate)")
             delegate?.didSelectFriendDate(selectedDate)
+        } else {
+            delegate?.didSelectMyRecordDate(selectedDate)
         }
     }
 }
@@ -167,6 +168,7 @@ extension CustomCalendarCell: UICollectionViewDelegate, UICollectionViewDelegate
 // MARK: - Protocol
 protocol CustomCalendarCellDelegate: AnyObject {
     func didSelectFriendDate(_ date: CalendarDate)
+    func didSelectMyRecordDate(_ date: CalendarDate)
 }
 
 import SwiftUI

@@ -18,6 +18,9 @@ class CalendarViewController: UIViewController {
     private var currentMonth = Calendar.current.component(.month, from: Date())
     private var currentIndex: Int = 0
     
+    private var cardIdPerDay: [String: Int] = [:]
+    private var currentCardId: Int?
+    
     // 날짜:감정
     private var emotionList: [String: String] = [:]
     
@@ -91,9 +94,13 @@ class CalendarViewController: UIViewController {
                 switch response.result {
                 case .success(let data):
                     self.emotionList = [:]
+                    self.cardIdPerDay = [:]
+                    
                     for card in data.result.cardList {
                         self.emotionList[card.date] = card.emotion
+                        self.cardIdPerDay[card.date] = card.cardId
                     }
+                    
                     _ = IndexPath(item: self.currentIndex, section: 0)
                     self.calendarView.customCalendar.reloadData()
                 case .failure(let error):
@@ -213,6 +220,8 @@ class CalendarViewController: UIViewController {
 
 }
 
+// MARK: - Extension
+
 extension CalendarViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == calendarView.customCalendar {
@@ -323,9 +332,25 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
 
 extension CalendarViewController: CustomCalendarCellDelegate {
     func didSelectFriendDate(_ date: CalendarDate) {
+        print("친구 날짜 선택: \(date)")
         let year = date.year
         let month = date.month
         let day = date.day
         setFrinedCalendarListAPI(year: year, month: month, day: day)
+    }
+    
+    func didSelectMyRecordDate(_ date: CalendarDate) {
+        print("내 기록 날짜 선택: \(date)")
+        
+        let dateString = String(format: "%04d-%02d-%02d", date.year, date.month, date.day)
+        guard let selectedCardId = cardIdPerDay[dateString] else {
+            print("선택한 날짜에 일기 카드가 없습니다.")
+            return
+        }
+
+        let detailVC = CalendarDetailViewController()
+        detailVC.cardId = selectedCardId
+        detailVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
