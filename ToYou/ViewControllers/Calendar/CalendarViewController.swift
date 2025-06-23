@@ -18,6 +18,9 @@ class CalendarViewController: UIViewController {
     private var currentMonth = Calendar.current.component(.month, from: Date())
     private var currentIndex: Int = 0
     
+    private var cardIdPerDay: [String: Int] = [:]
+    private var currentCardId: Int?
+    
     // 날짜:감정
     private var emotionList: [String: String] = [:]
     
@@ -63,6 +66,7 @@ class CalendarViewController: UIViewController {
         calendarView.customCalendar.delegate = self
         calendarView.customCalendar.dataSource = self
         calendarView.friendRecordList.dataSource = self
+        calendarView.friendRecordList.delegate = self
     }
     
     private func initializeCalendar() {
@@ -91,9 +95,13 @@ class CalendarViewController: UIViewController {
                 switch response.result {
                 case .success(let data):
                     self.emotionList = [:]
+                    self.cardIdPerDay = [:]
+                    
                     for card in data.result.cardList {
                         self.emotionList[card.date] = card.emotion
+                        self.cardIdPerDay[card.date] = card.cardId
                     }
+                    
                     _ = IndexPath(item: self.currentIndex, section: 0)
                     self.calendarView.customCalendar.reloadData()
                 case .failure(let error):
@@ -174,7 +182,46 @@ class CalendarViewController: UIViewController {
         calendarView.customCalendar.reloadData()
     }
     
+    @objc private func didTapLeftMonthButton() {
+        if currentIndex == 0 {
+            prependPreviousMonth()
+        }
+
+        if currentIndex > 0 {
+            currentIndex -= 1
+            scrollToCurrentMonth()
+        }
+    }
+
+    @objc private func didTapRightMonthButton() {
+        if currentIndex == months.count - 1 {
+            appendNextMonth()
+        }
+
+        if currentIndex < months.count - 1 {
+            currentIndex += 1
+            scrollToCurrentMonth()
+        }
+    }
+
+    private func scrollToCurrentMonth() {
+        let indexPath = IndexPath(item: currentIndex, section: 0)
+        calendarView.customCalendar.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        updateCalendarData()
+    }
+
+    private func updateCalendarData() {
+        let (year, month) = months[currentIndex]
+        if isFriendRecord {
+            setFriendCalendarAPI(year: year, month: month)
+        } else {
+            setMyCalendarAPI(year: year, month: month)
+        }
+    }
+
 }
+
+// MARK: - Extension
 
 extension CalendarViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -197,6 +244,12 @@ extension CalendarViewController: UICollectionViewDataSource {
             cell.configure(with: year, month: month, isFriendRecord: isFriendRecord, emotionList: emotionList, friendCountPerDay: friendCountPerDay)
             cell.delegate = self
             
+            cell.leftButton.removeTarget(nil, action: nil, for: .allEvents)
+            cell.rightButton.removeTarget(nil, action: nil, for: .allEvents)
+            
+            cell.leftButton.addTarget(self, action: #selector(didTapLeftMonthButton), for: .touchUpInside)
+            cell.rightButton.addTarget(self, action: #selector(didTapRightMonthButton), for: .touchUpInside)
+            
             return cell
         } else if collectionView == calendarView.friendRecordList {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FriendRecordListCell.identifier, for: indexPath) as? FriendRecordListCell else {
@@ -215,7 +268,16 @@ extension CalendarViewController: UICollectionViewDataSource {
 
 extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+        if collectionView == calendarView.customCalendar {
+            return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+        } else if collectionView == calendarView.friendRecordList {
+            let spacing: CGFloat = 20
+            let totalSpacing = spacing * 4
+            let availableWidth = collectionView.frame.width - totalSpacing
+            let itemWidth = availableWidth / 5
+            return CGSize(width: itemWidth, height: itemWidth + 20)
+        }
+        return .zero
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -276,13 +338,41 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         months.append((year, month))
         calendarView.customCalendar.reloadData()
     }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == calendarView.friendRecordList {
+            let selectedFriendRecord = friendRecords[indexPath.item]
+            
+            let detailVC = CalendarDetailViewController()
+            detailVC.cardId = selectedFriendRecord.cardId
+            detailVC.isFriend = true
+            detailVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
+    }
 }
 
 extension CalendarViewController: CustomCalendarCellDelegate {
     func didSelectFriendDate(_ date: CalendarDate) {
+        print("친구 날짜 선택: \(date)")
         let year = date.year
         let month = date.month
         let day = date.day
         setFrinedCalendarListAPI(year: year, month: month, day: day)
+    }
+    
+    func didSelectMyRecordDate(_ date: CalendarDate) {
+        print("내 기록 날짜 선택: \(date)")
+        
+        let dateString = String(format: "%04d-%02d-%02d", date.year, date.month, date.day)
+        guard let selectedCardId = cardIdPerDay[dateString] else {
+            print("선택한 날짜에 일기 카드가 없습니다.")
+            return
+        }
+
+        let detailVC = CalendarDetailViewController()
+        detailVC.cardId = selectedCardId
+        detailVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

@@ -27,7 +27,8 @@ class BaseViewController: UITabBarController {
         setupTabBar()
         homeVC.configure(delegate: self)
         let navigatedHomeVC = UINavigationController(rootViewController: homeVC)
-        self.viewControllers = [navigatedHomeVC, friendsVC, calendarVC, myPageVC]
+        let navigatedCalendarVC = UINavigationController(rootViewController: calendarVC)
+        self.viewControllers = [navigatedHomeVC, friendsVC, navigatedCalendarVC, myPageVC]
         UsersAPIService.fetchUserInfo { _ in } // 사용자 정보를 불러오고 Subscriber에게 값의 변경을 알림
     }
     
