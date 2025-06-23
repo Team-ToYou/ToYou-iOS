@@ -32,7 +32,7 @@ class CalendarDetailView: UIView {
     
     public let diaryCard: MyDiaryCard
     
-    private let deleteButton = UIButton().then {
+    public let deleteButton = UIButton().then {
         $0.setTitle("삭제하기", for: .normal)
         $0.titleLabel?.font = UIFont(name: "S-CoreDream-4Regular", size: 17)
         $0.setTitleColor(.black04, for: .normal)
