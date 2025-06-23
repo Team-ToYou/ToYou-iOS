@@ -12,11 +12,13 @@ import Alamofire
 class CalendarDetailViewController: UIViewController {
     private var calendarDetailView: CalendarDetailView!
     private let deletePopupVC = DiaryCardDeletePopupViewController()
+    
     public var emotion: Emotion = .NORMAL
     public var cardId: Int!
     
     private var questionsAndAnswers: [DiaryCardAnswerModel] = []
     private var isLocked: Bool = false
+    public var isFriend: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +31,10 @@ class CalendarDetailViewController: UIViewController {
         
         setAction()
         fetchDiaryCardDetail(id: cardId)
+        
+        if isFriend {
+            calendarDetailView.deleteButton.isHidden = true
+        }
     }
     
     // MARK: - function

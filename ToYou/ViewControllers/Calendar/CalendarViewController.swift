@@ -66,6 +66,7 @@ class CalendarViewController: UIViewController {
         calendarView.customCalendar.delegate = self
         calendarView.customCalendar.dataSource = self
         calendarView.friendRecordList.dataSource = self
+        calendarView.friendRecordList.delegate = self
     }
     
     private func initializeCalendar() {
@@ -267,7 +268,16 @@ extension CalendarViewController: UICollectionViewDataSource {
 
 extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+        if collectionView == calendarView.customCalendar {
+            return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
+        } else if collectionView == calendarView.friendRecordList {
+            let spacing: CGFloat = 20
+            let totalSpacing = spacing * 4
+            let availableWidth = collectionView.frame.width - totalSpacing
+            let itemWidth = availableWidth / 5
+            return CGSize(width: itemWidth, height: itemWidth + 20)
+        }
+        return .zero
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -327,6 +337,18 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         
         months.append((year, month))
         calendarView.customCalendar.reloadData()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == calendarView.friendRecordList {
+            let selectedFriendRecord = friendRecords[indexPath.item]
+            
+            let detailVC = CalendarDetailViewController()
+            detailVC.cardId = selectedFriendRecord.cardId
+            detailVC.isFriend = true
+            detailVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
 }
 
