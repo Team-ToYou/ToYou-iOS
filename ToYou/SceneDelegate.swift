@@ -23,15 +23,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         AuthAPIService.isUserFinishedSignUp { code in
-            print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-            print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
             switch code {
             case .finished:
+                print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
+                print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
                 RootViewControllerService.toBaseViewController()
             case .notFinished:
                 RootViewControllerService.toSignUpViewController()
             case .expired:
-                RootViewControllerService.toLoginViewController()
+                AuthAPIService.reissueRefreshToken { code in
+                    switch code {
+                    case .success:
+                        print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
+                        print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
+                        RootViewControllerService.toBaseViewController()
+                    case .expired:
+                        RootViewControllerService.toLoginViewController()
+                    case .error:
+                        print("Reissue Error in SceneDelegate")
+                    }
+                }
             }
         }
         
