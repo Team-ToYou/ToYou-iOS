@@ -45,12 +45,15 @@ extension NicknameViewController {
         if let textCount = sender.text?.count {
             if textCount == 0 {
                 nicknameView.defaultState()
+                nicknameView.maxTextLength.text = "(\(textCount)/15)"
             } else if textCount < 16 {
                 nicknameView.properTextLength()
+                nicknameView.maxTextLength.text = "(\(textCount)/15)"
             } else {
+                nicknameView.nicknameTextField.text!.removeLast()
+                nicknameView.maxTextLength.text = "(\(15)/15)"
                 nicknameView.textLengthWarning()
             }
-            nicknameView.maxTextLength.text = "(\(textCount)/15)"
         } else {
             nicknameView.defaultState()
         }
