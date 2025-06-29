@@ -31,14 +31,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             case .notFinished:
                 RootViewControllerService.toSignUpViewController()
             case .expired:
+                // 엑세스 토큰 만료
+                // 리프레시 토큰으로 reissue
                 AuthAPIService.reissueRefreshToken { code in
                     switch code {
                     case .success:
-                        print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-                        print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
                         RootViewControllerService.toBaseViewController()
                     case .expired:
-                        RootViewControllerService.toLoginViewController()
+                        break
                     case .error:
                         print("Reissue Error in SceneDelegate")
                     }

@@ -31,7 +31,6 @@ class AuthAPIService {
             if let httpResponse = response.response {
                 if let accessToken = httpResponse.headers["access_token"] {
                     let _ = KeychainService.update(key: K.Key.accessToken, value: accessToken)
-                    print("access token : ", accessToken)
                 }
                 if let refreshToken = httpResponse.headers["refresh_token"] {
                     let _ = KeychainService.update(key: K.Key.refreshToken, value: refreshToken)
@@ -41,6 +40,8 @@ class AuthAPIService {
             case .success(let apiResponse):
                 switch apiResponse.code {
                 case ReissueCode.success.rawValue:
+                    print("new access token : ", KeychainService.get(key: K.Key.accessToken)!)
+                    print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
                     completion(.success)
                     // 현재 상태 유지 및 재시도 유도
                 case ReissueCode.expired.rawValue:
