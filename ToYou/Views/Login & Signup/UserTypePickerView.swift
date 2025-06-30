@@ -9,7 +9,7 @@ import UIKit
 
 class UserTypePickerView: UIView {
     
-    let buttonSpacing: CGFloat = 12
+    let buttonSpacing: CGFloat = 14
     
     // MARK: Main Components
     private lazy var mainLabel = UILabel().then {

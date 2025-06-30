@@ -9,6 +9,8 @@ import UIKit
 
 class PolicyAgreementView: UIView {
     
+    let buttonSize: CGFloat = 44
+    
     // MARK: Policy Check
     private lazy var titleLabel = UILabel().then {
         $0.text = "약간동의"
@@ -113,98 +115,99 @@ class PolicyAgreementView: UIView {
         self.addSubview(selectAllLabel)
         self.addSubview(selectUnderline)
         
+        agreeAllButton.configure(padding: 13)
         agreeAllButton.snp.makeConstraints { make in
-            make.height.width.equalTo(30)
-            make.leading.equalToSuperview().offset(10)
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(38.75)
+            make.height.width.equalTo(60)
+            make.trailing.equalTo(selectAllLabel.snp.leading).offset(10)
+            make.centerY.equalTo(selectAllLabel)
         }
         
         selectAllLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(agreeAllButton.snp.centerY)
-            make.leading.equalTo(agreeAllButton.snp.trailing).offset(5.75)
+            make.bottom.equalTo(selectUnderline.snp.top).offset(-14)
+            make.leading.equalToSuperview().offset(42)
         }
         
         selectUnderline.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
-            make.top.equalTo(agreeAllButton.snp.bottom).offset(12.75)
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(74)
         }
         
         self.addSubview(over14Button)
+        over14Button.configure(padding: 8)
         self.addSubview(over14Label)
         self.addSubview(requiredLabel01)
         self.addSubview(policyAgreeButton)
+        policyAgreeButton.configure(padding: 8)
         self.addSubview(policyAgreeLabel)
         self.addSubview(requiredLabel02)
         self.addSubview(goTermsOfUse)
         self.addSubview(privacyAgreeButton)
+        privacyAgreeButton.configure(padding: 8)
         self.addSubview(privacyAgreeLabel)
         self.addSubview(requiredLabel03)
         self.addSubview(goPrivacyDetail)
         
         over14Button.snp.makeConstraints { make in
-            make.top.equalTo(selectUnderline.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(15)
-            make.width.height.equalTo(24)
+            make.centerY.equalTo(over14Label)
+            make.width.height.equalTo(44)
         }
         
         over14Label.snp.makeConstraints { make in
-            make.centerY.equalTo(over14Button.snp.centerY)
-            make.leading.equalTo(over14Button.snp.trailing).offset(6.42)
+            make.top.equalTo(selectUnderline.snp.bottom).offset(15)
+            make.leading.equalToSuperview().offset(42)
         }
         
         requiredLabel01.snp.makeConstraints { make in
-            make.centerY.equalTo(over14Button.snp.centerY)
-            make.leading.equalTo(over14Label.snp.trailing).offset(6.42)
+            make.centerY.equalTo(over14Label)
+            make.leading.equalTo(over14Label.snp.trailing).offset(12)
             make.height.equalTo(17.22)
             make.width.equalTo(40.55)
         }
         
         policyAgreeButton.snp.makeConstraints { make in
-            make.top.equalTo(over14Button.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(15)
-            make.width.height.equalTo(24)
+            make.centerY.equalTo(policyAgreeLabel)
+            make.width.height.equalTo(44)
         }
         
         policyAgreeLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(policyAgreeButton.snp.centerY)
-            make.leading.equalTo(policyAgreeButton.snp.trailing).offset(6.42)
+            make.top.equalTo(over14Label.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(42)
         }
         
         requiredLabel02.snp.makeConstraints { make in
-            make.centerY.equalTo(policyAgreeButton.snp.centerY)
-            make.leading.equalTo(policyAgreeLabel.snp.trailing).offset(6.42)
+            make.centerY.equalTo(policyAgreeLabel)
+            make.leading.equalTo(policyAgreeLabel.snp.trailing).offset(12)
             make.height.equalTo(17.22)
             make.width.equalTo(40.55)
         }
         
         goTermsOfUse.snp.makeConstraints { make in
+            make.centerY.equalTo(policyAgreeLabel)
             make.width.height.equalTo(24)
-            make.centerY.equalTo(policyAgreeButton.snp.centerY)
             make.leading.equalTo(requiredLabel02.snp.trailing).offset(6.42)
         }
         
         privacyAgreeButton.snp.makeConstraints { make in
-            make.top.equalTo(policyAgreeButton.snp.bottom).offset(12)
-            make.leading.equalToSuperview().offset(15)
-            make.width.height.equalTo(24)
+            make.centerY.equalTo(privacyAgreeLabel)
+            make.width.height.equalTo(44)
         }
         
         privacyAgreeLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(privacyAgreeButton.snp.centerY)
-            make.leading.equalTo(privacyAgreeButton.snp.trailing).offset(6.42)
+            make.top.equalTo(policyAgreeLabel.snp.bottom).offset(20)
+            make.leading.equalToSuperview().offset(42)
         }
         
         requiredLabel03.snp.makeConstraints { make in
-            make.centerY.equalTo(privacyAgreeButton.snp.centerY)
-            make.leading.equalTo(privacyAgreeLabel.snp.trailing).offset(6.42)
+            make.centerY.equalTo(privacyAgreeLabel)
+            make.leading.equalTo(privacyAgreeLabel.snp.trailing).offset(12)
             make.height.equalTo(17.22)
             make.width.equalTo(40.55)
         }
         
         goPrivacyDetail.snp.makeConstraints { make in
+            make.centerY.equalTo(privacyAgreeLabel)
             make.width.height.equalTo(24)
-            make.centerY.equalTo(privacyAgreeButton.snp.centerY)
             make.leading.equalTo(requiredLabel03.snp.trailing).offset(6.42)
         }
         
@@ -273,4 +276,10 @@ class PolicyAgreementView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+
+import SwiftUI
+#Preview {
+    PolicyAgreementView()
 }
