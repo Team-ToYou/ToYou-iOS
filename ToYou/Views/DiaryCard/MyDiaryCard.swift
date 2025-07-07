@@ -54,10 +54,17 @@ class MyDiaryCard: UIView {
     public func configure(detail: DiaryCardDetailResult) {
         toLabel.text = "To.\(detail.receiver)"
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyyMMdd"
-        let todayString = dateFormatter.string(from: Date())
-        dateLabel.text = todayString
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyyMMdd"
+
+        if let date = inputFormatter.date(from: detail.date) {
+            dateLabel.text = outputFormatter.string(from: date)
+        } else {
+            dateLabel.text = detail.date // 실패 시 원본 표시
+        }
         
         if let emotion = Emotion(rawValue: detail.emotion) {
             backView.backgroundColor = emotion.mainColor()
