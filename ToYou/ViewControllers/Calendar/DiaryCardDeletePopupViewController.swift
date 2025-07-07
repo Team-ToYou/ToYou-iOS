@@ -17,6 +17,9 @@ class DiaryCardDeletePopupViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = diaryCardDeletePopupView
+        diaryCardDeletePopupView.configure(title: "정말 일기카드를\n삭제하시겠습니까?",
+                                  leftConfirmText: "취소", leftTextColor: .black04,
+                                  rightConfirmText: "삭제", rightTextColor: .red01)
         
         setAction()
     }
