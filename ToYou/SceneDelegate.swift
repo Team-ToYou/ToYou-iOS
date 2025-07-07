@@ -22,7 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //            return
 //        }
         
-        RootViewControllerService.toSignUpViewController()
+//        RootViewControllerService.toSignUpViewController()
+          window?.rootViewController = BaseViewController()
         
 //        AuthAPIService.isUserFinishedSignUp { code in
 //            switch code {
