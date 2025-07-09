@@ -154,6 +154,7 @@ extension FriendsViewController {
                     FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequest) { code in
                         switch code {
                         case .COMMON200:
+                            print("친구 요청 알림 보내기 완료")
                             break
                         default :
                             print("#FriendsViewController requestFriend Message Send Failed Code : \(code)")
