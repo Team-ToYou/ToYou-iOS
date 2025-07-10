@@ -29,7 +29,7 @@ class NicknameViewController: UIViewController {
 extension NicknameViewController {
     
     private func setButtonActions() {
-        nicknameView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        nicknameView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         nicknameView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChanged(_ :)), for: .editingChanged)
         nicknameView.overlappedCheck.addTarget(self, action: #selector(checkOverlapped), for: .touchUpInside)
         nicknameView.nextButton.addTarget(self, action: #selector(stackView), for: .touchUpInside)
@@ -85,7 +85,6 @@ extension NicknameViewController {
     @objc
     private func stackView() {
         let stackVC = UserTypePickerViewController()
-        // 닉네임과 마케팅 동의 여부를 전송
         stackVC.configure(checked: isMarketingAgreementChecked, userNickname: nicknameView.nicknameTextField.text!)
         stackVC.modalPresentationStyle = .overFullScreen
         present(stackVC, animated: false)

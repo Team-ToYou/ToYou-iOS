@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NavigationBar: UIView {
+final class CustomNavigationBar: UIView {
     
     private lazy var paperBackground = UIImageView().then {
         $0.image = .paperTexture
@@ -16,6 +16,7 @@ final class NavigationBar: UIView {
     
     public var popUpViewButton = UIButton().then {
         $0.setImage(.popUpIcon, for: .normal)
+        $0.imageView?.contentMode = .scaleAspectFit
     }
     
     private lazy var titleLabel = UILabel().then {
@@ -52,8 +53,14 @@ final class NavigationBar: UIView {
         
         popUpViewButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel.snp.centerY)
+            make.leading.equalToSuperview()
+            make.height.equalTo(44)
+            make.width.equalTo(80)
+        }
+        
+        popUpViewButton.imageView?.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(17)
-            make.height.width.equalTo(23)
+            make.trailing.equalToSuperview().offset(-55)
         }
         
         dividerLine.snp.makeConstraints { make in
@@ -69,3 +76,9 @@ final class NavigationBar: UIView {
     }
     
 }
+
+import SwiftUI
+#Preview{
+    NicknameViewController()
+}
+
