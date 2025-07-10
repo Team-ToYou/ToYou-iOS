@@ -13,7 +13,13 @@ final class NotificationViewModel: ObservableObject {
     @Published var friendRequestData: [FriendRequestData] = []
     
     init() {
-        
+        getNotificationList()
+        getFriendRequestList()
+    }
+    
+    func fetchAllData() {
+        getNotificationList()
+        getFriendRequestList()
     }
     
     func getNotificationList(_ firstTry: Bool = true) {
@@ -124,7 +130,7 @@ enum NotificationNetworkService {
     }
     
     static func removeNotification(index: Int, completion: @escaping(Result<ToYouResponse<EmptyResult>, AFError>) -> Void) {
-        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService.shared.notificationData[index].alarmId!)"
+        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService100.shared.notificationData[index].alarmId!)"
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let headers: HTTPHeaders = [ "accept" : " ", "Authorization": "Bearer " + accessToken ]
         AF.request(url, method: .delete, headers: headers).responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in

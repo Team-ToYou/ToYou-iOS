@@ -13,6 +13,7 @@ class HomeViewController: UIViewController {
     var cardId: Int?
     let homeView = HomeView()
     let notificationVC = NotificationViewController()
+    let notificationViewModel = NotificationViewModel() // 생성과 동시에 알림을 가져온다.
     
     var delegate: NotificationViewControllerDelegate?
     
@@ -20,10 +21,11 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.view = homeView
         navigationController?.navigationBar.isHidden = true
-
+        
+        // 알림 뷰컨 설정
+        notificationVC.configure(notificationViewModel, delegate: self)
         setAction()
         getAPI()
-        getNotifications() // 알림 정보 가져오기
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -106,13 +108,7 @@ class HomeViewController: UIViewController {
     
     @objc
     private func alertSelect() {
-        notificationVC.configure(delegate: self)
         self.navigationController?.pushViewController(notificationVC, animated: true)
-    }
-    
-    private func getNotifications() {
-        NotificationAPIService.getNotificationList { _ in }
-        NotificationAPIService.getFriendRequestList { _ in }
     }
     
 }

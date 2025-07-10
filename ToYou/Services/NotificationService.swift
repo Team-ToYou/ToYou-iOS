@@ -8,9 +8,9 @@
 import Alamofire
 import Foundation
 
-final class NotificationAPIService {
+final class NotificationAPIService100 {
     
-    static let shared = NotificationAPIService()
+    static let shared = NotificationAPIService100()
     
     var notificationData: [NotificationData] = [
 //        NotificationData(alarmId: 0, content: "승원님이 친구 요청을 수락했습니다", nickname: "승원", alarmType: .FRIEND_REQUEST_ACCEPTED),
@@ -59,7 +59,7 @@ final class NotificationAPIService {
     }
     
     static func removeNotification(index: Int, completion: @escaping(NotificationCode) -> Void) {
-        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService.shared.notificationData[index].alarmId!)"
+        let url = K.URLString.baseURL + "/alarms/\(NotificationAPIService100.shared.notificationData[index].alarmId!)"
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let headers: HTTPHeaders = [
             "accept" : " ",
@@ -74,7 +74,7 @@ final class NotificationAPIService {
             case .success(let value) :
                 switch value.code {
                 case NotificationCode.COMMON200.rawValue:
-                    NotificationAPIService.shared.notificationData.remove(at: index)
+                    NotificationAPIService100.shared.notificationData.remove(at: index)
                     completion(.COMMON200)
                 case NotificationCode.JWT400.rawValue:
                     RootViewControllerService.toLoginViewController()

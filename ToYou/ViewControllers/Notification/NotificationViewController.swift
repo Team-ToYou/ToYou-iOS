@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import Combine
 
 protocol NotificationViewControllerDelegate: AnyObject {
     func friendRequestAccepted()
@@ -15,7 +16,9 @@ protocol NotificationViewControllerDelegate: AnyObject {
 class NotificationViewController: UIViewController {
     
     let notificationView = NotificationView()
+    var noificationViewModel: NotificationViewModel?
     var delegate: NotificationViewControllerDelegate?
+    var cancellales: Set<AnyCancellable> = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,54 +29,53 @@ class NotificationViewController: UIViewController {
         notificationView.notificationTableView.dataSource = self
         notificationView.friendTableView.delegate = self
         notificationView.friendTableView.dataSource = self
-        
+        noificationViewModel?.fetchAllData()
         notificationView.setConstraints()
-        fetchNotificationData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchNotificationData()
         notificationView.setConstraints()
         self.view = notificationView
+        noificationViewModel?.fetchAllData()
     }
     
-    private func fetchNotificationData() {
-        NotificationAPIService.getNotificationList { _ in
-            DispatchQueue.main.async {
-                self.notificationView.notificationTableView.reloadData()
-                self.updateNotificationUI()
-            }
-        }
-        
-        NotificationAPIService.getFriendRequestList { _ in
-            DispatchQueue.main.async {
-                self.notificationView.friendTableView.reloadData()
-                self.updateFriendRequestUI()
-            }
-        }
-    }
-
-    private func updateNotificationUI() {
-        let count = NotificationAPIService.shared.notificationData.count
-        if count > 0 {
-            notificationView.hasNotificationMode()
-        } else {
-            notificationView.noNotificationMode()
-        }
-    }
-
-    private func updateFriendRequestUI() {
-        let count = NotificationAPIService.shared.friendRequestData.count
-        if count > 0 {
-            notificationView.hasFriendRequestMode()
-        } else {
-            notificationView.noFriendRequestMode()
-        }
-    }
-    
-    func configure(delegate: NotificationViewControllerDelegate) {
+    func configure(_ notificationViewModel: NotificationViewModel, delegate: NotificationViewControllerDelegate) {
+        self.noificationViewModel = notificationViewModel
         self.delegate = delegate
+        
+        notificationViewModel.$notificationData
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.notificationView.notificationTableView.reloadData()
+                    let count = notificationViewModel.notificationData.count
+                    if count > 0 {
+                        self?.notificationView.hasNotificationMode()
+                    } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self?.notificationView.noNotificationMode()
+                        }
+                    }
+                }
+            }
+            .store(in: &cancellales)
+        
+        notificationViewModel.$friendRequestData
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.notificationView.friendTableView.reloadData()
+                    let count = notificationViewModel.friendRequestData.count
+                    if count > 0 {
+                        self?.notificationView.hasFriendRequestMode()
+                    } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self?.notificationView.noFriendRequestMode()
+                        }
+                    }
+
+                }
+            }
+            .store(in: &cancellales)
     }
     
 }
@@ -84,8 +86,7 @@ extension NotificationViewController: FriendRequestDelegate {
         FriendsAPIService.acceptRequest(friendId: friend.userId!) { code in
             switch code {
             case .COMMON200:
-                NotificationAPIService.shared.friendRequestData.removeFirst() // 첫 요청을 삭제
-                self.notificationView.notificationTableView.reloadData()
+                self.noificationViewModel?.removeNotification(index: 0)
                 FCMTokenApiService.sendFCMMessage(to: friend.userId!, requestType: .FriendRequestAccepted) { code in
                     switch code {
                     case .COMMON200:
@@ -122,25 +123,11 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == notificationView.notificationTableView { // CollectionVeiw가 두 개
-            let count = NotificationAPIService.shared.notificationData.count
-            if count > 0 {
-                notificationView.hasNotificationMode()
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.notificationView.noNotificationMode()
-                }
-            }
-            return NotificationAPIService.shared.notificationData.count
+            let count = noificationViewModel?.notificationData.count ?? 0
+            return count
         } else if tableView == notificationView.friendTableView {
-            let count = NotificationAPIService.shared.friendRequestData.count
-            if count > 0 {
-                notificationView.hasFriendRequestMode()
-            } else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    self.notificationView.noFriendRequestMode()
-                }
-            }
-            return NotificationAPIService.shared.friendRequestData.count
+            let count = noificationViewModel?.friendRequestData.count ?? 0
+            return count
         }
         else {
             return 0
@@ -149,13 +136,13 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if tableView == notificationView.notificationTableView {
-            let data = NotificationAPIService.shared.notificationData[indexPath.row]
+            guard let data = noificationViewModel?.notificationData[indexPath.row] else { return UITableViewCell() }
             let cell = tableView.dequeueReusableCell(withIdentifier: NotificationCell.identifier, for: indexPath) as! NotificationCell
             cell.configure(data)
             cell.selectionStyle = .none // 선택 시, 회색배경화면 제거
             return cell
         } else if tableView == notificationView.friendTableView {
-            let data = NotificationAPIService.shared.friendRequestData[indexPath.row]
+            guard let data = noificationViewModel?.friendRequestData[indexPath.row] else { return UITableViewCell() }
             let cell = tableView.dequeueReusableCell(withIdentifier: FriendRequestCell.identifier, for: indexPath) as! FriendRequestCell
             cell.configure(data, delegate: self)
             cell.selectionStyle = .none // 선택 시, 회색배경화면 제거
@@ -177,8 +164,8 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView == notificationView.notificationTableView {
             // 질문을 받은 뷰컨으로 넘기기
-            let data = NotificationAPIService.shared.notificationData[indexPath.row]
-            switch data.alarmType! {
+            let data = noificationViewModel?.notificationData[indexPath.row]
+            switch data!.alarmType! {
             case .FRIEND_REQUEST_ACCEPTED:
                 // BaseViewController의 인덱스 조절
                 // 현재 NotificationViewController pop
@@ -197,33 +184,20 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
             // 액션 수행 코드
             if tableView == self.notificationView.notificationTableView {
                 // 알림 삭제 API 연동
-                NotificationAPIService.removeNotification(index: indexPath.row) { code in
-                    switch code {
-                    case .COMMON200:
-                        tableView.deleteRows(at: [indexPath], with: .automatic)
-                        tableView.reloadData()
-                    default :
-                        print("""
-                              #NotificationViewController.swift
-                              func removeNotification
-                              \(code) 발생
-                              """)
-                        break
-                    }
-                }
+                self.noificationViewModel?.removeNotification(index: indexPath.row)
                 completionHandler(true)
             } else if tableView == self.notificationView.friendTableView {
                 // 친구 요청 거절 API 요청
-                guard let id = NotificationAPIService.shared.friendRequestData[indexPath.row].userId else {
+                guard let id = self.noificationViewModel?.friendRequestData[indexPath.row].userId else {
                     print("NotificationAPIService.shared.friendRequestData[\(indexPath.row)]에서 nil값이 발견됨")
                     return
                 }
-                NotificationAPIService.shared.friendRequestData.remove(at: indexPath.row)
+                self.noificationViewModel?.friendRequestData.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .automatic)
                 FriendsAPIService.deleteFriend(friendId: id) { code in
                     switch code {
                     case .COMMON200:
-                        NotificationAPIService.shared.friendRequestData.remove(at: indexPath.row)
+                        self.noificationViewModel?.removeNotification(index: indexPath.row)
                         tableView.deleteRows(at: [indexPath], with: .automatic)
                     case .FRIEND401:
                         // 요청 정보가 존재하지 않다고 POP-UP
