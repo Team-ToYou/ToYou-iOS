@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol NotificationViewControllerDelegate: AnyObject {
     func friendRequestAccepted()
@@ -108,7 +109,7 @@ extension NotificationViewController: FriendRequestDelegate {
 
 extension NotificationViewController {
     func addActions() {
-        self.notificationView.popUpViewButton.addTarget(self, action: #selector(popUpViewButtonDidTap), for: .touchUpInside)
+        self.notificationView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popUpViewButtonDidTap), for: .touchUpInside)
     }
     
     @objc
