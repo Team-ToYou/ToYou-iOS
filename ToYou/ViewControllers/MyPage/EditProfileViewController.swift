@@ -42,7 +42,7 @@ class EditProfileViewController: UIViewController {
 // MARK: Confirm Button Actions
 extension EditProfileViewController {
     private func setbasicButtonActions() {
-        editProfileView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        editProfileView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         editProfileView.completeButton.addTarget(self, action: #selector(comfirmChange), for: .touchUpInside)
     }
     
@@ -136,6 +136,7 @@ extension EditProfileViewController {
 extension EditProfileViewController {
     
     private func setNicknameActions() {
+        editProfileView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         editProfileView.nicknameTextField.addTarget(self, action: #selector(textFieldDidChanged(_ :)), for: .editingChanged)
         editProfileView.overlappedCheck.addTarget(self, action: #selector(checkOverlappedPressed), for: .touchUpInside)
     }
@@ -206,7 +207,6 @@ extension EditProfileViewController: UITextFieldDelegate {
 extension EditProfileViewController {
     
     func setUserTypeButtonActions() {
-        editProfileView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         let buttons = [
             editProfileView.studentButton,
             editProfileView.collegeButton,
