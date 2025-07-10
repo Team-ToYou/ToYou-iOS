@@ -39,7 +39,7 @@ final class NotificationAPIService {
                 switch apiResponse.code {
                 case NotificationCode.COMMON200.rawValue :
                     self.shared.notificationData = apiResponse.result?.alarmList ?? []
-                    print("#NotificationAPIService.swift getNotificationList success")
+                    print("#NotificationAPIService.swift getNotificationList success \(apiResponse.result?.alarmList ?? []) ")
                 case NotificationCode.JWT400.rawValue :
                     RootViewControllerService.toLoginViewController()
                     print("#NotificationAPIService.swift getNotificationList JWT400")

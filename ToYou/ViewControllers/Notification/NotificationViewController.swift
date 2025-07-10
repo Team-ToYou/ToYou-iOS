@@ -78,6 +78,7 @@ class NotificationViewController: UIViewController {
 }
 
 extension NotificationViewController: FriendRequestDelegate {
+    
     func acceptFriendRequest(friend: FriendRequestData) {
         FriendsAPIService.acceptRequest(friendId: friend.userId!) { code in
             switch code {
@@ -102,6 +103,7 @@ extension NotificationViewController: FriendRequestDelegate {
             }
         }
     }
+    
 }
 
 extension NotificationViewController {
@@ -187,7 +189,7 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         }
     }
     
-    // Swipe Action
+    // MARK: Swipe Action
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // 액션 생성 및 설정
         let transparentAction = UIContextualAction(style: .normal, title: nil) { (_, _, completionHandler) in
