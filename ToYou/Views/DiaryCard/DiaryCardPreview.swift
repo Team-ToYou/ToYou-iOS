@@ -45,7 +45,7 @@ class DiaryCardPreview: UIView {
     private let subTitleLabel = UILabel().then {
         $0.text = "미리보기"
         $0.textColor = .black04
-        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
         $0.isHidden = false
     }
     

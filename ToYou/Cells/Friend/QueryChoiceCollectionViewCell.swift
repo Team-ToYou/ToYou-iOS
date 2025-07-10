@@ -20,7 +20,7 @@ class QueryChoiceCollectionViewCell: UICollectionViewCell {
     private weak var delegate: QueryChoiceCollectionViewCellDelegate?
     
     public lazy var textField = UITextField().then {
-        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
         $0.textColor = .black04
         $0.backgroundColor = .white
     }

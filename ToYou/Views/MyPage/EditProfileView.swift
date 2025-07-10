@@ -69,13 +69,13 @@ class EditProfileView: UIView {
     
     private lazy var warningLabel = UILabel().then {
         $0.text = "중복된 닉네임인지 확인해주세요."
-        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 13)
         $0.textColor = .black04
     }
     
     public lazy var maxTextLength = UILabel().then {
         $0.text = "(0/15)"
-        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 13)
         $0.textColor = .gray00
     }
     

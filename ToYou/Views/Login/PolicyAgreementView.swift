@@ -254,7 +254,7 @@ class PolicyAgreementView: UIView {
         return UILabel().then {
             $0.text = "필수"
             $0.textAlignment = .center
-            $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
+            $0.font = UIFont(name: K.Font.s_core_regular, size: 13)
             $0.textColor = .white
             $0.backgroundColor = .red02
             $0.layer.cornerRadius = 5.68

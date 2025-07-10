@@ -171,7 +171,7 @@ class NotificationView: UIView {
             $0.textAlignment = .center
             $0.textColor = .black
             $0.backgroundColor = .white
-            $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
+            $0.font = UIFont(name: K.Font.s_core_regular, size: 13)
             $0.clipsToBounds = true
             $0.layer.cornerRadius = 10
             
