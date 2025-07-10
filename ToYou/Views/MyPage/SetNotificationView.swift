@@ -43,7 +43,7 @@ class SetNotificationView: UIView {
     
     private lazy var subLabel = UILabel().then {
         $0.text = "알림은 매일 23시에 전송됩니다."
-        $0.font = UIFont(name: K.Font.s_core_light, size: 11)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
         $0.textColor = .black01
     }
 

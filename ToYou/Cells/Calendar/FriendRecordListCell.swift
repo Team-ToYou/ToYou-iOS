@@ -28,7 +28,7 @@ class FriendRecordListCell: UICollectionViewCell {
     
     private let nameLabel = UILabel().then {
         $0.text = "닉네임"
-        $0.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 11)
+        $0.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 12)
         $0.textColor = .black04
     }
     
