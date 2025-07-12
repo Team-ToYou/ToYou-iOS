@@ -8,13 +8,13 @@
 import Combine
 import Alamofire
 
-final class UserViewModel: ObservableObject {
+final class UserAPIViewModel: ObservableObject {
     
     @Published var userInfo: MyPageResult?
     @Published var isLoading: Bool = false
     private var cancellables: Set<AnyCancellable> = []
     
-    static let shared = UserViewModel()
+    static let shared = UserAPIViewModel()
     
     func fetchUser( retry: Bool = false, completion: @escaping(UserCode) -> Void) {
         let url = K.URLString.baseURL + "/users/mypage"

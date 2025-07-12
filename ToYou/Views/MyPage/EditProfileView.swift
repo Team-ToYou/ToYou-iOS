@@ -95,7 +95,8 @@ class EditProfileView: UIView {
     }
     
     public func checkAnyInfoChanged() {
-        if isNicknameChecked || newUserType != originalUserType {
+        if isNicknameChecked || (newUserType != originalUserType && newUserType != nil ){
+            print("available \(isNicknameChecked) \(newUserType != originalUserType)")
             completeButton.available()
         } else {
             completeButton.unavailable()
