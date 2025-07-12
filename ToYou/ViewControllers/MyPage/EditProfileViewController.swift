@@ -109,7 +109,6 @@ extension EditProfileViewController {
         let parameters: [String: Any] = [
             "status": editProfileView.newUserType!.rawValueForAPI()
         ]
-        URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
         AF.request(
             url,
             method: .patch,
@@ -160,11 +159,12 @@ extension EditProfileViewController {
     
     @objc
     private func checkOverlappedPressed() { // 중복 확인
-        checkOverlapped()
-        editProfileView.checkAnyInfoChanged()
+        checkOverlapped() { _ in
+            self.editProfileView.checkAnyInfoChanged()
+        }
     }
     
-    private func checkOverlapped() {
+    private func checkOverlapped(completion: @escaping(Bool) -> Void) {
         let tail = "/users/nickname/check"
         let url = K.URLString.baseURL + tail + "?nickname=\(editProfileView.nicknameTextField.text!)"
         let headers: HTTPHeaders = [
@@ -177,14 +177,17 @@ extension EditProfileViewController {
         )
         .responseDecodable(of: ToYouResponse<NicknameCheckResult>.self) { response in
             switch response.result {
-            case .success(_):
+            case .success(let result):
+                print(result)
                 if response.value!.result!.exists { // true => 사용 불가능한 닉네임
                     self.editProfileView.unsatisfiedNickname()
                     self.editProfileView.isNicknameChecked = false
+                    completion(false)
                 } else {
                     self.editProfileView.satisfiedNickname()
                     self.editProfileView.isNicknameChecked = true
                     self.editProfileView.newNickname = self.editProfileView.nicknameTextField.text
+                    completion(true)
                 }
             case .failure(let error):
                 print("\(url) get 요청 실패: \(error.localizedDescription)")
@@ -194,9 +197,10 @@ extension EditProfileViewController {
     
 }
 
+// MARK: Nickname 완료 버튼 -> 중복 호출
 extension EditProfileViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        checkOverlapped()
+        checkOverlapped() { _ in }
         editProfileView.checkAnyInfoChanged()
         editProfileView.nicknameTextField.resignFirstResponder()
         return true
