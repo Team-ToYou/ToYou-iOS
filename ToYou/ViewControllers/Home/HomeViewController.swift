@@ -59,6 +59,7 @@ class HomeViewController: UIViewController {
                 switch response.result {
                 case .success(let value):
                     print(value)
+                    let num = value.result.questionNum
                     
                     if let emotion = value.result.emotion {
                         self.homeView.mailBoxImage.isUserInteractionEnabled = true
@@ -67,6 +68,15 @@ class HomeViewController: UIViewController {
                         self.setView(emotionString: emotion)
                     } else {
                         self.homeView.mailBoxImage.isUserInteractionEnabled = false
+                    }
+
+                    // 우체통 이미지 변경
+                    if num == 0 {
+                        self.homeView.mailBoxImage.setImage(.mailboxEmpty, for: .normal)
+                    } else if num < 5 {
+                        self.homeView.mailBoxImage.setImage(.mailboxSingle, for: .normal)
+                    } else {
+                        self.homeView.mailBoxImage.setImage(.mailboxFull, for: .normal)
                     }
                     
                 case .failure(let error):
