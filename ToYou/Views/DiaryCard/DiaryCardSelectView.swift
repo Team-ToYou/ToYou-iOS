@@ -56,7 +56,7 @@ class DiaryCardSelectView: UIView {
     private let subTitleLabel = UILabel().then {
         $0.text = "답하고 싶은 질문을 선택해주세요"
         $0.textColor = .black04
-        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
     }
     
     private let lineView = UIView().then {

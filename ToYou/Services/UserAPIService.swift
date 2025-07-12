@@ -36,9 +36,9 @@ final class UsersAPIService {
                     self.myPageInfo = apiResponse.result
                     self.userInfoFetched()
                     completion(.success)
-                case UserCode.invalidToken.rawValue:
+                case UserCode.expired.rawValue:
                     RootViewControllerService.toLoginViewController()
-                    completion(.invalidToken)
+                    completion(.expired)
                 default:
                     completion(.error)
                 }
@@ -49,12 +49,10 @@ final class UsersAPIService {
         }
     }
     
-    
-    
 }
 
 enum UserCode: String {
     case success = "COMMON200"
-    case invalidToken = "JWT400"
+    case expired = "JWT400"
     case error = "COMMON500"
 }

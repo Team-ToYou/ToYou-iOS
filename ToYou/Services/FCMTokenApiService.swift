@@ -193,10 +193,11 @@ final class FCMTokenApiService {
         .responseDecodable(of: FCMTokenResult.self) { response in
             switch response.result {
             case .success(let value):
+                print("#sendSingleFCMMessage Success to \(token) \(title) \(body)")
                 print(value)
             case .failure(let error):
-                print(error)
                 print("#sendSingleFCMMessage Failed")
+                print(error)
             }
         }
     }

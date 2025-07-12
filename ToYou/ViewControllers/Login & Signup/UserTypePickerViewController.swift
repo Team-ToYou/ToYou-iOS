@@ -28,7 +28,7 @@ class UserTypePickerViewController: UIViewController {
 //MARK: Button Actions
 extension UserTypePickerViewController {
     func setButtonActions() {
-        userTypePiverView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        userTypePiverView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         userTypePiverView.nextButton.addTarget(self, action: #selector(signUp), for: .touchUpInside)
         let buttons = [
             userTypePiverView.studentButton,

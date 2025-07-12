@@ -42,7 +42,7 @@ class SelectAnswerCell: UICollectionViewCell {
     private let fromLabel = UILabel().then {
         $0.text = "From. 미주"
         $0.textColor = .black04
-        $0.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 11)
+        $0.font = UIFont(name: "S-CoreDream-2ExtraLight", size: 12)
     }
     
     // MARK: - action
@@ -114,7 +114,7 @@ class SelectAnswerCell: UICollectionViewCell {
             let optionLabel = UILabel().then {
                 $0.text = option
                 $0.textColor = .black04
-                $0.font = UIFont(name: "S-CoreDream-3Light", size: 11)
+                $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
             }
             
             backView.addSubview(optionLabel)

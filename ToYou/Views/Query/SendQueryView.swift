@@ -29,7 +29,7 @@ class SendQueryView: UIView {
     
     private lazy var subTitleLabel = UILabel().then {
         $0.text = "익명으로 질문을 보낼 수 있어요"
-        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 13)
         $0.textColor = .black04
     }
     
@@ -53,7 +53,7 @@ class SendQueryView: UIView {
     public lazy var warningLabel = UILabel().then {
         $0.text = "비방 및 욕설은 처벌받을 수 있습니다."
         $0.textColor = .red02
-        $0.font = UIFont(name: K.Font.s_core_light, size: 11)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
     }
     
     override init(frame: CGRect) {

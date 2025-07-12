@@ -30,7 +30,7 @@ class PolicyAgreementViewController: UIViewController {
 
 extension PolicyAgreementViewController {
     func setButtonActions() {
-        policyAgreementView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        policyAgreementView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
         policyAgreementView.nextButton.addTarget(self, action: #selector(goToNext), for: .touchUpInside)
         policyAgreementView.agreeAllButton.addTarget(self, action: #selector(agreeAllPressed), for: .touchUpInside)
         policyAgreementView.over14Button.addTarget(self, action: #selector(checkBoxPressed(_ :)), for: .touchUpInside)
@@ -97,4 +97,10 @@ extension PolicyAgreementViewController {
     private func popStack() {
         dismiss(animated: false)
     }
+}
+
+
+import SwiftUI
+#Preview{
+    PolicyAgreementViewController()
 }

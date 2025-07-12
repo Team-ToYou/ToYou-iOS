@@ -33,7 +33,7 @@ class EmotionView: UIView {
     
     private let subLabel = UILabel().then {
         $0.text = "선택한 감정우표를 기반으로 맞춤형 질문이 배달됩니다"
-        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
     }
     
     // 감정우표

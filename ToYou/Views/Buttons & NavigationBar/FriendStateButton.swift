@@ -11,7 +11,7 @@ class FriendStateButton: UIButton {
     
     private lazy var stateLabel = UILabel().then {
         $0.text = " "
-        $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 11)
+        $0.font = UIFont(name: K.Font.gangwonEduHyeonokT_OTFMedium, size: 13)
         $0.textColor = .black04
     }
     

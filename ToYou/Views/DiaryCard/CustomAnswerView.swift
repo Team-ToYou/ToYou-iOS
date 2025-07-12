@@ -35,7 +35,7 @@ class CustomAnswerView: UIView {
     private let textView = UITextView().then {
         $0.text = "답변을 입력해주세요."
         $0.textColor = .black00
-        $0.font = UIFont(name: "S-CoreDream-3Light", size: 11)
+        $0.font = UIFont(name: "S-CoreDream-3Light", size: 12)
         $0.backgroundColor = .clear
     }
     

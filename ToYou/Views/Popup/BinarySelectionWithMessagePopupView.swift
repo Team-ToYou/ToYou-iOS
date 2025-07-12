@@ -27,7 +27,7 @@ class BinarySelectionWithMessagePopupView: UIView {
         $0.numberOfLines = 2
         $0.text = "작성하신 일기카드가 모두\n삭제되며 복구할 수 없어요"
         $0.textAlignment = .center
-        $0.font = UIFont(name: K.Font.s_core_light, size: 12)
+        $0.font = UIFont(name: K.Font.s_core_light, size: 13)
         $0.textColor = .black02
     }
     

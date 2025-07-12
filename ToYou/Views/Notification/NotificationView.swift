@@ -9,24 +9,7 @@ import UIKit
 
 class NotificationView: UIView {
     
-    private lazy var paperBackground = UIImageView().then {
-        $0.image = .paperTexture
-        $0.contentMode = .scaleAspectFill
-    }
-    
-    public lazy var popUpViewButton = UIButton().then {
-        $0.setImage(.popUpIcon , for: .normal)
-    }
-    
-    private lazy var signUpLabel = UILabel().then {
-        $0.text = "알림"
-        $0.textColor = .black04
-        $0.font = UIFont(name: K.Font.s_core_medium, size: 17)
-    }
-    
-    private lazy var signUpTopLine = UIView().then {
-        $0.backgroundColor = .gray00
-    }
+    public lazy var navigationBar = CustomNavigationBar()
     
     private lazy var friendRequestLabel = getTitleLabel("친구 요청")
     private lazy var noFriendRequestView = getNothingMessage("새로운 친구 요청이 없어요")
@@ -75,7 +58,6 @@ class NotificationView: UIView {
     }
         
     public func setConstraints() {
-        setupBackground()
         signUpTopTitleComponents()
         setFriendRequestComponents()
         setNotificationComponents()
@@ -88,7 +70,7 @@ class NotificationView: UIView {
         
         friendRequestLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(23)
-            make.top.equalTo(signUpTopLine.snp.bottom).offset(56)
+            make.top.equalTo(navigationBar.dividerLine.snp.bottom).offset(56)
         }
         
         noFriendRequestView.snp.makeConstraints { make in
@@ -110,7 +92,7 @@ class NotificationView: UIView {
         
         notificationLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(23)
-            make.top.equalTo(signUpTopLine.snp.bottom).offset(214.47)
+            make.top.equalTo(navigationBar.dividerLine.snp.bottom).offset(214.47)
         }
         
         noNotificationView.snp.makeConstraints { make in
@@ -127,32 +109,10 @@ class NotificationView: UIView {
     }
     
     private func signUpTopTitleComponents() {
-        self.addSubview(popUpViewButton)
-        self.addSubview(signUpLabel)
-        self.addSubview(signUpTopLine)
+        self.addSubview(navigationBar)
         
-        signUpLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(19)
-            make.centerX.equalToSuperview()
-        }
-        
-        popUpViewButton.snp.makeConstraints { make in
-            make.centerY.equalTo(signUpLabel.snp.centerY)
-            make.leading.equalToSuperview().offset(17)
-            make.height.width.equalTo(23)
-        }
-        
-        signUpTopLine.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(1)
-            make.top.equalTo(signUpLabel.snp.bottom).offset(13)
-        }
-    }
-    
-    private func setupBackground() {
-        self.addSubview(paperBackground)
-        
-        paperBackground.snp.makeConstraints { make in
+        navigationBar.configure(with: "알림")
+        navigationBar.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -171,7 +131,7 @@ class NotificationView: UIView {
             $0.textAlignment = .center
             $0.textColor = .black
             $0.backgroundColor = .white
-            $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
+            $0.font = UIFont(name: K.Font.s_core_regular, size: 13)
             $0.clipsToBounds = true
             $0.layer.cornerRadius = 10
             

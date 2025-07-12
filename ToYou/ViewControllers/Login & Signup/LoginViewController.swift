@@ -63,6 +63,8 @@ extension LoginViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
                                 RootViewControllerService.toSignUpViewController()
                             case .expired:
                                 RootViewControllerService.toLoginViewController()
+                            case .error:
+                                break
                             }
                         }
                     case false:

@@ -16,38 +16,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-        
-//        guard let _ = KeychainService.get(key: K.Key.accessToken) else {
-//            RootViewControllerService.toLoginViewController()
-//            return
-//        }
-        
-//        RootViewControllerService.toSignUpViewController()
-          window?.rootViewController = BaseViewController()
-        
-//        AuthAPIService.isUserFinishedSignUp { code in
-//            switch code {
-//            case .finished:
-//                print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-//                print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
-//                RootViewControllerService.toBaseViewController()
-//            case .notFinished:
-//                RootViewControllerService.toSignUpViewController()
-//            case .expired:
-//                AuthAPIService.reissueRefreshToken { code in
-//                    switch code {
-//                    case .success:
-//                        print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-//                        print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
-//                        RootViewControllerService.toBaseViewController()
-//                    case .expired:
-//                        RootViewControllerService.toLoginViewController()
-//                    case .error:
-//                        print("Reissue Error in SceneDelegate")
-//                    }
-//                }
-//            }
-//        }
+      
+        AuthAPIService.isUserFinishedSignUp { code in
+            switch code {
+            case .finished:
+                print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
+                print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
+                RootViewControllerService.toBaseViewController()
+            case .notFinished:
+                RootViewControllerService.toSignUpViewController()
+            case .expired:
+                AuthAPIService.reissueRefreshToken { code in
+                    switch code {
+                    case .success:
+                        print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
+                        print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
+                        RootViewControllerService.toBaseViewController()
+                    case .expired:
+                        RootViewControllerService.toLoginViewController()
+                    case .error:
+                        print("Reissue Error in SceneDelegate")
+                    }
+                }
+            default :
+                break
+            }
+        }
         
         return
     }

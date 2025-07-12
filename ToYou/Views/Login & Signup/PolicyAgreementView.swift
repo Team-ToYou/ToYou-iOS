@@ -66,32 +66,13 @@ class PolicyAgreementView: UIView {
     public lazy var goTermsOfUse = goDetailButton()
     public lazy var goPrivacyDetail = goDetailButton()
     
-    // MARK: Background & NavigationTop
-    private lazy var paperBackground = UIImageView().then {
-        $0.image = .paperTexture
-        $0.contentMode = .scaleAspectFill
-    }
-    
-    public lazy var popUpViewButton = UIButton().then {
-        $0.setImage(.popUpIcon , for: .normal)
-    }
-    
-    private lazy var signUpLabel = UILabel().then {
-        $0.text = "회원가입"
-        $0.font = UIFont(name: K.Font.s_core_medium, size: 17)
-        $0.textColor = .black04
-    }
-    
-    private lazy var signUpTopLine = UIView().then {
-        $0.backgroundColor = .gray00
-    }
+    public lazy var navigationBar = CustomNavigationBar()
     
     public lazy var nextButton = ConfirmButton()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .background
-        self.setupBackground()
         self.signUpTopTitleComponents()
         self.addComponents()
         self.setUpNextButton()
@@ -103,7 +84,7 @@ class PolicyAgreementView: UIView {
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
-            make.top.equalTo(signUpTopLine.snp.bottom).offset(97)
+            make.top.equalTo(navigationBar.dividerLine.snp.bottom).offset(97)
         }
         
         subTitleLabel.snp.makeConstraints { make in
@@ -212,35 +193,13 @@ class PolicyAgreementView: UIView {
         }
         
     }
-    
-    private func setupBackground() {
-        self.addSubview(paperBackground)
-        
-        paperBackground.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
         
     private func signUpTopTitleComponents() {
-        self.addSubview(popUpViewButton)
-        self.addSubview(signUpLabel)
-        self.addSubview(signUpTopLine)
+        self.addSubview(navigationBar)
         
-        signUpLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(19)
-            make.centerX.equalToSuperview()
-        }
-        
-        popUpViewButton.snp.makeConstraints { make in
-            make.centerY.equalTo(signUpLabel.snp.centerY)
-            make.leading.equalToSuperview().offset(17)
-            make.height.width.equalTo(23)
-        }
-        
-        signUpTopLine.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(1)
-            make.top.equalTo(signUpLabel.snp.bottom).offset(13)
+        navigationBar.configure(with: "회원가입")
+        navigationBar.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     
@@ -257,7 +216,7 @@ class PolicyAgreementView: UIView {
         return UILabel().then {
             $0.text = "필수"
             $0.textAlignment = .center
-            $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
+            $0.font = UIFont(name: K.Font.s_core_regular, size: 13)
             $0.textColor = .white
             $0.backgroundColor = .red02
             $0.layer.cornerRadius = 5.68

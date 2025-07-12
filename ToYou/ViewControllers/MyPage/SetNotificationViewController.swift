@@ -19,7 +19,7 @@ class SetNotificationViewController: UIViewController {
     }
     
     private func setupButtonActions() {
-        setNotificationView.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
+        setNotificationView.navigationBar.popUpViewButton.addTarget(self, action: #selector(popStack), for: .touchUpInside)
     }
     
     @objc
