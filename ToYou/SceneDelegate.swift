@@ -43,6 +43,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         print("Reissue Error in SceneDelegate")
                     }
                 }
+            case .error:
+                RootViewControllerService.toLoginViewController()
+                break
             }
         }
         

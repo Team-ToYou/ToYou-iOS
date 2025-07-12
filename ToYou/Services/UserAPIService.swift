@@ -49,8 +49,6 @@ final class UsersAPIService {
         }
     }
     
-    
-    
 }
 
 enum UserCode: String {

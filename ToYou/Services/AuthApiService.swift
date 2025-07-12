@@ -47,9 +47,11 @@ class AuthAPIService {
                 case ReissueCode.expired.rawValue:
                     // error, expired 모두 login으로 이동해야함, 내부에서 구현.
                     // why? 여러 곳에서 쓰일것이고 공통된 동작을 할 것이기 때문에 동작을 여기서 미리 지정해도 괜찮다.
+                    print("reissue refresh token also expired : \(apiResponse.code) - \(apiResponse.message)")
                     RootViewControllerService.toLoginViewController()
                     completion(.expired)
                 default: // 다른 모든 경우는 error 처리
+                    print("reissue unexpected code : \(apiResponse.code)")
                     RootViewControllerService.toLoginViewController()
                     completion(.error)
                 }
@@ -108,19 +110,18 @@ class AuthAPIService {
             case .success(let apiResponse):
                 switch apiResponse.code {
                     case "COMMON200":
-                    if apiResponse.result?.nickname != nil &&
-                        apiResponse.result?.status != nil
-                    {
+                    if apiResponse.result?.nickname != nil && apiResponse.result?.status != nil {
                         completion(.finished)
                     } else {
                         completion(.notFinished)
                     }
                     default :
                         completion(.expired)
-                        print("#isUserFinishedSignUp exception code: \((apiResponse.code))")
+                        print("#isUserFinishedSignUp unexcepted code: \((apiResponse.code))")
                         break
                 }
             case .failure(let error):
+                completion(.error)
                 print("#isUserFinishedSignUp get userInfo error: ", error)
             }
         }
@@ -135,14 +136,15 @@ struct ReissueResult: Codable {
 
 enum ReissueCode: String {
     case success = "COMMON200"
-    case expired = "JWT401"
+    case expired = "JWT400"
     case error
 }
 
 enum signUpCheckCode: String {
     case finished
     case notFinished
-    case expired = "JWT401"
+    case expired = "JWT400"
+    case error
 }
 
 struct AppleLoginResult: Codable {
