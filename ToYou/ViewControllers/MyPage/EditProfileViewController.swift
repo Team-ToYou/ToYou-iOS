@@ -7,12 +7,13 @@
 
 import UIKit
 import Alamofire
+import Combine
 
 class EditProfileViewController: UIViewController {
     
     let editProfileView = EditProfileView()
-    var myPageInfo: MyPageResult?
     var refreshMyPage: ((String) -> Void)?
+    var cancellables: [AnyCancellable] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +26,32 @@ class EditProfileViewController: UIViewController {
         self.setNicknameActions()
         self.setUserTypeButtonActions()
         self.hideKeyboardWhenTappedAround()
+        
+        self.subscribe()
+        editProfileView.configure(result: UserViewModel.userInfo!)
     }
     
-    public func configure(myPageInfo: MyPageResult) {
-        self.myPageInfo = myPageInfo
-        editProfileView.configure(result: myPageInfo)
+    func subscribe() {
+        UserViewModel.defaultMode()
+        UserViewModel.$isChangeable
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isChangeable in
+                switch isChangeable {
+                case true:
+                    self?.editProfileView.completeButton.available()
+                case false:
+                    self?.editProfileView.completeButton.unavailable()
+                }
+            }
+            .store(in: &cancellables)
+        UserViewModel.$userInfo
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] userInfo in
+                if let userInfo = userInfo {
+                    self?.editProfileView.configure(result: userInfo)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     override func viewDidLayoutSubviews() {
@@ -53,81 +75,10 @@ extension EditProfileViewController {
     
     @objc
     private func comfirmChange() {
-        if editProfileView.isNicknameChecked { // 변경된 닉네임이 확인된 경우
-            patchNickname()
-        }
-        if let _ = editProfileView.newUserType, editProfileView.newUserType != editProfileView.originalUserType { // 유저 타입이 다른 경우
-            patchUerType()
-        }
-        editProfileView.checkAnyInfoChanged()
-    }
-    
-    private func patchNickname() {
-        let tail = "/users/nickname"
-        let url = K.URLString.baseURL + tail
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        let headers: HTTPHeaders = [
-            "accept": "*/*",
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json"
-        ]
-        let parameters: [String: Any] = [
-            "nickname": editProfileView.newNickname!
-        ]
-        URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
-        AF.request(
-            url,
-            method: .patch,
-            parameters: parameters,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-        .responseDecodable(of: ToYouResponseWithoutResult.self) { response in
-            switch response.result {
-            case .success(_):
-                self.refreshMyPage?(self.editProfileView.newNickname!)
-                self.editProfileView.updatedNickname()
-                self.editProfileView.resetNickname()
-                self.editProfileView.completeButton.unavailable()
-                UsersAPIService.fetchUserInfo { _ in } // 변경된 사용자 정보 불러오기
-                self.dismiss(animated: false, completion: nil)
-            case .failure(let error):
-                print("\(url) patch 요청 실패: \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    private func patchUerType() {
-        let tail = "/users/status"
-        let url = K.URLString.baseURL + tail
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        let headers: HTTPHeaders = [
-            "accept": "*/*",
-            "Authorization": "Bearer " + accessToken,
-            "Content-Type": "application/json"
-        ]
-        let parameters: [String: Any] = [
-            "status": editProfileView.newUserType!.rawValueForAPI()
-        ]
-        URLSession.generateCurlCommand(url: url, method: .patch, headers: headers, parameters: parameters)
-        AF.request(
-            url,
-            method: .patch,
-            parameters: parameters,
-            encoding: JSONEncoding.default,
-            headers: headers
-        )
-        .responseDecodable(of: ToYouResponse<EmptyResult>.self) { response in
-            switch response.result {
-            case .success(_):
-                self.editProfileView.resetUserType()
-                self.editProfileView.completeButton.unavailable()
-                self.editProfileView.updateNewUserType()
-                UsersAPIService.fetchUserInfo { _ in } // 변경된 사용자 정보 불러오기
-            case .failure(let error):
-                print("\(url) patch 요청 실패: \(error.localizedDescription)")
-            }
-        }
+        UserViewModel.userInfo!.nickname = UserViewModel.newNickName
+        UserViewModel.updateUserInfo()
+        UserViewModel.defaultMode()
+        dismiss(animated: false, completion: nil)
     }
     
 }
@@ -160,44 +111,26 @@ extension EditProfileViewController {
     
     @objc
     private func checkOverlappedPressed() { // 중복 확인
-        checkOverlapped()
-        editProfileView.checkAnyInfoChanged()
+        checkNicknameValidation()
     }
     
-    private func checkOverlapped() {
-        let tail = "/users/nickname/check"
-        let url = K.URLString.baseURL + tail + "?nickname=\(editProfileView.nicknameTextField.text!)"
-        let headers: HTTPHeaders = [
-            "accept": "*/*",
-        ]
-        AF.request(
-            url,
-            method: .get,
-            headers: headers
-        )
-        .responseDecodable(of: ToYouResponse<NicknameCheckResult>.self) { response in
-            switch response.result {
-            case .success(_):
-                if response.value!.result!.exists { // true => 사용 불가능한 닉네임
-                    self.editProfileView.unsatisfiedNickname()
-                    self.editProfileView.isNicknameChecked = false
-                } else {
-                    self.editProfileView.satisfiedNickname()
-                    self.editProfileView.isNicknameChecked = true
-                    self.editProfileView.newNickname = self.editProfileView.nicknameTextField.text
-                }
-            case .failure(let error):
-                print("\(url) get 요청 실패: \(error.localizedDescription)")
+    private func checkNicknameValidation() {
+        UserViewModel.checkNickNameAvailability(self.editProfileView.nicknameTextField.text!) { response in
+            switch response {
+            case .available:
+                self.editProfileView.satisfiedNickname()
+            case .unavailable:
+                self.editProfileView.unsatisfiedNickname()
             }
         }
     }
     
 }
 
+// MARK: Nickname 완료 버튼 -> 중복 호출
 extension EditProfileViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        checkOverlapped()
-        editProfileView.checkAnyInfoChanged()
+        self.checkNicknameValidation()
         editProfileView.nicknameTextField.resignFirstResponder()
         return true
     }
@@ -229,12 +162,11 @@ extension EditProfileViewController {
         for btn in buttons {
             if btn == sender {
                 btn.selectedView()
-                editProfileView.newUserType = sender.returnUserType()
+                UserViewModel.changeUserType(to: sender.returnUserType())
             } else {
                 btn.notSelectedView()
             }
         }
-        editProfileView.checkAnyInfoChanged()
     }
 }
 

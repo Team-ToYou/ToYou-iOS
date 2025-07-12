@@ -9,7 +9,7 @@ import Foundation
 
 struct MyPageResult: Codable {
     let userId: Int?
-    let nickname: String?
+    var nickname: String?
     let friendNum: Int?
     let status: UserType?
 }

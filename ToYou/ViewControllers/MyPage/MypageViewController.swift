@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import Combine
 
 class MyPageViewController: UIViewController {
     
@@ -16,6 +17,8 @@ class MyPageViewController: UIViewController {
     let sendFeedbackWebVC = SendFeedbackWebVC()
     let sendQueryWebVC = SendQueryWebVC()
     let policyLinkWebVC = PrivacyPolicyWebVC()
+    
+    var cancellables = Set<AnyCancellable>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,11 +30,18 @@ class MyPageViewController: UIViewController {
         sendQueryWebVC.modalPresentationStyle = .popover
         policyLinkWebVC.modalPresentationStyle = .popover
         
-        NotificationCenter.default.addObserver(self, selector: #selector(userInfoFetched), name: NSNotification.Name("UserInfoFetched"), object: nil)
+        UserViewModel.$userInfo
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] userInfo in
+                print(userInfo)
+                self?.myPageView.configure(myPageInfo: userInfo!)
+            }
+            .store(in: &cancellables)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        UserViewModel.fetchUser{ _ in }
         UsersAPIService.fetchUserInfo { _ in }
     }
     
@@ -46,7 +56,7 @@ extension MyPageViewController {
     
     @objc
     private func userInfoFetched() {
-        myPageView.configure(myPageInfo: UsersAPIService.myPageInfo!)
+        myPageView.configure(myPageInfo: UserViewModel.userInfo!)
     }
     
 }
@@ -66,7 +76,6 @@ extension MyPageViewController {
     @objc
     private func goToEditProfile() {
         let editProfileViewController = EditProfileViewController()
-        editProfileViewController.configure(myPageInfo: UsersAPIService.myPageInfo!)
         editProfileViewController.refreshMyPage = { [weak self] data in
             self?.myPageView.nicknameLabel.text = data
         }
