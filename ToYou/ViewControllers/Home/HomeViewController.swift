@@ -12,8 +12,10 @@ class HomeViewController: UIViewController {
     var homeEmotionString = ""
     var cardId: Int?
     let homeView = HomeView()
+    
     let notificationVC = NotificationViewController()
     let notificationViewModel = NotificationViewModel() // 생성과 동시에 알림을 가져온다.
+    let emotionWarningVC = EmotionWarningPopupViewController()
     
     var delegate: NotificationViewControllerDelegate?
     
@@ -84,9 +86,15 @@ class HomeViewController: UIViewController {
     
     @objc
     private func emotionSelect(sender: UITapGestureRecognizer) {
-        let emotionVC = EmotionViewController()
-        emotionVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(emotionVC, animated: true)
+        if !(homeEmotionString == "") {
+            emotionWarningVC.modalPresentationStyle = .overFullScreen
+            emotionWarningVC.modalTransitionStyle = .crossDissolve
+            self.present(emotionWarningVC, animated: false)
+        } else {
+            let emotionVC = EmotionViewController()
+            emotionVC.hidesBottomBarWhenPushed = true
+            self.navigationController?.pushViewController(emotionVC, animated: true)
+        }
     }
     
     @objc
