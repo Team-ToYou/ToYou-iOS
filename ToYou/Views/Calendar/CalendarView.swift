@@ -61,6 +61,13 @@ class CalendarView: UIView {
         $0.backgroundColor = .gray00
     }
     
+    public let scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = true
+        $0.showsHorizontalScrollIndicator = false
+    }
+    
+    private let contentView = UIView()
+    
     private let calendarBackground = UIView().then {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 7.3
@@ -102,6 +109,7 @@ class CalendarView: UIView {
         $0.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
         $0.showsHorizontalScrollIndicator = false
         $0.showsVerticalScrollIndicator = false
+        $0.isScrollEnabled = false
         $0.backgroundColor = .clear
         $0.isHidden = true
     }
@@ -125,10 +133,18 @@ class CalendarView: UIView {
         [
             paperBackgroundView,
             segmentControl, underLineView, underLine, lineView,
+            scrollView
+        ].forEach {
+            addSubview($0)
+        }
+        
+        scrollView.addSubview(contentView)
+        
+        [
             calendarBackground, customCalendar,
             friendDateLabel, friendLabel, friendRecordList
         ].forEach {
-            addSubview($0)
+            contentView.addSubview($0)
         }
         
         paperBackgroundView.snp.makeConstraints {
@@ -160,8 +176,20 @@ class CalendarView: UIView {
             $0.height.equalTo(1)
         }
         
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(lineView.snp.bottom)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
+            $0.height.greaterThanOrEqualTo(scrollView.snp.height)
+        }
+        
         customCalendar.snp.makeConstraints {
-            $0.top.equalTo(lineView.snp.bottom).offset(70)
+            $0.top.equalToSuperview().offset(70)
             $0.horizontalEdges.equalToSuperview().inset(50)
             $0.height.equalTo(420)
         }
@@ -184,7 +212,7 @@ class CalendarView: UIView {
         friendRecordList.snp.makeConstraints {
             $0.top.equalTo(friendDateLabel.snp.bottom).offset(18)
             $0.horizontalEdges.equalToSuperview().inset(37)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-10)
+            $0.bottom.equalToSuperview().offset(-20)
         }
 
     }

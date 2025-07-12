@@ -343,8 +343,14 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
         if collectionView == calendarView.friendRecordList {
             let selectedFriendRecord = friendRecords[indexPath.item]
             
+            guard let emotion = Emotion(rawValue: selectedFriendRecord.emotion) else {
+                print("선택한 날짜의 감정 정보가 없습니다.")
+                return
+            }
+            
             let detailVC = CalendarDetailViewController()
             detailVC.cardId = selectedFriendRecord.cardId
+            detailVC.emotion = emotion
             detailVC.isFriend = true
             detailVC.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(detailVC, animated: true)
@@ -369,9 +375,16 @@ extension CalendarViewController: CustomCalendarCellDelegate {
             print("선택한 날짜에 일기 카드가 없습니다.")
             return
         }
+        
+        guard let emotionString = emotionList[dateString],
+              let emotion = Emotion(rawValue: emotionString) else {
+            print("선택한 날짜의 감정 정보가 없습니다.")
+            return
+        }
 
         let detailVC = CalendarDetailViewController()
         detailVC.cardId = selectedCardId
+        detailVC.emotion = emotion
         detailVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(detailVC, animated: true)
     }

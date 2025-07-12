@@ -16,8 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-        
-        
+      
         AuthAPIService.isUserFinishedSignUp { code in
             switch code {
             case .finished:
@@ -43,7 +42,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 break
             }
         }
-
         
         return
     }
