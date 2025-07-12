@@ -7,6 +7,7 @@
 
 import UIKit
 
+// 사용자 입력 감지 후 VC에 알림
 protocol AnswerInputDelegate: AnyObject {
     func didUpdateAnswerState()
 }
@@ -181,10 +182,12 @@ extension DiaryCardAnswerViewController: AnswerInputDelegate {
     }
 
     private func updateNextButtonState() {
+        // 각 질문 타입별로 모든 셀이 입력됐는지 체크
         var allLongAnswered = true
         var allShortAnswered = true
         var allSelectAnswered = true
 
+        // 장문형 -> 텍스트가 비어있으면 false
         for i in 0..<longQuestions.count {
             if let cell = diaryCardAnswerView.longOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? LongAnswerCell {
                 if cell.getAnswerText().isEmpty {
@@ -194,6 +197,7 @@ extension DiaryCardAnswerViewController: AnswerInputDelegate {
             }
         }
 
+        // 단답형 -> 텍스트가 비어있으면 false
         for i in 0..<shortQuestions.count {
             if let cell = diaryCardAnswerView.shortOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? ShortAnswerCell {
                 if cell.getAnswerText().isEmpty {
@@ -203,6 +207,7 @@ extension DiaryCardAnswerViewController: AnswerInputDelegate {
             }
         }
 
+        // 선택형 -> 옵션 선택 안 되었으면 false
         for i in 0..<selectQuestions.count {
             if let cell = diaryCardAnswerView.selectOptionCollectionView.cellForItem(at: IndexPath(item: i, section: 0)) as? SelectAnswerCell {
                 if !cell.isOptionSelected() {

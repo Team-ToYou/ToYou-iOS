@@ -90,6 +90,8 @@ extension CustomAnswerView: UITextViewDelegate {
             textView.text = String(textView.text.prefix(maxLength))
         }
         countLabel.text = "(\(textView.text.count)/\(maxLength))"
+        
+        delegate?.didUpdateAnswerState()
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
