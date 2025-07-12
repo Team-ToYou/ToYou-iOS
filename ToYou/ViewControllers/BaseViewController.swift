@@ -30,6 +30,8 @@ class BaseViewController: UITabBarController {
         let navigatedCalendarVC = UINavigationController(rootViewController: calendarVC)
         self.viewControllers = [navigatedHomeVC, friendsVC, navigatedCalendarVC, myPageVC]
         UsersAPIService.fetchUserInfo { _ in } // 사용자 정보를 불러오고 Subscriber에게 값의 변경을 알림
+        UserViewModel.fetchUser{ _ in }
+        
         FCMTokenViewModel.shared.uploadFCMTokenToServer{ code in
             switch code {
             case .COMMON200:

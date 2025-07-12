@@ -94,14 +94,14 @@ class EditProfileView: UIView {
         self.overlappedCheck.unavailable()
     }
     
-    public func checkAnyInfoChanged() {
-        if isNicknameChecked || (newUserType != originalUserType && newUserType != nil ){
-            print("available \(isNicknameChecked) \(newUserType != originalUserType)")
-            completeButton.available()
-        } else {
-            completeButton.unavailable()
-        }
-    }
+//    public func checkAnyInfoChanged() {
+//        if isNicknameChecked || (newUserType != originalUserType && newUserType != nil ){
+//            print("available \(isNicknameChecked) \(newUserType != originalUserType)")
+//            completeButton.available()
+//        } else {
+//            completeButton.unavailable()
+//        }
+//    }
     
     public func resetNickname() {
         isNicknameChecked = false
