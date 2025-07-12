@@ -89,8 +89,6 @@ final class UserAPIViewModel: ObservableObject {
                 switch code {
                 case UserCode.success.rawValue :
                     self?.userInfo = apiResponse.result
-                    print(self?.userInfo)
-                    print(apiResponse.result)
                     completion(.success)
                 case UserCode.expired.rawValue: // access token이 만료된 경우
                     if !retry { // refresh token을 통해 재발급 시도
