@@ -17,10 +17,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
         
-        guard let _ = KeychainService.get(key: K.Key.accessToken) else {
-            RootViewControllerService.toLoginViewController()
-            return
-        }
         
         AuthAPIService.isUserFinishedSignUp { code in
             switch code {
@@ -31,23 +27,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             case .notFinished:
                 RootViewControllerService.toSignUpViewController()
             case .expired:
-                // 엑세스 토큰 만료
-                // 리프레시 토큰으로 reissue
                 AuthAPIService.reissueRefreshToken { code in
                     switch code {
                     case .success:
+                        print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
+                        print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
                         RootViewControllerService.toBaseViewController()
                     case .expired:
-                        break
+                        RootViewControllerService.toLoginViewController()
                     case .error:
                         print("Reissue Error in SceneDelegate")
                     }
                 }
-            case .error:
-                RootViewControllerService.toLoginViewController()
+            default :
                 break
             }
         }
+
         
         return
     }

@@ -20,14 +20,16 @@ class CheckBoxButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addComponents()
-    }
-    
-    private func addComponents() {
         self.addSubview(checboxImage)
         
         checboxImage.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(3.5)
+        }
+    }
+    
+    func configure(padding: CGFloat) {
+        checboxImage.snp.updateConstraints { make in
+            make.edges.equalToSuperview().inset(padding + 3.5)
         }
     }
     
