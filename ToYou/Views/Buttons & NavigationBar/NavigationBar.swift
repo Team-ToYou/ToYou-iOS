@@ -38,8 +38,8 @@ final class CustomNavigationBar: UIView {
         super.init(frame: frame)
         
         self.addSubview(paperBackground)
-        self.addSubview(popUpViewButton)
         self.addSubview(titleLabel)
+        self.addSubview(popUpViewButton)
         self.addSubview(dividerLine)
         
         paperBackground.snp.makeConstraints { make in
@@ -53,14 +53,9 @@ final class CustomNavigationBar: UIView {
         
         popUpViewButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel.snp.centerY)
-            make.leading.equalToSuperview()
+            make.leading.equalToSuperview().offset(-10)
             make.height.equalTo(44)
             make.width.equalTo(80)
-        }
-        
-        popUpViewButton.imageView?.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(17)
-            make.trailing.equalToSuperview().offset(-55)
         }
         
         dividerLine.snp.makeConstraints { make in
