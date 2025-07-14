@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import SnapKit
 
 class NotificationCell: UITableViewCell {
     
     static let identifier = "NotificationCell"
     public var data: NotificationData?
+    private var titleTrailingConstraint: Constraint?
     
     private lazy var titleLabel = UILabel().then {
         $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
@@ -50,31 +52,48 @@ class NotificationCell: UITableViewCell {
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(17)
-            make.trailing.equalToSuperview().offset(-17)
+            if data.alarmType == .NEW_QUESTION {
+                setupViews()
+                make.trailing.equalToSuperview().offset(-44)
+            } else {
+                detailImage.removeFromSuperview()
+                make.trailing.equalToSuperview().offset(-17)
+            }
         }
         
         self.data = data
         
-        guard let userNmae = data.nickname, let content = data.content else {
+        guard let _ = data.nickname, let content = data.content else {
             titleLabel.text = "알림 내용을 불러오는 데에 실패했습니다."
             return
         }
         
         titleLabel.text = content
         // shortenUserNameInContent(userName: userNmae, content: content)
-        
-        if data.alarmType == .NEW_QUESTION {
-            self.contentView.addSubview(detailImage)
-            detailImage.snp.makeConstraints { make in
+    }
+    
+    private func setupViews() {
+        if titleLabel.superview == nil {
+            contentView.addSubview(titleLabel)
+            titleLabel.snp.makeConstraints { make in
                 make.centerY.equalToSuperview()
-                make.trailing.equalToSuperview().inset(24)
-                make.height.equalTo(50)
-                make.width.equalTo(25)
-            }
-            titleLabel.snp.updateConstraints { make in
-                make.trailing.equalToSuperview().offset( -44 )
+                make.leading.equalToSuperview().offset(17)
+                titleTrailingConstraint = make.trailing.equalToSuperview().offset(-17).constraint
             }
         }
+        backgroundColor = .clear
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        // 서브뷰와 제약조건 초기화
+        detailImage.removeFromSuperview()
+        titleLabel.text = nil
+        
+        // 제약조건 초기화
+        titleLabel.snp.removeConstraints()
+        detailImage.snp.removeConstraints()
     }
     
     func shortenUserNameInContent( userName: String, content: String) -> String {
