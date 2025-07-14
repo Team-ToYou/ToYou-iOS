@@ -16,6 +16,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
+        
+        if nil == KeychainService.get(key: K.Key.accessToken) {
+            RootViewControllerService.toLoginViewController()
+        }
       
         AuthAPIService.isUserFinishedSignUp { code in
             switch code {

@@ -31,12 +31,6 @@ class NotificationCell: UITableViewCell {
         
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
-        self.contentView.addSubview(titleLabel)
-        self.backgroundColor = .clear
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(17)
-        }
     }
         
     override func layoutSubviews() {
@@ -51,8 +45,23 @@ class NotificationCell: UITableViewCell {
     }
     
     func configure(_ data: NotificationData) {
+        self.contentView.addSubview(titleLabel)
+        self.backgroundColor = .clear
+        titleLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().offset(17)
+            make.trailing.equalToSuperview().offset(-44)
+        }
+        
         self.data = data
-        titleLabel.text = data.content
+        
+        guard let userNmae = data.nickname, let content = data.content else {
+            titleLabel.text = "알림 내용을 불러오는 데에 실패했습니다."
+            return
+        }
+        
+        titleLabel.text = content
+        // shortenUserNameInContent(userName: userNmae, content: content)
         
         if data.alarmType == .NEW_QUESTION {
             self.contentView.addSubview(detailImage)
@@ -62,6 +71,19 @@ class NotificationCell: UITableViewCell {
                 make.height.equalTo(50)
                 make.width.equalTo(25)
             }
+//            titleLabel.snp.updateConstraints { make in
+//                make.trailing.equalToSuperview().offset( -25 - 24 - 5 )
+//            }
+        }
+    }
+    
+    func shortenUserNameInContent( userName: String, content: String) -> String {
+        let userNameLength = userName.count
+        if userNameLength > 3 {
+            let shortenUserName = String(Array(userName)[0...2]) + "..."
+            return content.replacingOccurrences(of: userName, with: shortenUserName)
+        } else {
+            return content
         }
     }
     
