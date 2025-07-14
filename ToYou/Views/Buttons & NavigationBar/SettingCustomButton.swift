@@ -22,7 +22,11 @@ class SettingCustomButton: UIButton {
     }
     
     private lazy var versionLabel = UILabel().then {
-        $0.text = "1.0"
+        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            $0.text = appVersion
+        } else {
+            $0.text = "앱 버전 정보를 가져올 수 없습니다."
+        }
         $0.font = UIFont(name: K.Font.s_core_regular, size: 12)
         $0.textColor = .black04
     }
