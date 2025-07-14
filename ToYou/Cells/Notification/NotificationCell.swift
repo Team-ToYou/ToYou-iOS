@@ -50,7 +50,7 @@ class NotificationCell: UITableViewCell {
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(17)
-            make.trailing.equalToSuperview().offset(-44)
+            make.trailing.equalToSuperview().offset(-17)
         }
         
         self.data = data
@@ -71,9 +71,9 @@ class NotificationCell: UITableViewCell {
                 make.height.equalTo(50)
                 make.width.equalTo(25)
             }
-//            titleLabel.snp.updateConstraints { make in
-//                make.trailing.equalToSuperview().offset( -25 - 24 - 5 )
-//            }
+            titleLabel.snp.updateConstraints { make in
+                make.trailing.equalToSuperview().offset( -44 )
+            }
         }
     }
     
