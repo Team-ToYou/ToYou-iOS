@@ -23,32 +23,6 @@ final class FCMTokenViewModel {
     
     let defaults = UserDefaults.standard
     
-    private func checkNotificationPermission(completion: @escaping (NotificationPermissionStatus) -> Void) {
-        switch defaults.value(forKey: K.Key.isNotificationAllowed) as! Bool? {
-        case .none: // 사용자가 처음 앱을 사용한 경우 or 알림 여부를 결정하지 않은 경우
-            UNUserNotificationCenter.current().getNotificationSettings { settings in
-                switch settings.authorizationStatus {
-                case .denied : // 거절한 경우
-                    self.defaults.set(false, forKey: K.Key.isNotificationAllowed)
-                    completion(.denied)
-                case .notDetermined : // 결정하지 않은 경우
-                    self.defaults.set(nil, forKey: K.Key.isNotificationAllowed)
-                    completion(.notDetermined)
-                default : // 허락한 경우
-                    self.defaults.set(true, forKey: K.Key.isNotificationAllowed)
-                    completion(.allowed)
-                    return
-                }
-            }
-        case true: // 사용자가 알림을 허용한 경우
-            completion(.allowed)
-        case false: // 사용자가 알림을 거부한 경우
-            completion(.denied)
-        case .some(_):
-            print("\(K.Key.isNotificationAllowed)에서 Bool 형태가 아닌 자료형이 들어왔습니다.")
-        }
-    }
-    
     func fetchFCMTokenToServer() {
         self.checkNotificationPermission() { result in
             switch result {
@@ -140,7 +114,7 @@ final class FCMTokenViewModel {
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
-                    print("#getUserFCMToken get token from userId \(userId) 요청 성공")
+                    print("get token from userId \(userId) 요청 성공")
                     completion(.COMMON200, apiResponse.result?.token)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400, nil)
@@ -171,7 +145,7 @@ final class FCMTokenViewModel {
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
-                    let _ = KeychainService.delete(key: K.Key.fcmToken)
+                    print("fcm delete 요청 성공")
                     completion(.COMMON200)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400)
@@ -201,7 +175,7 @@ final class FCMTokenViewModel {
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
-                    let _ = KeychainService.delete(key: K.Key.fcmToken)
+                    print("send single fcm message 요청 성공")
                     completion(.COMMON200)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400)
