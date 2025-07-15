@@ -72,7 +72,7 @@ extension AppDelegate : MessagingDelegate {
         guard let token = fcmToken else { return }
         if KeychainService.add(key: K.Key.fcmToken, value: token) {
             print("fcm token saved in keychain")
-            fcmViewModel.uploadFCMTokenToServer { code in
+            fcmViewModel.patchFCMTokenToServer { code in
                 print("fcm token : upload server result \(code)")
             }
         }

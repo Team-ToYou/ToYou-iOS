@@ -6,20 +6,111 @@
 //
 
 import Alamofire
+import Foundation
+import NotificationCenter
 
 let fcmViewModel = FCMTokenViewModel.shared
+
+enum NotificationPermissionStatus {
+    case notDetermined
+    case allowed
+    case denied
+}
 
 final class FCMTokenViewModel {
     
     static let shared = FCMTokenViewModel()
     
-    func uploadFCMTokenToServer(completion: @escaping (FCMCode) -> Void) {
-        FCMTokenNetworkService.uploadFCMTokenToServer { response in
+    let defaults = UserDefaults.standard
+    
+    private func checkNotificationPermission(completion: @escaping (NotificationPermissionStatus) -> Void) {
+        switch defaults.value(forKey: K.Key.isNotificationAllowed) as! Bool? {
+        case .none: // 사용자가 처음 앱을 사용한 경우 or 알림 여부를 결정하지 않은 경우
+            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                switch settings.authorizationStatus {
+                case .denied : // 거절한 경우
+                    self.defaults.set(false, forKey: K.Key.isNotificationAllowed)
+                    completion(.denied)
+                case .notDetermined : // 결정하지 않은 경우
+                    self.defaults.set(nil, forKey: K.Key.isNotificationAllowed)
+                    completion(.notDetermined)
+                default : // 허락한 경우
+                    self.defaults.set(true, forKey: K.Key.isNotificationAllowed)
+                    completion(.allowed)
+                    return
+                }
+            }
+        case true: // 사용자가 알림을 허용한 경우
+            completion(.allowed)
+        case false: // 사용자가 알림을 거부한 경우
+            completion(.denied)
+        case .some(_):
+            print("\(K.Key.isNotificationAllowed)에서 Bool 형태가 아닌 자료형이 들어왔습니다.")
+        }
+    }
+    
+    func fetchFCMTokenToServer() {
+        self.checkNotificationPermission() { result in
+            switch result {
+            case .notDetermined:
+                // 설정 창으로 이동 묻기
+                break
+            case .allowed:
+                self.patchFCMTokenToServer() { code in
+                    switch code {
+                    case .COMMON200:
+                        break
+                    case .FCM401:
+                        print("post executed")
+                        self.postFCMTokenToServer(completion: { _ in })
+                    default :
+                        print("fcm patch \(code)")
+                    }
+                }
+            case .denied:
+                print("사용자가 알림을 거부한 상태입니다.")
+            }
+        }
+    }
+    
+    func postFCMTokenToServer(completion: @escaping (FCMCode) -> Void) {
+        FCMTokenNetworkService.postFCMTokenToServer { response in
+        switch response.result {
+        case .success(let apiResponse) :
+            let code = apiResponse.code
+            switch code {
+            case FCMCode.COMMON200.rawValue :
+                print("fcm post 요청 성공")
+                completion(.COMMON200)
+            case FCMCode.FCM400.rawValue :
+                completion(.FCM400)
+            case FCMCode.FCM401.rawValue :
+                completion(.FCM401)
+            case FCMCode.FCM402.rawValue :
+                completion(.FCM402)
+            case FCMCode.FCM403.rawValue :
+                completion(.FCM403)
+            default:
+                completion(.COMMON500)
+            }
+            if code != FCMCode.COMMON200.rawValue {
+                print("fcm post 요청 실패: \(apiResponse.code) - \(apiResponse.message)")
+            }
+        case .failure(let error):
+            print("fcm post API 에러: \(error.localizedDescription)")
+            completion(.COMMON500)
+        }
+        }
+    }
+    
+    func patchFCMTokenToServer(completion: @escaping (FCMCode) -> Void) {
+        FCMTokenNetworkService.patchFCMTokenToServer { response in
             switch response.result {
             case .success(let apiResponse) :
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
+                    print("fcm patch 요청 성공")
                     completion(.COMMON200)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400)
@@ -33,10 +124,10 @@ final class FCMTokenViewModel {
                     completion(.COMMON500)
                 }
                 if code != FCMCode.COMMON200.rawValue {
-                    print("fcm post 요청 실패: \(apiResponse.code) - \(apiResponse.message)")
+                    print("fcm patch 요청 실패: \(apiResponse.code) - \(apiResponse.message)")
                 }
             case .failure(let error):
-                print("fcm post API 에러: \(error.localizedDescription)")
+                print("fcm patch API 에러: \(error.localizedDescription)")
                 completion(.COMMON500)
             }
         }
@@ -157,7 +248,26 @@ final class FCMTokenViewModel {
 }
 
 enum FCMTokenNetworkService {
-    static func uploadFCMTokenToServer(completion: @escaping (DataResponse<ToYouResponseWithoutResult, AFError>) -> Void) {
+    static func postFCMTokenToServer(completion: @escaping (DataResponse<ToYouResponseWithoutResult, AFError>) -> Void) {
+        let tail = "/fcm/token"
+        let url = K.URLString.baseURL + tail
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else { return }
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)",
+            "Content-Type": "application/json"
+        ]
+        guard let fcmToken = KeychainService.get(key: K.Key.fcmToken) else { return }
+        let parameters: [String: Any] = ["token" : fcmToken]
+        AF.request(url,
+                   method: .post,
+                   parameters: parameters,
+                   encoding: JSONEncoding.default,
+                   headers: headers)
+        .responseDecodable(of: ToYouResponseWithoutResult.self, completionHandler: completion)
+    }
+    
+    static func patchFCMTokenToServer(completion: @escaping (DataResponse<ToYouResponseWithoutResult, AFError>) -> Void) {
         let tail = "/fcm/token"
         let url = K.URLString.baseURL + tail
         guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else { return }
