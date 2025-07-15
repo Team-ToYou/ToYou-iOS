@@ -156,7 +156,6 @@ final class FCMTokenViewModel {
     
 }
 
-
 enum FCMTokenNetworkService {
     static func uploadFCMTokenToServer(completion: @escaping (DataResponse<ToYouResponseWithoutResult, AFError>) -> Void) {
         let tail = "/fcm/token"

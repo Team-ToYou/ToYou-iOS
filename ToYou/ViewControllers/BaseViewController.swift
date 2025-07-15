@@ -32,7 +32,7 @@ class BaseViewController: UITabBarController {
         UsersAPIService.fetchUserInfo { _ in } // 사용자 정보를 불러오고 Subscriber에게 값의 변경을 알림
         UserViewModel.fetchUser{ _ in }
         
-        FCMTokenViewModel.shared.uploadFCMTokenToServer{ code in
+        fcmViewModel.uploadFCMTokenToServer{ code in
             switch code {
             case .COMMON200:
                 print("fcm upload succeed : \(KeychainService.get(key: K.Key.fcmToken) ?? "fcm not found in keychain")")
