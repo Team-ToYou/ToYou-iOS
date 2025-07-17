@@ -28,6 +28,7 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
                 self.setNotificationView.toggle.isOn = false
             }
         }
+        fcmViewModel.checkAndRequestNotificationPermission(vc: self)
     }
     
     private func setupButtonActions() {

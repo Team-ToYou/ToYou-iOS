@@ -84,7 +84,7 @@ final class FCMTokenViewModel {
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
-                    print("fcm patch 요청 성공")
+                    print("fcm patch 요청 성공, \(KeychainService.get(key: K.Key.fcmToken))")
                     completion(.COMMON200)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400)
