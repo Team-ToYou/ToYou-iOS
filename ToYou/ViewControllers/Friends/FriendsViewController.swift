@@ -151,7 +151,7 @@ extension FriendsViewController {
                 case .NOT_FRIEND: // 요청하기가 완료
                     self.searchFriendResult?.friendStatus = .REQUEST_SENT
                     self.friendsView.friendSearchResultView.afterRequestSucceeded()
-                    FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequest) { code in
+                    fcmViewModel.sendFCMMessage(to: userId, requestType: .FriendRequest) { code in
                         switch code {
                         case .COMMON200:
                             print("친구 요청 알림 보내기 완료")
@@ -170,7 +170,7 @@ extension FriendsViewController {
                         case .COMMON200:
                             self.friendsView.friendSearchResultView.afterAcceptRequest()
                             self.friendsView.friendsCollectionView.reloadData()
-                            FCMTokenApiService.sendFCMMessage(to: userId, requestType: .FriendRequestAccepted) { code in
+                            fcmViewModel.sendFCMMessage(to: userId, requestType: .FriendRequestAccepted) { code in
                                 switch code {
                                 case .COMMON200:
                                     break

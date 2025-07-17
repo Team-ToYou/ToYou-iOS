@@ -35,6 +35,7 @@ struct K {
         static let refreshToken = "refreshToken"
         static let tutorial = "Tutorial" // 튜토리얼을 했는지 안했는지 확인하기 위함
         static let fcmToken = "fcmToken" // FCM 토큰 키
+        static let isNotificationAllowed = "isNotificationAllowed" 
     }
     
 }
