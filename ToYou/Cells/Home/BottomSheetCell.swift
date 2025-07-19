@@ -16,9 +16,7 @@ class BottomSheetCell: UICollectionViewCell {
     private let diaryCard = MyDiaryCard(
         frame: .zero,
         emotion: .HAPPY
-    ).then {
-        $0.backgroundColor = .red
-    }
+    )
     
     let nicknameLabel = UILabel().then {
         $0.text = "닉네임"
@@ -62,6 +60,28 @@ class BottomSheetCell: UICollectionViewCell {
         nicknameLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(diaryCardContainer.snp.bottom).offset(4)
+        }
+    }
+    
+    func configure(with card: DiaryCard) {
+        let dateString = formatDate(card.cardContent.date)
+        let emotion = Emotion(rawValue: card.cardContent.emotion) ?? .NORMAL
+
+        nicknameLabel.text = card.cardContent.receiver
+        diaryCard.configurePreview(nickname: card.cardContent.receiver, date: dateString, emotion: emotion)
+    }
+
+    private func formatDate(_ input: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyyMMdd"
+
+        if let date = inputFormatter.date(from: input) {
+            return outputFormatter.string(from: date)
+        } else {
+            return input
         }
     }
 }

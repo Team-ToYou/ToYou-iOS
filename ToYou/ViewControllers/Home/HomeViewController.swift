@@ -20,6 +20,9 @@ class HomeViewController: UIViewController {
     
     var delegate: NotificationViewControllerDelegate?
     
+    // 바텀시트용
+    var cards: [DiaryCard] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = homeView
@@ -81,6 +84,17 @@ class HomeViewController: UIViewController {
                         self.homeView.mailBoxImage.setImage(.mailboxFull, for: .normal)
                     }
                     
+                case .failure(let error):
+                    print(error)
+                }
+            }
+        
+        AF.request("https://to-you.store/diarycards/yesterday", method: .get, encoding: JSONEncoding.default, headers: headers)
+            .responseDecodable(of: BottomSheetResponse.self) { response in
+                switch response.result {
+                case .success(let value):
+                    self.cards = value.result.cards
+                    self.homeView.bottomSheetView.collectionView.reloadData()
                 case .failure(let error):
                     print(error)
                 }
@@ -171,7 +185,7 @@ extension HomeViewController: NotificationViewControllerDelegate {
 
 extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return cards.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -179,7 +193,8 @@ extension HomeViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.nicknameLabel.text = "nickname"
+        let card = cards[indexPath.item]
+        cell.configure(with: card)
         return cell
     }
 }
