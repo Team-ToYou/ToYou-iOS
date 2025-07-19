@@ -27,10 +27,9 @@ class LogoutPopupVC: UIViewController {
     
     @objc
     private func logout() {
-        
-        FCMTokenApiService.delete { code in
+        fcmViewModel.deleteUserFCMToken { code in
             if code == .COMMON200 { // 삭제 성공
-                
+                print("user fcm token 삭제 성공")
             } else { // FCM 토큰 삭제 실패
                 return // 함수를 종료하고 실패했다는 메시지를 띄워야 한다
             }

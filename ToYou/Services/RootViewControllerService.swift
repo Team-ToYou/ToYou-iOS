@@ -9,20 +9,41 @@ import UIKit
 
 class RootViewControllerService {
     private static let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate
+    private static var isTransitioning = false
     
     static func toBaseViewController() {
-        sceneDelegate?.changeRootViewController(BaseViewController(), animated: false)
+        guard !isTransitioning else { return }
+        isTransitioning = true
+        DispatchQueue.main.async {
+            sceneDelegate?.changeRootViewController(BaseViewController(), animated: false)
+            isTransitioning = false
+        }
     }
     
     static func toLoginViewController() {
-        sceneDelegate?.changeRootViewController(LoginViewController(), animated: false)
+        guard !isTransitioning else { return }
+        isTransitioning = true
+        DispatchQueue.main.async {
+            sceneDelegate?.changeRootViewController(LoginViewController(), animated: false)
+            isTransitioning = false
+        }
     }
     
     static func toSignUpViewController() {
-        sceneDelegate?.changeRootViewController(PolicyAgreementViewController(), animated: false)
+        guard !isTransitioning else { return }
+        isTransitioning = true
+        DispatchQueue.main.async {
+            sceneDelegate?.changeRootViewController(PolicyAgreementViewController(), animated: false)
+            isTransitioning = false
+        }
     }
     
     static func toTutorialViewController() {
-        sceneDelegate?.changeRootViewController(TutorialViewController(), animated: false)
+        guard !isTransitioning else { return }
+        isTransitioning = true
+        DispatchQueue.main.async {
+            sceneDelegate?.changeRootViewController(TutorialViewController(), animated: false)
+            isTransitioning = false
+        }
     }
 }

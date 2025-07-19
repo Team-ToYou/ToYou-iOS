@@ -8,42 +8,56 @@
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
-      
-        AuthAPIService.isUserFinishedSignUp { code in
-            switch code {
-            case .finished:
-                print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-                print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
-                RootViewControllerService.toBaseViewController()
-            case .notFinished:
-                RootViewControllerService.toSignUpViewController()
-            case .expired:
-                AuthAPIService.reissueRefreshToken { code in
-                    switch code {
-                    case .success:
-                        print("access token : ", KeychainService.get(key: K.Key.accessToken)!)
-                        print("refresh token : ", KeychainService.get(key: K.Key.refreshToken)!)
-                        RootViewControllerService.toBaseViewController()
-                    case .expired:
-                        RootViewControllerService.toLoginViewController()
-                    case .error:
-                        print("Reissue Error in SceneDelegate")
-                    }
-                }
-            default :
-                break
-            }
+        
+        if nil == KeychainService.get(key: K.Key.accessToken) {
+            RootViewControllerService.toLoginViewController()
+        }
+        // 토큰 검증 후 적절한 화면으로 이동
+        validateAndNavigate()
+        return
+    }
+    
+    private func validateAndNavigate() {
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else {
+            RootViewControllerService.toLoginViewController()
+            return
         }
         
-        return
+        AuthAPIService.isUserFinishedSignUp { code in
+            DispatchQueue.main.async {
+                switch code {
+                case .finished:
+                    RootViewControllerService.toBaseViewController()
+                case .notFinished:
+                    RootViewControllerService.toSignUpViewController()
+                case .expired:
+                    self.handleTokenExpiration()
+                case .error:
+                    RootViewControllerService.toLoginViewController()
+                }
+            }
+        }
+    }
+
+    private func handleTokenExpiration() {
+        AuthAPIService.reissueRefreshToken { code in
+            DispatchQueue.main.async {
+                switch code {
+                case .success:
+                    self.validateAndNavigate() // 재귀적으로 다시 검증
+                case .expired, .error:
+                    RootViewControllerService.toLoginViewController()
+                }
+            }
+        }
     }
     
     func changeRootViewController(_ viewController: UIViewController, animated: Bool) {
