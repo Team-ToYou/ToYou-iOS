@@ -29,6 +29,7 @@ class BottomSheetCell: UICollectionViewCell {
         super.init(frame: frame)
         
         setView()
+        diaryCard.lockButton.isHidden = true // 잠금버튼 안 보이게
     }
     
     required init?(coder: NSCoder) {

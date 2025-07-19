@@ -34,6 +34,7 @@ class CalendarDetailViewController: UIViewController {
         
         if isFriend {
             calendarDetailView.deleteButton.isHidden = true
+            calendarDetailView.diaryCard.lockButton.isHidden = true
         }
     }
     
