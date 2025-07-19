@@ -12,6 +12,7 @@ class HomeViewController: UIViewController {
     var homeEmotionString = ""
     var cardId: Int?
     let homeView = HomeView()
+    var isBottomSheetExpanded = false // 바텀시트
     
     let notificationVC = NotificationViewController()
     let notificationViewModel = NotificationViewModel() // 생성과 동시에 알림을 가져온다.
@@ -28,6 +29,7 @@ class HomeViewController: UIViewController {
         notificationVC.configure(notificationViewModel, delegate: self)
         setAction()
         getAPI()
+        setDelegate()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -85,6 +87,11 @@ class HomeViewController: UIViewController {
             }
     }
     
+    private func setDelegate() {
+        homeView.bottomSheetView.collectionView.dataSource = self
+        homeView.bottomSheetView.collectionView.delegate = self
+    }
+    
     // MARK: - action
     private func setAction() {
         homeView.emotionImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(emotionSelect)))
@@ -92,6 +99,9 @@ class HomeViewController: UIViewController {
         homeView.alertButton.addTarget(self, action: #selector(alertSelect), for: .touchUpInside)
         homeView.emotionImage.isUserInteractionEnabled = true
         homeView.mailBoxImage.isUserInteractionEnabled = true
+        
+        // 바텀시트
+        homeView.bottomSheetView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(bottomSheetTap)))
     }
     
     @objc
@@ -129,8 +139,22 @@ class HomeViewController: UIViewController {
         self.navigationController?.pushViewController(notificationVC, animated: true)
     }
     
+    @objc
+    private func bottomSheetTap() {
+        isBottomSheetExpanded.toggle()
+        
+        let expandedOffset = homeView.safeAreaInsets.top + 75 // 올렸을 때
+        let collapsedOffset = UIScreen.main.bounds.height - (68+50) // 내렸을 때
+        
+        homeView.bottomSheetTopConstraint?.update(offset: isBottomSheetExpanded ? expandedOffset : collapsedOffset)
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut], animations: {
+            self.view.layoutIfNeeded()
+        })
+    }
 }
 
+// MARK: - extension
 extension HomeViewController: NotificationViewControllerDelegate {
     
     func friendRequestAccepted() {
@@ -143,4 +167,37 @@ extension HomeViewController: NotificationViewControllerDelegate {
         self.delegate = delegate
     }
         
+}
+
+extension HomeViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 9
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: BottomSheetCell.identifier, for: indexPath) as? BottomSheetCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.nicknameLabel.text = "nickname"
+        return cell
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    // 셀 사이즈
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 175.21, height: 324.5)
+    }
+
+    // 셀 간격
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 21
+    }
+}
+
+import SwiftUI
+
+#Preview {
+    HomeViewController()
 }

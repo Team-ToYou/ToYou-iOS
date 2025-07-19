@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 class HomeView: UIView {
     // MARK: - layout
@@ -49,6 +50,10 @@ class HomeView: UIView {
         $0.imageView?.contentMode = .scaleAspectFit
     }
     
+    // 바텀시트
+    public let bottomSheetView = BottomSheetView()
+    public var bottomSheetTopConstraint: Constraint?
+    
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -70,7 +75,8 @@ class HomeView: UIView {
             dateBackView, dateLabel,
             commentLabel,
             emotionImage,
-            mailBoxImage
+            mailBoxImage,
+            bottomSheetView
         ].forEach {
             addSubview($0)
         }
@@ -118,6 +124,12 @@ class HomeView: UIView {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(emotionImage.snp.bottom).offset(28.5)
             $0.bottom.equalTo(safeAreaLayoutGuide).offset(20)
+        }
+
+        bottomSheetView.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview()
+            $0.height.equalTo(715)
+            self.bottomSheetTopConstraint = $0.top.equalToSuperview().offset(UIScreen.main.bounds.height - (68+50)).constraint
         }
     }
     
