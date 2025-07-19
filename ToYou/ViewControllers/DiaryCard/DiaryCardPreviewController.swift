@@ -115,6 +115,25 @@ class DiaryCardPreviewController: UIViewController {
         isLocked.toggle()
         let image = isLocked ? UIImage.lockIcon : UIImage.unlockIcon
         diaryCardPreview.previewCard.lockButton.setImage(image, for: .normal)
+        
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = ["Authorization": "Bearer " + accessToken]
+        let url = K.URLString.baseURL + "/diarycards/\(cardId!)/exposure"
+        
+        AF.request(url, method: .patch, headers: headers)
+            .validate()
+            .responseDecodable(of: ExposureResponse.self) { response in
+                switch response.result {
+                case .success(let result):
+                    if result.isSuccess {
+                        print("공개 상태 변경 성공: \(result.result?.exposure == true ? "공개" : "비공개")")
+                    } else {
+                        print("공개 상태 변경 실패: \(result.message)")
+                    }
+                case .failure(let error):
+                    print("공개 상태 변경 네트워크 오류: \(error.localizedDescription)")
+                }
+            }
     }
     
     @objc private func saveButtonTapped() {
@@ -160,7 +179,7 @@ class DiaryCardPreviewController: UIViewController {
             .responseDecodable(of: CreateDiaryCardResponse.self) { response in
                 switch response.result {
                 case .success(let result):
-                    print("일기카드 \(method == .post ? "생성" : "수정") 성공: \(result.result?.cardId)")
+                    print("일기카드 \(method == .post ? "생성" : "수정") 성공: \(String(describing: result.result?.cardId))")
                     DispatchQueue.main.async {
                         self.cardId = result.result?.cardId
                         self.diaryCardPreview.isSaved = true
@@ -195,4 +214,10 @@ extension DiaryCardPreviewController: UITableViewDataSource {
         
         return cell
     }
+}
+
+import SwiftUI
+
+#Preview {
+    DiaryCardPreviewController()
 }
