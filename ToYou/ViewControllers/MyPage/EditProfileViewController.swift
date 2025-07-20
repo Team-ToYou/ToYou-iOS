@@ -18,6 +18,7 @@ class EditProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view = editProfileView
+        self.navigationController?.navigationBar.isHidden = true
         
         self.editProfileView.nicknameTextField.delegate = self
         self.editProfileView.scrollView.delegate = self
@@ -70,7 +71,7 @@ extension EditProfileViewController {
     
     @objc
     private func popStack() {
-        dismiss(animated: false, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc
@@ -78,7 +79,7 @@ extension EditProfileViewController {
         UserViewModel.userInfo!.nickname = UserViewModel.newNickName
         UserViewModel.updateUserInfo()
         UserViewModel.defaultMode()
-        dismiss(animated: false, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

@@ -28,7 +28,7 @@ class HomeViewController: UIViewController {
         self.view = homeView
         navigationController?.navigationBar.isHidden = true
         
-        // 알림 뷰컨 설정
+        // 알림 VC 설정
         notificationVC.configure(notificationViewModel, delegate: self)
         setAction()
         getAPI()
