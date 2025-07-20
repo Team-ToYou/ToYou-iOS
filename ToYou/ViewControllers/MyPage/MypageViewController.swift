@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 import Combine
 
-class MyPageViewController: UIViewController {
+class MyPageViewController: UIViewController, UIScrollViewDelegate {
     
     var myPageInfo: MyPageResult?
     let myPageView = MyPageView()
@@ -33,7 +33,6 @@ class MyPageViewController: UIViewController {
         UserViewModel.$userInfo
             .receive(on: DispatchQueue.main)
             .sink { [weak self] userInfo in
-                print(userInfo)
                 self?.myPageView.configure(myPageInfo: userInfo!)
             }
             .store(in: &cancellables)
@@ -79,15 +78,14 @@ extension MyPageViewController {
         editProfileViewController.refreshMyPage = { [weak self] data in
             self?.myPageView.nicknameLabel.text = data
         }
-        editProfileViewController.modalPresentationStyle = .overFullScreen
-        present(editProfileViewController, animated: false)
+        self.navigationController?.pushViewController(editProfileViewController, animated: true)
     }
     
     @objc
     private func goToNotification() {
         let setNotificationViewController = SetNotificationViewController()
-        setNotificationViewController.modalPresentationStyle = .overFullScreen
-        present(setNotificationViewController, animated: false)
+        setNotificationViewController.hidesBottomBarWhenPushed = true
+        present(setNotificationViewController, animated: true)
     }
     
     @objc
@@ -110,7 +108,7 @@ extension MyPageViewController {
         let revokeVC = RevokePopupVC()
         revokeVC.modalPresentationStyle = .overFullScreen
         revokeVC.modalTransitionStyle = .crossDissolve
-        present(revokeVC, animated: false, completion: nil)
+        present(revokeVC, animated: true)
     }
     
     @objc
@@ -118,12 +116,8 @@ extension MyPageViewController {
         let logoutVC = LogoutPopupVC()
         logoutVC.modalPresentationStyle = .overFullScreen
         logoutVC.modalTransitionStyle = .crossDissolve
-        present(logoutVC, animated: false, completion: nil)
+        present(logoutVC, animated: true)
     }
-    
-}
-
-extension MyPageViewController: UIScrollViewDelegate {
     
 }
 
