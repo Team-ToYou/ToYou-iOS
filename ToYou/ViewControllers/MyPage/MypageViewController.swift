@@ -33,7 +33,6 @@ class MyPageViewController: UIViewController, UIScrollViewDelegate {
         UserViewModel.$userInfo
             .receive(on: DispatchQueue.main)
             .sink { [weak self] userInfo in
-                print(userInfo)
                 self?.myPageView.configure(myPageInfo: userInfo!)
             }
             .store(in: &cancellables)
