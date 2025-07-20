@@ -115,7 +115,9 @@ class HomeViewController: UIViewController {
         homeView.mailBoxImage.isUserInteractionEnabled = true
         
         // 바텀시트
-        homeView.bottomSheetView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(bottomSheetTap)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(bottomSheetTap))
+        tapGesture.cancelsTouchesInView = false
+        homeView.bottomSheetView.backgroundView.addGestureRecognizer(tapGesture)
     }
     
     @objc
@@ -202,12 +204,24 @@ extension HomeViewController: UICollectionViewDataSource {
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     // 셀 사이즈
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 175.21, height: 324.5)
+        return CGSize(width: 164.77, height: 290)
     }
 
     // 셀 간격
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 21
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedCard = cards[indexPath.item]
+        
+        let detailVC = CalendarDetailViewController()
+        detailVC.cardId = selectedCard.cardId
+        detailVC.emotion = Emotion(rawValue: selectedCard.cardContent.emotion) ?? .NORMAL
+        detailVC.isFriend = true // 친구 모드
+        
+        detailVC.hidesBottomBarWhenPushed = true
+        self.navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 

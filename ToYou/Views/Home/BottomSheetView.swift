@@ -8,6 +8,12 @@
 import UIKit
 
 class BottomSheetView: UIView {
+    let backgroundView = UIView().then {
+        $0.backgroundColor = .white
+        $0.layer.cornerRadius = 21.8
+        $0.isUserInteractionEnabled = true
+    }
+    
     private let sheetBar = UIView().then {
         $0.backgroundColor = .black02
         $0.layer.cornerRadius = 2
@@ -27,6 +33,7 @@ class BottomSheetView: UIView {
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.minimumLineSpacing = 21
         $0.scrollDirection = .vertical
+        $0.itemSize = CGSize(width: 164.77, height: 290)
     }).then {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
@@ -37,8 +44,6 @@ class BottomSheetView: UIView {
     // MARK: - init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
-        self.layer.cornerRadius = 21.8
         setView()
     }
     
@@ -49,10 +54,15 @@ class BottomSheetView: UIView {
     // MARK: - function
     private func setView() {        
         [
+            backgroundView,
             sheetBar, mailImage, titleLabel,
             collectionView,
         ].forEach {
             addSubview($0)
+        }
+        
+        backgroundView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
         
         sheetBar.snp.makeConstraints {
