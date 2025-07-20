@@ -30,7 +30,6 @@ class NotificationCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
     }
@@ -39,7 +38,7 @@ class NotificationCell: UITableViewCell {
         super.layoutSubviews()
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5.5, left: 0, bottom: 5.5, right: 0))
         contentView.layer.cornerRadius = 10
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .yellow01
     }
     
     required init?(coder: NSCoder) {
@@ -49,16 +48,10 @@ class NotificationCell: UITableViewCell {
     func configure(_ data: NotificationData) {
         self.contentView.addSubview(titleLabel)
         self.backgroundColor = .clear
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(17)
-            if data.alarmType == .NEW_QUESTION {
-                setupViews()
-                make.trailing.equalToSuperview().offset(-44)
-            } else {
-                detailImage.removeFromSuperview()
-                make.trailing.equalToSuperview().offset(-17)
-            }
+        if data.alarmType == .NEW_QUESTION {
+            setNewQuestionConstraints()
+        } else {
+            setFriendAcceptConstraints()
         }
         
         self.data = data
@@ -70,6 +63,33 @@ class NotificationCell: UITableViewCell {
         
         titleLabel.text = content
         // shortenUserNameInContent(userName: userNmae, content: content)
+    }
+    
+    func setNewQuestionConstraints() {
+        self.contentView.addSubview(titleLabel)
+        setupViews()
+        titleLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().offset(17)
+            make.trailing.equalToSuperview().offset(-44)
+        }
+        
+        self.contentView.addSubview(detailImage)
+        detailImage.snp.makeConstraints { make in
+            make.centerY.equalTo(titleLabel)
+            make.leading.equalTo(titleLabel.snp.trailing).offset(5)
+            make.height.width.equalTo(25)
+        }
+    }
+    
+    func setFriendAcceptConstraints() {
+        self.contentView.addSubview(titleLabel)
+        detailImage.removeFromSuperview()
+        titleLabel.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.leading.equalToSuperview().offset(17)
+            make.trailing.equalToSuperview().offset(-17)
+        }
     }
     
     private func setupViews() {
