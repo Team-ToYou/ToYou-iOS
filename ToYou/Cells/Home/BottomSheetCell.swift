@@ -16,7 +16,9 @@ class BottomSheetCell: UICollectionViewCell {
     private let diaryCard = MyDiaryCard(
         frame: .zero,
         emotion: .HAPPY
-    )
+    ).then {
+        $0.isUserInteractionEnabled = false
+    }
     
     let nicknameLabel = UILabel().then {
         $0.text = "닉네임"
