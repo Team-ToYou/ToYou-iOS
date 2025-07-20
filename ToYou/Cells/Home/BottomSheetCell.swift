@@ -39,7 +39,7 @@ class BottomSheetCell: UICollectionViewCell {
     // MARK: - function
     private func setView() {
         // 카드 뷰 축소 (0.5배)
-        diaryCard.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        diaryCard.transform = CGAffineTransform(scaleX: 0.47, y: 0.47)
         
         contentView.addSubview(diaryCardContainer)
         diaryCardContainer.addSubview(diaryCard)
@@ -54,8 +54,8 @@ class BottomSheetCell: UICollectionViewCell {
         diaryCardContainer.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalToSuperview()
-            $0.width.equalTo(175.21)
-            $0.height.equalTo(302.5)
+            $0.width.equalTo(164.77)
+            $0.height.equalTo(284.47)
         }
         
         nicknameLabel.snp.makeConstraints {
@@ -69,7 +69,17 @@ class BottomSheetCell: UICollectionViewCell {
         let emotion = Emotion(rawValue: card.cardContent.emotion) ?? .NORMAL
 
         nicknameLabel.text = card.cardContent.receiver
-        diaryCard.configurePreview(nickname: card.cardContent.receiver, date: dateString, emotion: emotion)
+
+        // 질문과 답변을 튜플로 구성
+        let qaPairs = card.cardContent.questionList.map { question in
+            (
+                question: question.content,
+                answers: question.answerOption.isEmpty ? [question.answer] : question.answerOption,
+                selectedIndex: question.answerOption.firstIndex(of: question.answer)
+            )
+        }
+
+        diaryCard.configurePreview(nickname: card.cardContent.receiver, date: dateString, emotion: emotion, qaPairs: qaPairs)
     }
 
     private func formatDate(_ input: String) -> String {

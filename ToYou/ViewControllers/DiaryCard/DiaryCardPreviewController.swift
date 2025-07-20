@@ -36,8 +36,21 @@ class DiaryCardPreviewController: UIViewController {
             dateFormatter.dateFormat = "yyyyMMdd"
             let dateString = dateFormatter.string(from: Date())
             
-            diaryCardPreview.previewCard.configurePreview(nickname: name, date: dateString, emotion: emotion)
-            diaryCardPreview.previewCard.answerTableView.reloadData()
+            // questionsAndAnswers -> qaPairs
+            let qaPairs = questionsAndAnswers.map {
+                (
+                    question: $0.question,
+                    answers: $0.answers,
+                    selectedIndex: $0.selectedIndex
+                )
+            }
+
+            diaryCardPreview.previewCard.configurePreview(
+                nickname: name,
+                date: dateString,
+                emotion: emotion,
+                qaPairs: qaPairs
+            )
             return
         }
         
@@ -73,26 +86,52 @@ class DiaryCardPreviewController: UIViewController {
     }
 
     private func updateViewWithDetail(_ detail: DiaryCardDetailResult) {
-        diaryCardPreview.previewCard.configure(detail: detail)
-        
         isLocked = !detail.exposure
         let icon = isLocked ? UIImage.lockIcon : UIImage.unlockIcon
         diaryCardPreview.previewCard.lockButton.setImage(icon, for: .normal)
-        
-        questionsAndAnswers = detail.questionList.map { question in
-            let selectedIndex = question.questionType == "OPTIONAL"
-                ? question.answerOption.firstIndex(of: question.answer)
-                : nil
-            
-            return DiaryCardAnswerModel(
+
+        let qaPairs = detail.questionList.map { question in
+            (
+                question: question.content,
+                answers: question.questionType == "OPTIONAL" ? question.answerOption : [question.answer],
+                selectedIndex: question.questionType == "OPTIONAL" ? question.answerOption.firstIndex(of: question.answer) : nil
+            )
+        }
+
+        // configurePreview 호출
+        let nickname = detail.receiver
+        let dateString = formatDate(detail.date)
+        diaryCardPreview.previewCard.configurePreview(
+            nickname: nickname,
+            date: dateString,
+            emotion: emotion,
+            qaPairs: qaPairs
+        )
+
+        // 서버 저장용 questionsAndAnswers에 데이터 넣기
+        self.questionsAndAnswers = detail.questionList.map { question in
+            DiaryCardAnswerModel(
                 questionId: question.questionId,
                 question: question.content,
                 answers: question.questionType == "OPTIONAL" ? question.answerOption : [question.answer],
-                selectedIndex: selectedIndex
+                selectedIndex: question.questionType == "OPTIONAL" ? question.answerOption.firstIndex(of: question.answer) : nil
             )
         }
-        
-        diaryCardPreview.previewCard.answerTableView.reloadData()
+    }
+
+    
+    private func formatDate(_ input: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyyMMdd"
+
+        if let date = inputFormatter.date(from: input) {
+            return outputFormatter.string(from: date)
+        } else {
+            return input
+        }
     }
 
     

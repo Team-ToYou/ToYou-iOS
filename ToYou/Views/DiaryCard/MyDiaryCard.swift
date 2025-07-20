@@ -9,6 +9,7 @@ import UIKit
 
 class MyDiaryCard: UIView {
     private let emotion: Emotion
+    private var questionAndAnswers: [(question: String, answers: [String], selectedIndex: Int?)] = []
 
     // MARK: - init
     init(frame: CGRect, emotion: Emotion) {
@@ -72,11 +73,21 @@ class MyDiaryCard: UIView {
         }
     }
     
-    func configurePreview(nickname: String, date: String, emotion: Emotion) {
+    func configurePreview(
+        nickname: String,
+        date: String,
+        emotion: Emotion,
+        qaPairs: [(question: String, answers: [String], selectedIndex: Int?)]
+    ) {
         toLabel.text = "To.\(nickname)"
         dateLabel.text = date
         emotionStamp.image = emotion.stampImage()
         backView.backgroundColor = emotion.mainColor()
+        
+        // 데이터 업데이트
+        self.questionAndAnswers = qaPairs
+        answerTableView.dataSource = self
+        answerTableView.reloadData()
     }
     
     private func setView() {
@@ -122,4 +133,27 @@ class MyDiaryCard: UIView {
         }
     }
 
+}
+
+// MARK: - extension
+
+extension MyDiaryCard: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return questionAndAnswers.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DiaryCardAnswerCell.identifier, for: indexPath) as? DiaryCardAnswerCell else {
+            return UITableViewCell()
+        }
+
+        let qa = questionAndAnswers[indexPath.row]
+        cell.configure(
+            question: qa.question,
+            answers: qa.answers,
+            selectedIndex: qa.selectedIndex,
+            emotion: self.emotion
+        )
+        return cell
+    }
 }
