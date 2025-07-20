@@ -27,6 +27,7 @@ class BottomSheetView: UIView {
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.minimumLineSpacing = 21
         $0.scrollDirection = .vertical
+        $0.itemSize = CGSize(width: 164.77, height: 290)
     }).then {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
