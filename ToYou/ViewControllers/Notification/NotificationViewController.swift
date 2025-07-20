@@ -171,7 +171,20 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
                 // 현재 NotificationViewController pop
                 break
             case .NEW_QUESTION:
-                // 미주야 너 파트야
+                guard let homeVC = self.navigationController?.viewControllers.first(where: { $0 is HomeViewController }) as? HomeViewController else { return }
+
+                if homeVC.homeEmotionString.isEmpty {
+                    // 감정 선택 X -> 감정 선택
+                    let vc = EmotionViewController()
+                    vc.hidesBottomBarWhenPushed = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                } else {
+                    // 감정 선택 O -> 우체통
+                    let vc = DiaryCardSelectViewController()
+                    vc.emotion = Emotion(rawValue: homeVC.homeEmotionString) ?? .NORMAL
+                    vc.hidesBottomBarWhenPushed = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
                 break
             }
         }
