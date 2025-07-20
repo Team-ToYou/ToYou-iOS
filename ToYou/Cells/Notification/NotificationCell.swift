@@ -38,7 +38,7 @@ class NotificationCell: UITableViewCell {
         super.layoutSubviews()
         contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 5.5, left: 0, bottom: 5.5, right: 0))
         contentView.layer.cornerRadius = 10
-        contentView.backgroundColor = .yellow01
+        contentView.backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {
