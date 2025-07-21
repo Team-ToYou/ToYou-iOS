@@ -23,12 +23,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				"ipa/ToYou 2025-05-05 23-29-02/DistributionSummary.plist",
-				"ipa/ToYou 2025-05-05 23-29-02/ExportOptions.plist",
-				"ipa/ToYou 2025-05-05 23-29-02/Packaging.log",
-				"ipa/ToYou 2025-05-14 19-08-03.plist/DistributionSummary.plist",
-				"ipa/ToYou 2025-05-14 19-08-03.plist/ExportOptions.plist",
-				"ipa/ToYou 2025-05-14 19-08-03.plist/Packaging.log",
 			);
 			target = 63236B952D4E17530050C952 /* ToYou */;
 		};
@@ -239,7 +233,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = toyou.ToYou;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ToYouProvisioning;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = ToYou25/06/01;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
