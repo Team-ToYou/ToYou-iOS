@@ -16,6 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         window?.makeKeyAndVisible()
+        window?.overrideUserInterfaceStyle = .light
         
         if nil == KeychainService.get(key: K.Key.accessToken) {
             RootViewControllerService.toLoginViewController()
