@@ -285,10 +285,15 @@ extension CalendarViewController: UICollectionViewDelegate, UICollectionViewDele
               let indexPath = calendarView.customCalendar.indexPath(for: visibleCell) else { return }
 
         currentIndex = indexPath.item
-
         let (year, month) = months[currentIndex]
-        setMyCalendarAPI(year: year, month: month)
-        
+
+        // 친구 모드/내 기록 구분
+        if isFriendRecord {
+            setFriendCalendarAPI(year: year, month: month)
+        } else {
+            setMyCalendarAPI(year: year, month: month)
+        }
+
         // 첫 번째 혹은 마지막에 도달하면 추가
         if indexPath.item == 0 {
             prependPreviousMonth()
