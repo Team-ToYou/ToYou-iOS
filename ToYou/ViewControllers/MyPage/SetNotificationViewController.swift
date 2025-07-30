@@ -38,7 +38,7 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
     
     @objc
     private func popStack() {
-        dismiss(animated: false, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc

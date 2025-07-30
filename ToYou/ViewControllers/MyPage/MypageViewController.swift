@@ -85,7 +85,7 @@ extension MyPageViewController {
     private func goToNotification() {
         let setNotificationViewController = SetNotificationViewController()
         setNotificationViewController.hidesBottomBarWhenPushed = true
-        present(setNotificationViewController, animated: true)
+        self.navigationController?.pushViewController(setNotificationViewController, animated: true)
     }
     
     @objc
