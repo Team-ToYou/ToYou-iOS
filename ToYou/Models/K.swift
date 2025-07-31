@@ -22,7 +22,7 @@ struct K {
     }
     
     struct URLString {
-        static let baseURL = "https://to-you.store"
+        static let baseURL = "https://to-you.shop"
         
         // 약관, 피드백, 질문 링크
         static let privacyPolicyLink = "https://sumptuous-metacarpal-d3a.notion.site/1437c09ca64e80fb88f6d8ab881ffee3?pvs=74"
