@@ -71,7 +71,7 @@ class DiaryCardSelectViewController: UIViewController {
     }
 
     private func setAPI() {
-        let url = "https://to-you.store/questions"
+        let url = "\(K.URLString.baseURL)/questions"
         
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         

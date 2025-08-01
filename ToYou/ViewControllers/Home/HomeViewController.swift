@@ -53,13 +53,14 @@ class HomeViewController: UIViewController {
     private func getAPI() {
         print("HomeAPI")
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-        print(accessToken)
+        let url = "\(K.URLString.baseURL)/users/home"
+        let yesterdayUrl = "\(K.URLString.baseURL)/diarycards/yesterday"
         
         let headers: HTTPHeaders = [
             "Authorization": "Bearer " + accessToken
         ]
         
-        AF.request("https://to-you.store/users/home", method: .get, encoding: JSONEncoding.default, headers: headers)
+        AF.request(url, method: .get, encoding: JSONEncoding.default, headers: headers)
             .responseDecodable(of: HomeResponse.self) { response in
                 switch response.result {
                 case .success(let value):
@@ -89,7 +90,7 @@ class HomeViewController: UIViewController {
                 }
             }
         
-        AF.request("https://to-you.store/diarycards/yesterday", method: .get, encoding: JSONEncoding.default, headers: headers)
+        AF.request(yesterdayUrl, method: .get, encoding: JSONEncoding.default, headers: headers)
             .responseDecodable(of: BottomSheetResponse.self) { response in
                 switch response.result {
                 case .success(let value):

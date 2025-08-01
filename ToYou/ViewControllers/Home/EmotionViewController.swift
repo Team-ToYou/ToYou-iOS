@@ -69,14 +69,15 @@ extension EmotionViewController: UITableViewDataSource, UITableViewDelegate {
         let item = EmotionStamp.dummy()[indexPath.row]
         
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
-
+        let url = "\(K.URLString.baseURL)/users/emotions"
+        
         let headers: HTTPHeaders = [
             "Authorization": "Bearer " + accessToken
         ]
         
         let param = ["emotion": item.emotion]
 
-        AF.request("https://to-you.store/users/emotions",
+        AF.request(url,
                    method: .post,
                    parameters: param,
                    encoding: JSONEncoding.default,
