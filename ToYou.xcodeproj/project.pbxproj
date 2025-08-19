@@ -176,6 +176,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2QJX795Q3R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToYou/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "투유";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -188,7 +189,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.10;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = toyou.ToYou;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -217,6 +218,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 2QJX795Q3R;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ToYou/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "투유";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -229,7 +231,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.10;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = toyou.ToYou;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

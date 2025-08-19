@@ -24,8 +24,9 @@ class MyPageViewController: UIViewController, UIScrollViewDelegate {
         super.viewDidLoad()
         self.view = myPageView
         self.myPageView.scrollView.delegate = self
-        addButtonActions()
+        self.navigationController?.navigationBar.isHidden = true
         
+        addButtonActions()        
         sendFeedbackWebVC.modalPresentationStyle = .popover
         sendQueryWebVC.modalPresentationStyle = .popover
         policyLinkWebVC.modalPresentationStyle = .popover

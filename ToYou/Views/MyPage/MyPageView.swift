@@ -11,15 +11,7 @@ import Then
 
 class MyPageView: UIView {
     
-    private lazy var backgroundImage = UIImageView().then {
-        $0.image = .paperTexture
-    }
-    
-    private lazy var mainLabel = UILabel().then {
-        $0.text = "마이페이지"
-        $0.font = UIFont(name: K.Font.s_core_regular, size: 16)
-        $0.textColor = .black04
-    }
+    public lazy var navigationBar = CustomNavigationBar()
     
     private lazy var profileFrame = UIView()
     
@@ -112,11 +104,62 @@ extension MyPageView {
         
         scrollView.contentSize = CGSize(width: screenWidth , height: 550)
         
-        addBasicComponents()
+        addNavigationBar()
         addProfileComponents()
         addScrollView()
         addButtonStack()
         addAccountRelatedComponents()
+    }
+        
+    private func addNavigationBar() {
+        navigationBar.configure(with: "마이페이지")
+        navigationBar.popUpViewButton.isHidden = true
+        navigationBar.dividerLine.isHidden = true
+        
+        self.addSubview(navigationBar)
+        navigationBar.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    private func addProfileComponents() {
+        self.addSubview(profileFrame)
+        profileFrame.addSubview(profileImage)
+        profileFrame.addSubview(nicknameLabel)
+        profileFrame.addSubview(friendsLabel)
+        profileFrame.addSubview(editProfileDetailButton)
+        
+        profileFrame.snp.makeConstraints { make in
+            make.width.equalToSuperview().inset(37)
+            make.leading.equalToSuperview().offset(37)
+            make.height.equalTo(52)
+            make.top.equalTo(navigationBar.dividerLine.snp.bottom).offset(30)
+        }
+        
+        profileImage.snp.makeConstraints { make in
+            make.top.bottom.leading.equalToSuperview()
+            make.width.height.equalTo(52)
+        }
+        
+        nicknameLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalTo(profileImage.snp.trailing).offset(10)
+        }
+        
+        friendsLabel.snp.makeConstraints { make in
+            make.top.equalTo(nicknameLabel.snp.bottom)
+            make.leading.equalTo(profileImage.snp.trailing).offset(10)
+        }
+        
+        editProfileDetailButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(6)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(54)
+        }
+        
+        editProfileDetailButton.imageView?.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(10)
+        }
     }
     
     private func addScrollView() {
@@ -127,6 +170,7 @@ extension MyPageView {
             make.top.equalTo(profileFrame.snp.bottom).offset(21)
         }
     }
+
     
     private func addButtonStack() {
         scrollView.addSubview(mainStack)
@@ -177,60 +221,7 @@ extension MyPageView {
         
     }
     
-    private func addBasicComponents() {
-        self.addSubview(backgroundImage)
-        self.addSubview(mainLabel)
-        
-        backgroundImage.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
-        mainLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide.snp.top).offset(10)
-        }
-    }
     
-    private func addProfileComponents() {
-        self.addSubview(profileFrame)
-        profileFrame.addSubview(profileImage)
-        profileFrame.addSubview(nicknameLabel)
-        profileFrame.addSubview(friendsLabel)
-        profileFrame.addSubview(editProfileDetailButton)
-        
-        profileFrame.snp.makeConstraints { make in
-            make.width.equalToSuperview().inset(37)
-            make.leading.equalToSuperview().offset(37)
-            make.height.equalTo(52)
-            make.top.equalTo(mainLabel.snp.bottom).offset(30)
-        }
-        
-        profileImage.snp.makeConstraints { make in
-            make.top.bottom.leading.equalToSuperview()
-            make.width.height.equalTo(52)
-        }
-        
-        nicknameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalTo(profileImage.snp.trailing).offset(10)
-        }
-        
-        friendsLabel.snp.makeConstraints { make in
-            make.top.equalTo(nicknameLabel.snp.bottom)
-            make.leading.equalTo(profileImage.snp.trailing).offset(10)
-        }
-        
-        editProfileDetailButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(6)
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(54)
-        }
-        
-        editProfileDetailButton.imageView?.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(10)
-        }
-        
-    }
 }
 
 import SwiftUI
