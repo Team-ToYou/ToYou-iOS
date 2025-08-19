@@ -217,7 +217,7 @@ extension EditProfileView {
         
         scrollView.snp.makeConstraints { make in
             make.bottom.equalToSuperview()
-            make.leading.trailing.equalToSuperview() // 추가
+            make.leading.trailing.equalToSuperview()
             make.width.equalTo(self.safeAreaLayoutGuide.snp.width)
             make.top.equalTo(navigationBar.dividerLine.snp.bottom)
         }
