@@ -30,6 +30,7 @@ class HomeViewController: UIViewController {
         
         // 알림 VC 설정
         notificationVC.configure(notificationViewModel, delegate: self)
+        setDate(date: Date())
         setAction()
         getAPI()
         setDelegate()
@@ -48,6 +49,12 @@ class HomeViewController: UIViewController {
         homeView.dateBackView.backgroundColor = emotion.pointColor()
         homeView.emotionImage.image = emotion.emotionBubble()
         homeView.backgroundColor = emotion.pointColor()
+    }
+    
+    private func setDate(date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd"
+        homeView.dateLabel.text = dateFormatter.string(from: date)
     }
     
     private func getAPI() {
