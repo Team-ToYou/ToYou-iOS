@@ -103,6 +103,11 @@ class HomeViewController: UIViewController {
                 case .success(let value):
                     self.cards = value.result.cards
                     self.homeView.bottomSheetView.collectionView.reloadData()
+                    
+                    // 카드 여부 => 아이콘, 텍스트 보이게
+                    let isEmpty = self.cards.isEmpty
+                    self.homeView.bottomSheetView.iconImage.isHidden = !isEmpty
+                    self.homeView.bottomSheetView.noCardLabel.isHidden = !isEmpty
                 case .failure(let error):
                     print(error)
                 }

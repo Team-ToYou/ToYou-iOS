@@ -30,6 +30,21 @@ class BottomSheetView: UIView {
         $0.textColor = .black04
     }
     
+    let iconImage = UIImageView().then {
+        $0.image = .unhappyIcon
+        $0.contentMode = .scaleAspectFit
+        $0.isHidden = true
+    }
+    
+    let noCardLabel = UILabel().then {
+        $0.text = "아직 친구들이 일기카드를\n작성하지 않았어요"
+        $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 30)
+        $0.numberOfLines = 2
+        $0.textAlignment = .center
+        $0.textColor = .black01
+        $0.isHidden = true
+    }
+    
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.minimumLineSpacing = 21
         $0.scrollDirection = .vertical
@@ -56,6 +71,7 @@ class BottomSheetView: UIView {
         [
             backgroundView,
             sheetBar, mailImage, titleLabel,
+            iconImage, noCardLabel,
             collectionView,
         ].forEach {
             addSubview($0)
@@ -79,6 +95,18 @@ class BottomSheetView: UIView {
         
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(sheetBar.snp.bottom).offset(7.5)
+            $0.centerX.equalToSuperview()
+        }
+        
+        iconImage.snp.makeConstraints {
+            $0.top.equalTo(titleLabel.snp.bottom).offset(77)
+            $0.centerX.equalToSuperview()
+            $0.width.equalTo(30)
+            $0.height.equalTo(28.82)
+        }
+        
+        noCardLabel.snp.makeConstraints {
+            $0.top.equalTo(iconImage.snp.bottom).offset(17)
             $0.centerX.equalToSuperview()
         }
         
