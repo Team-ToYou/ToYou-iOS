@@ -33,7 +33,7 @@ class LoginView: UIView {
         
         appleLoginView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(K.BottomButtonConstraint.leadingTrailing)
-            make.bottom.equalToSuperview().inset(K.BottomButtonConstraint.bottomPadding)
+            make.bottom.equalToSuperview().inset(60)
         }
     }
     

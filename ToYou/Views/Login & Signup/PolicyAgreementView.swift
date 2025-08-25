@@ -13,7 +13,7 @@ class PolicyAgreementView: UIView {
     
     // MARK: Policy Check
     private lazy var titleLabel = UILabel().then {
-        $0.text = "약간동의"
+        $0.text = "약관동의"
         $0.font = UIFont(name: K.Font.s_core_medium, size: 20)
         $0.textColor = .black04
     }
