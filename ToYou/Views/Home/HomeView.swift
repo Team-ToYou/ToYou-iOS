@@ -93,7 +93,7 @@ class HomeView: UIView {
         
         alertButton.snp.makeConstraints {
             $0.centerY.equalTo(toyouLabel)
-            $0.right.equalToSuperview().offset(-36)
+            $0.right.equalToSuperview().offset(-27)
         }
         
         dateBackView.snp.makeConstraints {
