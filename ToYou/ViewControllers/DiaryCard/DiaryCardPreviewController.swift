@@ -15,6 +15,7 @@ class DiaryCardPreviewController: UIViewController {
     var questionsAndAnswers: [DiaryCardAnswerModel] = []
     private var isLocked: Bool = false
     public var isEditMode: Bool = false
+    public var isPreviewMode: Bool = false
     private var cardId: Int?
     
     override func viewDidLoad() {
@@ -22,6 +23,8 @@ class DiaryCardPreviewController: UIViewController {
         
         diaryCardPreview = DiaryCardPreview(emotion: emotion)
         self.view = diaryCardPreview
+        
+        diaryCardPreview.isSaved = isPreviewMode
         
         let buttonTitle = isEditMode ? "수정하기" : "저장하기"
         diaryCardPreview.saveEditButton.setTitle(buttonTitle, for: .normal)

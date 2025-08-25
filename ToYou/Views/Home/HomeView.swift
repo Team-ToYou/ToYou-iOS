@@ -30,7 +30,7 @@ class HomeView: UIView {
     }
     
     public let dateLabel = UILabel().then {
-        $0.text = "20250223"
+        $0.text = "00000000"
         $0.font = UIFont(name: "GangwonEduHyeonokT_OTFMedium", size: 25)
         $0.textColor = .black04
         $0.textAlignment = .center
@@ -93,7 +93,7 @@ class HomeView: UIView {
         
         alertButton.snp.makeConstraints {
             $0.centerY.equalTo(toyouLabel)
-            $0.right.equalToSuperview().offset(-36)
+            $0.right.equalToSuperview().offset(-27)
         }
         
         dateBackView.snp.makeConstraints {

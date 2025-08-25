@@ -30,6 +30,7 @@ class HomeViewController: UIViewController {
         
         // 알림 VC 설정
         notificationVC.configure(notificationViewModel, delegate: self)
+        setDate(date: Date())
         setAction()
         getAPI()
         setDelegate()
@@ -48,6 +49,12 @@ class HomeViewController: UIViewController {
         homeView.dateBackView.backgroundColor = emotion.pointColor()
         homeView.emotionImage.image = emotion.emotionBubble()
         homeView.backgroundColor = emotion.pointColor()
+    }
+    
+    private func setDate(date: Date) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMdd"
+        homeView.dateLabel.text = dateFormatter.string(from: date)
     }
     
     private func getAPI() {
@@ -96,6 +103,11 @@ class HomeViewController: UIViewController {
                 case .success(let value):
                     self.cards = value.result.cards
                     self.homeView.bottomSheetView.collectionView.reloadData()
+                    
+                    // 카드 여부 => 아이콘, 텍스트 보이게
+                    let isEmpty = self.cards.isEmpty
+                    self.homeView.bottomSheetView.iconImage.isHidden = !isEmpty
+                    self.homeView.bottomSheetView.noCardLabel.isHidden = !isEmpty
                 case .failure(let error):
                     print(error)
                 }
@@ -142,6 +154,7 @@ class HomeViewController: UIViewController {
             previewVC.hidesBottomBarWhenPushed = true
             previewVC.setCardId(id)
             previewVC.isEditMode = true
+            previewVC.isPreviewMode = true
             self.navigationController?.pushViewController(previewVC, animated: true)
         } else {
             let diaryVC = DiaryCardSelectViewController()
