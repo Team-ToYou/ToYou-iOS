@@ -154,6 +154,7 @@ class HomeViewController: UIViewController {
             previewVC.hidesBottomBarWhenPushed = true
             previewVC.setCardId(id)
             previewVC.isEditMode = true
+            previewVC.isPreviewMode = true
             self.navigationController?.pushViewController(previewVC, animated: true)
         } else {
             let diaryVC = DiaryCardSelectViewController()
