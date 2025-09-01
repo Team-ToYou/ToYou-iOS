@@ -16,6 +16,10 @@ class CompleteToSendQueryVC: UIViewController {
     private let mailImage = UIImageView().then {
         $0.image = .mail
         $0.contentMode = .scaleAspectFit
+        $0.layer.shadowOffset = CGSize(width: 15, height: 10)
+        $0.layer.shadowOpacity = 0.8
+        $0.layer.shadowRadius = 5
+        $0.layer.shadowColor = UIColor.gray00.cgColor
     }
     
     private let completionLabel = UILabel().then {
@@ -43,7 +47,7 @@ class CompleteToSendQueryVC: UIViewController {
         mailImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-80)
-            make.height.equalTo(100)
+            make.height.width.equalTo(150)
         }
         
         completionLabel.snp.makeConstraints { make in

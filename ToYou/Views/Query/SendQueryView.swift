@@ -40,6 +40,10 @@ class SendQueryView: UIView {
     private lazy var mailImageView = UIImageView().then {
         $0.image = .mail
         $0.contentMode = .scaleAspectFit
+        $0.layer.shadowOffset = CGSize(width: 15, height: 10)
+        $0.layer.shadowOpacity = 0.8
+        $0.layer.shadowRadius = 5
+        $0.layer.shadowColor = UIColor.gray00.cgColor
     }
     
     private lazy var ananymousLabel = UILabel().then {
@@ -93,7 +97,7 @@ class SendQueryView: UIView {
         
         mailImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.equalTo(100)
+            make.height.width.equalTo(150)
         }
     }
         
