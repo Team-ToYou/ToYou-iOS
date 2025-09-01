@@ -43,7 +43,7 @@ class CompleteToSendQueryVC: UIViewController {
         mailImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-80)
-            make.height.equalTo(100)
+            make.height.width.equalTo(150)
         }
         
         completionLabel.snp.makeConstraints { make in

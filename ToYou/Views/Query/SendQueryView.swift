@@ -93,7 +93,7 @@ class SendQueryView: UIView {
         
         mailImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.height.equalTo(100)
+            make.height.width.equalTo(150)
         }
     }
         
