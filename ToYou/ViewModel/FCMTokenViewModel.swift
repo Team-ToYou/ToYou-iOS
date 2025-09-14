@@ -21,6 +21,17 @@ final class FCMTokenViewModel {
     
     let defaults = UserDefaults.standard
     
+    func subscribeWhithFCMToken(topic: String = "allUsers") {
+        FCMTokenNetworkService.subscribeToFCMToken(topic: topic) { response in
+            switch response.result {
+            case .success(_):
+                print("FCM Topic \(topic) subscribe success")
+            case .failure(let error):
+                print("Failed: FCM Topic \(topic) subscribe, \(error)")
+            }
+        }
+    }
+    
     func fetchFCMTokenToServer() {
         self.checkNotificationPermission() { result in
             switch result {
@@ -219,6 +230,23 @@ final class FCMTokenViewModel {
 }
 
 enum FCMTokenNetworkService {
+    
+    static func subscribeToFCMToken(topic: String, completion: @escaping (DataResponse<ToYouResponse<EmptyResult>, AFError>) -> Void) {
+        let tail = "/fcm/topic?topic=\(topic)"
+        let url = K.URLString.baseURL + tail
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken)  else { return }
+        let headers: HTTPHeaders = [
+            "accept": "*/*",
+            "Authorization": "Bearer \(accessToken)",
+            "Content-Type": "application/json"
+        ]
+        AF.request(url,
+                   method: .post,
+                   encoding: JSONEncoding.default,
+                   headers: headers)
+        .responseDecodable(of: ToYouResponse<EmptyResult>.self, completionHandler: completion)
+    }
+    
     static func postFCMTokenToServer(completion: @escaping (DataResponse<ToYouResponseWithoutResult, AFError>) -> Void) {
         let tail = "/fcm/token"
         let url = K.URLString.baseURL + tail

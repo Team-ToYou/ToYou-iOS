@@ -34,6 +34,7 @@ class BaseViewController: UITabBarController {
         UserViewModel.fetchUser{ _ in }
         
         globalFcmViewModel.fetchFCMTokenToServer()
+        globalFcmViewModel.subscribeWhithFCMToken()
         
         print("access  token: \(KeychainService.get(key: K.Key.accessToken)!)")
         print("refresh token: \(KeychainService.get(key: K.Key.refreshToken)!)")
