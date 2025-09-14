@@ -9,7 +9,7 @@ import Alamofire
 import Foundation
 import NotificationCenter
 
-let fcmViewModel = FCMTokenViewModel.shared
+let globalFcmViewModel = FCMTokenViewModel()
 
 enum NotificationPermissionStatus {
     case notDetermined
@@ -18,8 +18,6 @@ enum NotificationPermissionStatus {
 }
 
 final class FCMTokenViewModel {
-    
-    static let shared = FCMTokenViewModel()
     
     let defaults = UserDefaults.standard
     
@@ -35,10 +33,9 @@ final class FCMTokenViewModel {
                     case .COMMON200:
                         break
                     case .FCM401:
-                        print("post executed")
                         self.postFCMTokenToServer(completion: { _ in })
                     default :
-                        print("fcm patch \(code)")
+                        print("error \(code) fcm patch")
                     }
                 }
             case .denied:
@@ -54,7 +51,7 @@ final class FCMTokenViewModel {
             let code = apiResponse.code
             switch code {
             case FCMCode.COMMON200.rawValue :
-                print("fcm post 요청 성공")
+                print("fcm post succeed")
                 completion(.COMMON200)
             case FCMCode.FCM400.rawValue :
                 completion(.FCM400)
@@ -84,7 +81,7 @@ final class FCMTokenViewModel {
                 let code = apiResponse.code
                 switch code {
                 case FCMCode.COMMON200.rawValue :
-                    print("fcm patch 요청 성공, \(KeychainService.get(key: K.Key.fcmToken))")
+                    print("fcm patch 요청 성공, \(KeychainService.get(key: K.Key.fcmToken) ?? "no fcm found")")
                     completion(.COMMON200)
                 case FCMCode.FCM400.rawValue :
                     completion(.FCM400)

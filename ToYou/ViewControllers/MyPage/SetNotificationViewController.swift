@@ -18,7 +18,7 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
         self.setupButtonActions()
         self.navigationController?.isNavigationBarHidden = true
         UNUserNotificationCenter.current().delegate = self
-        fcmViewModel.checkNotificationPermission { status in
+        globalFcmViewModel.checkNotificationPermission { status in
             switch status {
             case .notDetermined:
                 break
@@ -28,7 +28,7 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
                 self.setNotificationView.toggle.isOn = false
             }
         }
-        fcmViewModel.checkAndRequestNotificationPermission(vc: self)
+        globalFcmViewModel.checkAndRequestNotificationPermission(vc: self)
     }
     
     private func setupButtonActions() {
@@ -45,19 +45,19 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
     private func toggleNotificationState() {
         switch setNotificationView.toggle.isOn {
         case true: // false -> true로 바뀜
-            fcmViewModel.postFCMTokenToServer() { code in
+            globalFcmViewModel.postFCMTokenToServer() { code in
                 switch code {
                 case .COMMON200:
-                    fcmViewModel.defaults.set(true, forKey: K.Key.isNotificationAllowed)
+                    globalFcmViewModel.defaults.set(true, forKey: K.Key.isNotificationAllowed)
                 default :
                     break
                 }
             }
         case false: // false로 바뀜
-            fcmViewModel.deleteUserFCMToken() { code in
+            globalFcmViewModel.deleteUserFCMToken() { code in
                 switch code {
                 case .COMMON200:
-                    fcmViewModel.defaults.set(false, forKey: K.Key.isNotificationAllowed)
+                    globalFcmViewModel.defaults.set(false, forKey: K.Key.isNotificationAllowed)
                 default :
                     break
                 }

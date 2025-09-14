@@ -28,7 +28,7 @@ class RevokePopupVC: UIViewController {
     
     @objc
     private func revoke() {
-        fcmViewModel.deleteUserFCMToken { code in
+        globalFcmViewModel.deleteUserFCMToken { code in
             if code == .COMMON200 { // 삭제 성공
                 print("user fcm token 삭제 성공")
             } else { // FCM 토큰 삭제 실패

@@ -33,7 +33,7 @@ class BaseViewController: UITabBarController {
         UsersAPIService.fetchUserInfo { _ in } // 사용자 정보를 불러오고 Subscriber에게 값의 변경을 알림
         UserViewModel.fetchUser{ _ in }
         
-        fcmViewModel.fetchFCMTokenToServer()
+        globalFcmViewModel.fetchFCMTokenToServer()
         
         print("access  token: \(KeychainService.get(key: K.Key.accessToken)!)")
         print("refresh token: \(KeychainService.get(key: K.Key.refreshToken)!)")

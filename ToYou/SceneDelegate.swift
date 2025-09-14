@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func validateAndNavigate() {
-        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else {
+        guard KeychainService.get(key: K.Key.accessToken) != nil else {
             RootViewControllerService.toLoginViewController()
             return
         }

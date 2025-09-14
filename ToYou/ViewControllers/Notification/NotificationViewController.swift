@@ -87,7 +87,7 @@ extension NotificationViewController: FriendRequestDelegate {
             switch code {
             case .COMMON200:
                 self.noificationViewModel?.removeNotification(index: 0)
-                fcmViewModel.sendFCMMessage(to: friend.userId!, requestType: .FriendRequestAccepted) { code in
+                globalFcmViewModel.sendFCMMessage(to: friend.userId!, requestType: .FriendRequestAccepted) { code in
                     switch code {
                     case .COMMON200:
                         print("#FriendsViewController #acceptFriend Message Sent Successfully")

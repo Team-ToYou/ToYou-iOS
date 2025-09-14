@@ -41,7 +41,7 @@ class SendQueryViewController: UIViewController {
             switch code {
             case .COMMON200:
                 self.sendSuccess()
-                fcmViewModel.sendFCMMessage(to: QueryAPIService.shared.queryParamter.targetId!, requestType: .Query) { code in
+                globalFcmViewModel.sendFCMMessage(to: QueryAPIService.shared.queryParamter.targetId!, requestType: .Query) { code in
                     switch code {
                     case .COMMON200:
                         print("#SendQueryViewController #sendQuery Message Sent Successfully")
