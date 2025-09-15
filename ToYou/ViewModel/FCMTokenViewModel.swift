@@ -8,6 +8,7 @@
 import Alamofire
 import Foundation
 import NotificationCenter
+import Firebase
 
 let globalFcmViewModel = FCMTokenViewModel()
 
@@ -20,6 +21,16 @@ enum NotificationPermissionStatus {
 final class FCMTokenViewModel {
     
     let defaults = UserDefaults.standard
+    
+    func subscribeWhithFirebase(topic: String = "allUsers") {
+        Messaging.messaging().subscribe(toTopic: topic) { error in
+            if let error = error {
+                print("구독 실패: \(error.localizedDescription)")
+            } else {
+                print("구독 성공")
+            }
+        }
+    }
     
     func subscribeWhithFCMToken(topic: String = "allUsers") {
         FCMTokenNetworkService.subscribeToFCMToken(topic: topic) { response in
