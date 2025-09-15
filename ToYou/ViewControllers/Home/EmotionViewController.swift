@@ -98,7 +98,16 @@ extension EmotionViewController: UITableViewDataSource, UITableViewDelegate {
                 self.emotionView.emotionView.isHidden = false
                 self.emotionView.emotionLabel.text = item.result
                 self.emotionView.emotionLabel.isHidden = false
-
+                
+                // 일정 시간 후 감정 UI 제거
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        self.emotionView.emotionView.alpha = 0
+                        self.emotionView.emotionLabel.alpha = 0
+                    }, completion: { _ in
+                        self.navigationController?.popViewController(animated: true)
+                    })
+                }
             case .failure(let error):
                 print("요청 실패: \(error)")
             }
