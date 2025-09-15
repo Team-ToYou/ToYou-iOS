@@ -30,6 +30,7 @@ final class NotificationViewModel: ObservableObject {
                 case NotificationCode.COMMON200.rawValue :
                     // print("#getNotificationList succeed \(success.result?.alarmList ?? [])")
                     self?.notificationData = success.result?.alarmList ?? []
+                    self?.notificationData.reverse()
                 case NotificationCode.JWT400.rawValue :
                     // print("#getNotificationList jwt expired \(success.message)")
                     if firstTry {
