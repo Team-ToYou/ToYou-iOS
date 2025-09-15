@@ -31,6 +31,8 @@ class NotificationView: UIView {
         $0.estimatedRowHeight = 84 //Minimum height
         $0.separatorStyle = .none
         $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
         $0.register(NotificationCell.self, forCellReuseIdentifier: NotificationCell.identifier)
     }
     
