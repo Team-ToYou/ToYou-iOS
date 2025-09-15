@@ -49,6 +49,7 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
                 switch code {
                 case .COMMON200:
                     globalFcmViewModel.defaults.set(true, forKey: K.Key.isNotificationAllowed)
+                    globalFcmViewModel.subscribeFCMTopic()
                 default :
                     break
                 }
@@ -58,6 +59,7 @@ class SetNotificationViewController: UIViewController, UNUserNotificationCenterD
                 switch code {
                 case .COMMON200:
                     globalFcmViewModel.defaults.set(false, forKey: K.Key.isNotificationAllowed)
+                    globalFcmViewModel.unsubscribeFCMTopic()
                 default :
                     break
                 }
