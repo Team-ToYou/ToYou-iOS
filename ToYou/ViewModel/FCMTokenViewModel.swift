@@ -38,6 +38,7 @@ final class FCMTokenViewModel {
                 print("Error subscribing to topic: \(error.localizedDescription)")
             } else {
                 print("Subscribe to \(topic) succeeded.")
+
             }
         }
     }

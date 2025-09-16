@@ -39,7 +39,7 @@ class DiaryCardAnswerView: UIView {
     }
     
     private let subTitleLabel = UILabel().then {
-        $0.text = "답하고 싶은 질문을 선택해주세요"
+        $0.text = "선택한 질문에 대한 답변을 입력하세요"
         $0.textColor = .black04
         $0.font = UIFont(name: "S-CoreDream-3Light", size: 13)
     }
