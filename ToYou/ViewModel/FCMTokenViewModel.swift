@@ -22,23 +22,23 @@ final class FCMTokenViewModel {
     
     let defaults = UserDefaults.standard
     
-    func subscribeWhithFirebase(topic: String = "allUsers") {
-        Messaging.messaging().subscribe(toTopic: topic) { error in
+    func unsubscribeFCMTopic(about topic: String = "allUsers") {
+        Messaging.messaging().unsubscribe(fromTopic: topic) { error in
             if let error = error {
-                print("구독 실패: \(error.localizedDescription)")
+                print("Error unsubscribing to topic: \(error.localizedDescription)")
             } else {
-                print("구독 성공")
+                print("Unsubscribe to \(topic) succeeded.")
             }
         }
     }
     
-    func subscribeWhithFCMToken(topic: String = "allUsers") {
-        FCMTokenNetworkService.subscribeToFCMToken(topic: topic) { response in
-            switch response.result {
-            case .success(_):
-                print("FCM Topic \(topic) subscribe success")
-            case .failure(let error):
-                print("Failed: FCM Topic \(topic) subscribe, \(error)")
+    func subscribeFCMTopic(about topic: String = "allUsers") {
+        Messaging.messaging().subscribe(toTopic: "weather") { error in
+            if let error = error {
+                print("Error subscribing to topic: \(error.localizedDescription)")
+            } else {
+                print("Subscribe to \(topic) succeeded.")
+
             }
         }
     }
@@ -55,7 +55,9 @@ final class FCMTokenViewModel {
                     case .COMMON200:
                         break
                     case .FCM401:
-                        self.postFCMTokenToServer(completion: { _ in })
+                        self.postFCMTokenToServer(completion: { _ in
+                            globalFcmViewModel.subscribeFCMTopic()
+                        })
                     default :
                         print("error \(code) fcm patch")
                     }
