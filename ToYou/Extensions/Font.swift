@@ -103,6 +103,10 @@ extension Font {
         return s_core(type: .light, size: 12)
     }
     
+    static var SCoreLight13: Font {
+        return s_core(type: .light, size: 13)
+    }
+    
     // Regular
     static var SCoreRegular10: Font {
         return s_core(type: .regular, size: 10)

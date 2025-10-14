@@ -14,7 +14,7 @@ protocol QuestionSelectable {
 
 class DiaryCardSelectViewController: UIViewController {
     var emotion: Emotion = .NORMAL
-    let diaryCardSelectView = DiaryCardSelectView()
+    let diaryCardSelectView = DiaryCardSelectViewBefore()
     var cardId: Int?
     
     private var selectedItemsCount: Int = 0

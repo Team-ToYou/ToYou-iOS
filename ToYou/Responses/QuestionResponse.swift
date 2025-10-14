@@ -24,10 +24,5 @@ struct Question: Codable {
     let questionType: QuestionType
     let questioner: String
     let answerOption: [String]?
-}
-
-enum QuestionType: String, Codable {
-    case long = "LONG_ANSWER"
-    case short = "SHORT_ANSWER"
-    case optional = "OPTIONAL"
+    var isSelected: Bool = false 
 }
