@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 // 사용자 입력 감지 후 VC에 알림
 protocol AnswerInputDelegate: AnyObject {
@@ -109,16 +110,54 @@ class DiaryCardAnswerViewController: UIViewController {
             }
         }
         
-        // push + 데이터 전달
-        let previewVC = DiaryCardPreviewController()
-        if let cardId = self.cardId {
-            previewVC.setCardId(cardId)
+        // 서버 전송
+        var questionList: [[String: Any]] = []
+        for item in answerModels {
+            let finalAnswer: String
+            if let idx = item.selectedIndex, idx < item.answers.count {
+                finalAnswer = item.answers[idx]
+            } else {
+                finalAnswer = item.answers.first ?? ""
+            }
+            questionList.append([
+                "questionId": item.questionId,
+                "answer": finalAnswer
+            ])
         }
-        previewVC.emotion = self.emotion
-        previewVC.questionsAndAnswers = answerModels
-        previewVC.hidesBottomBarWhenPushed = true
-        self.navigationController?.pushViewController(previewVC, animated: true)
+        
+        guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
+        let headers: HTTPHeaders = ["Authorization": "Bearer " + accessToken]
+        let body: [String: Any] = [
+            "exposure": true,
+            "questionList": questionList
+        ]
+        
+        let url = K.URLString.baseURL + "/diarycards"
+        AF.request(url, method: .post, parameters: body, encoding: JSONEncoding.default, headers: headers)
+            .validate()
+            .responseDecodable(of: CreateDiaryCardResponse.self) { response in
+                switch response.result {
+                case .success(let result):
+                    guard let newId = result.result?.cardId else {
+                        return
+                    }
 
+                    // 미리보기로 이동
+                    let previewVC = DiaryCardPreviewController()
+                    previewVC.setCardId(newId)
+                    previewVC.emotion = self.emotion
+                    previewVC.questionsAndAnswers = answerModels
+                    previewVC.hidesBottomBarWhenPushed = true
+
+                    self.navigationController?.pushViewController(previewVC, animated: true)
+
+                case .failure(let error):
+                    print("일기카드 생성 실패: \(error)")
+                    if let data = response.data, let msg = String(data: data, encoding: .utf8) {
+                        print("서버 메시지: \(msg)")
+                    }
+                }
+            }
     }
 }
 

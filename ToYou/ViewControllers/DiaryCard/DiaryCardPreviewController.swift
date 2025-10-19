@@ -154,13 +154,18 @@ class DiaryCardPreviewController: UIViewController {
     }
     
     @objc private func lockButtonTapped() {
+        guard let id = cardId else {
+            print("잠금 토글 실패: cardId 없음")
+            return
+        }
+        
         isLocked.toggle()
         let image = isLocked ? UIImage.lockIcon : UIImage.unlockIcon
         diaryCardPreview.previewCard.lockButton.setImage(image, for: .normal)
         
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let headers: HTTPHeaders = ["Authorization": "Bearer " + accessToken]
-        let url = K.URLString.baseURL + "/diarycards/\(cardId!)/exposure"
+        let url = K.URLString.baseURL + "/diarycards/\(id)/exposure"
         
         AF.request(url, method: .patch, headers: headers)
             .validate()
@@ -179,6 +184,11 @@ class DiaryCardPreviewController: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
+        guard let id = cardId else {
+            print("저장 실패: cardId 없음")
+            return
+        }
+        
         guard let accessToken = KeychainService.get(key: K.Key.accessToken) else { return }
         let headers: HTTPHeaders = ["Authorization": "Bearer " + accessToken]
         
@@ -190,13 +200,9 @@ class DiaryCardPreviewController: UIViewController {
             } else {
                 answer = item.answers.first ?? ""
             }
-            
-            questionList.append([
-                "questionId": item.questionId,
-                "answer": answer
-            ])
+            questionList.append(["questionId": item.questionId, "answer": answer])
         }
-        
+
         let body: [String: Any] = [
             "exposure": !isLocked,
             "questionList": questionList
@@ -213,26 +219,21 @@ class DiaryCardPreviewController: UIViewController {
             return
         }
         
-        let url = K.URLString.baseURL + (cardId != nil ? "/diarycards/\(cardId!)" : "/diarycards")
-        let method: HTTPMethod = cardId != nil ? .patch : .post
-        
-        AF.request(url, method: method, parameters: body, encoding: JSONEncoding.default, headers: headers)
+        let url = K.URLString.baseURL + "/diarycards/\(id)"
+        AF.request(url, method: .patch, parameters: body, encoding: JSONEncoding.default, headers: headers)
             .validate()
             .responseDecodable(of: CreateDiaryCardResponse.self) { response in
                 switch response.result {
                 case .success(let result):
-                    print("일기카드 \(method == .post ? "생성" : "수정") 성공: \(String(describing: result.result?.cardId))")
+                    print("일기카드 수정 성공: \(String(describing: result.result?.cardId))")
                     DispatchQueue.main.async {
-                        self.cardId = result.result?.cardId
                         self.diaryCardPreview.isSaved = true
-                        
                         let homeVC = HomeViewController()
                         self.navigationController?.setViewControllers([homeVC], animated: true)
                     }
                 case .failure(let error):
-                    print("일기카드 저장 실패: \(error)")
-                    if let data = response.data,
-                       let message = String(data: data, encoding: .utf8) {
+                    print("일기카드 수정 실패: \(error)")
+                    if let data = response.data, let message = String(data: data, encoding: .utf8) {
                         print("서버 메시지: \(message)")
                     }
                 }
